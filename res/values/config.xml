@@ -19,4 +19,6 @@
 <resources>
     <!-- Maximum recording length in milliseconds. 0 means unlimited. -->
     <integer name="max_video_recording_length">0</integer>
+    <!-- Allows setting video size before recording starts -->
+    <bool name="needsEarlyVideoSize">false</bool>
 </resources>

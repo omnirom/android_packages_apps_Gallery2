@@ -135,6 +135,9 @@ public class Util {
     private static float sPixelDensity = 1;
     private static ImageFileNamer sImageFileNamer;
 
+    // For setting video size before recording starts
+    private static boolean sEarlyVideoSize;
+
     private Util() {
     }
 
@@ -146,10 +149,15 @@ public class Util {
         sPixelDensity = metrics.density;
         sImageFileNamer = new ImageFileNamer(
                 context.getString(R.string.image_file_name_format));
+        sEarlyVideoSize = context.getResources().getBoolean(R.bool.needsEarlyVideoSize);
     }
 
     public static int dpToPixel(int dp) {
         return Math.round(sPixelDensity * dp);
+    }
+
+    public static boolean needsEarlyVideoSize() {
+        return sEarlyVideoSize;
     }
 
     // Rotates the bitmap by the specified degree.
