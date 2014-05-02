@@ -83,14 +83,36 @@ public class MuteVideo {
         new Thread(new Runnable() {
                 @Override
             public void run() {
+                boolean hasError = false;
                 try {
                     VideoUtils.startMute(mFilePath, mDstFileInfo);
                     SaveVideoFileUtils.insertContent(
                             mDstFileInfo, mActivity.getContentResolver(), mUri);
                 } catch (IOException e) {
-                    Toast.makeText(mActivity, mActivity.getString(R.string.video_mute_err),
-                            Toast.LENGTH_SHORT).show();
+                    hasError = true;
+                    e.printStackTrace();
+                } catch (IllegalStateException e) {
+                    hasError = true;
+                    e.printStackTrace();
                 }
+                //If the exception happens,just notify the UI and avoid the crash.
+                if (hasError){
+                    mHandler.post(new Runnable(){
+                        @Override
+                        public void run(){
+                            Toast.makeText(mActivity.getApplicationContext(),
+                                mActivity.getString(R.string.video_mute_err),
+                                Toast.LENGTH_SHORT)
+                                .show();
+                            if (mMuteProgress != null) {
+                                mMuteProgress.dismiss();
+                                mMuteProgress = null;
+                            }
+                        }
+                    });
+                    return;
+                }
+
                 // After muting is done, trigger the UI changed.
                 mHandler.post(new Runnable() {
                         @Override
