@@ -100,6 +100,8 @@ public class MuteVideo {
                     mHandler.post(new Runnable(){
                         @Override
                         public void run(){
+                            // delete dst file if failed
+                            mDstFileInfo.mFile.delete();
                             Toast.makeText(mActivity.getApplicationContext(),
                                 mActivity.getString(R.string.video_mute_err),
                                 Toast.LENGTH_SHORT)

@@ -256,6 +256,8 @@ public class TrimVideo extends Activity implements
                     mHandler.post(new Runnable(){
                         @Override
                         public void run(){
+                            // delete dst file if failed
+                            mDstFileInfo.mFile.delete();
                             Toast.makeText(getApplicationContext(),
                                 getString(R.string.fail_trim),
                                 Toast.LENGTH_SHORT)
