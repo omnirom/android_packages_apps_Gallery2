@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.android.gallery3d.util.MediaSetUtils;
+
 public class StorageChangeReceiver extends BroadcastReceiver {
     public static final String KEY_STORAGE = "pref_camera_storage_key";
 
@@ -36,6 +38,8 @@ public class StorageChangeReceiver extends BroadcastReceiver {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString(KEY_STORAGE, storagePath);
             editor.apply();
+            Log.i("StorageChangeReceiver", "STORAGE_CHANGE root=" + storagePath);
+            MediaSetUtils.setRoot(storagePath);
         }
     }
 
