@@ -17,6 +17,7 @@
 package com.android.gallery3d.util;
 
 import android.os.Environment;
+import android.util.Log;
 
 import com.android.gallery3d.data.LocalAlbum;
 import com.android.gallery3d.data.LocalMergeAlbum;
