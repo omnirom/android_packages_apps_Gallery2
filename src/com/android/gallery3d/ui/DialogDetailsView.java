@@ -227,6 +227,8 @@ public class DialogDetailsView implements DetailsViewContainer {
                         if (valueObj == null) {
                             Utils.fail("%s's value is Null",
                                     DetailsHelper.getDetailsName(context, detail.getKey()));
+                            // ignore this detail
+                            continue;
                         }
                         value = valueObj.toString();
                     }
