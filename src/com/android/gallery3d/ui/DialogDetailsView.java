@@ -225,8 +225,10 @@ public class DialogDetailsView implements DetailsViewContainer {
                         Object valueObj = detail.getValue();
                         // This shouldn't happen, log its key to help us diagnose the problem.
                         if (valueObj == null) {
-                            Utils.fail("%s's value is Null",
+                            Utils.debug("%s's value is Null",
                                     DetailsHelper.getDetailsName(context, detail.getKey()));
+                            // ignore this detail
+                            continue;
                         }
                         value = valueObj.toString();
                     }
