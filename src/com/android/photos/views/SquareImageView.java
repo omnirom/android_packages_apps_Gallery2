@@ -18,10 +18,10 @@ package com.android.photos.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import android.widget.FlipImageView;
 
 
-public class SquareImageView extends ImageView {
+public class SquareImageView extends FlipImageView {
 
     public SquareImageView(Context context) {
         super(context);
