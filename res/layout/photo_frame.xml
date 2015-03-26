@@ -21,7 +21,7 @@
         android:paddingBottom="23dp"
         android:paddingLeft="12dp"
         android:paddingRight="12dp">
-    <ImageView android:id="@+id/photo"
+    <android.widget.FlipImageView android:id="@+id/photo"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
