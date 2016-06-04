@@ -38,7 +38,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 import com.android.gallery3d.R;
@@ -79,7 +78,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public abstract class PhotoPage extends ActivityState implements
-        PhotoView.Listener, AppBridge.Server, ShareActionProvider.OnShareTargetSelectedListener,
+        PhotoView.Listener, AppBridge.Server,
         PhotoPageBottomControls.Delegate, GalleryActionBar.OnAlbumModeSelectedListener {
     private static final String TAG = "PhotoPage";
 
@@ -377,7 +376,7 @@ public abstract class PhotoPage extends ActivityState implements
                             }
                             Intent shareIntent = createShareIntent(mCurrentPhoto);
 
-                            mActionBar.setShareIntents(panoramaIntent, shareIntent, PhotoPage.this);
+                            mActionBar.setShareIntents(panoramaIntent, shareIntent);
                             setNfcBeamPushUri(contentUri);
                         }
                         break;
@@ -1573,19 +1572,6 @@ public abstract class PhotoPage extends ActivityState implements
     @Override
     public void onUndoBarVisibilityChanged(boolean visible) {
         refreshBottomControlsWhenReady();
-    }
-
-    @Override
-    public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
-        final long timestampMillis = mCurrentPhoto.getDateInMs();
-        final String mediaType = getMediaTypeString(mCurrentPhoto);
-        UsageStatistics.onEvent(UsageStatistics.COMPONENT_GALLERY,
-                UsageStatistics.ACTION_SHARE,
-                mediaType,
-                        timestampMillis > 0
-                        ? System.currentTimeMillis() - timestampMillis
-                        : -1);
-        return false;
     }
 
     private static String getMediaTypeString(MediaItem item) {

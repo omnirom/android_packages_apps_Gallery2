@@ -61,8 +61,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.PopupMenu;
-import android.widget.ShareActionProvider;
-import android.widget.ShareActionProvider.OnShareTargetSelectedListener;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -129,7 +127,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class FilterShowActivity extends FragmentActivity implements OnItemClickListener,
-        OnShareTargetSelectedListener, DialogInterface.OnShowListener,
+        DialogInterface.OnShowListener,
         DialogInterface.OnDismissListener, PopupMenu.OnDismissListener{
 
     private String mAction = "";
@@ -156,7 +154,6 @@ public class FilterShowActivity extends FragmentActivity implements OnItemClickL
 
     private final Vector<ImageShow> mImageViews = new Vector<ImageShow>();
 
-    private ShareActionProvider mShareActionProvider;
     private File mSharedOutputFile = null;
 
     private boolean mSharingImage = false;
@@ -947,8 +944,7 @@ public class FilterShowActivity extends FragmentActivity implements OnItemClickL
         finish();
     }
 
-    @Override
-    public boolean onShareTargetSelected(ShareActionProvider arg0, Intent arg1) {
+    public boolean onShareTargetSelected() {
         // First, let's tell the SharedImageProvider that it will need to wait
         // for the image
         Uri uri = Uri.withAppendedPath(SharedImageProvider.CONTENT_URI,
@@ -985,10 +981,19 @@ public class FilterShowActivity extends FragmentActivity implements OnItemClickL
         } else {
             showState.setTitle(R.string.show_imagestate_panel);
         }
-        mShareActionProvider = (ShareActionProvider) menu.findItem(R.id.menu_share)
-                .getActionProvider();
-        mShareActionProvider.setShareIntent(getDefaultShareIntent());
-        mShareActionProvider.setOnShareTargetSelectedListener(this);
+        MenuItem item = menu.findItem(R.id.menu_share);
+        if (item != null) {
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    onShareTargetSelected();
+                    Intent intent = Intent.createChooser(getDefaultShareIntent(), null);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    FilterShowActivity.this.startActivity(intent);
+                    return true;
+                }
+            });
+        }
         mMenu = menu;
         setupMenu();
         return true;
@@ -1011,17 +1016,11 @@ public class FilterShowActivity extends FragmentActivity implements OnItemClickL
     @Override
     public void onPause() {
         super.onPause();
-        if (mShareActionProvider != null) {
-            mShareActionProvider.setOnShareTargetSelectedListener(null);
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mShareActionProvider != null) {
-            mShareActionProvider.setOnShareTargetSelectedListener(this);
-        }
     }
 
     @Override
