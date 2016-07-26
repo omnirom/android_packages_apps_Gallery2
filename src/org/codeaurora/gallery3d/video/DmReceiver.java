@@ -33,32 +33,32 @@ public class DmReceiver extends BroadcastReceiver {
             mPref = PreferenceManager.getDefaultSharedPreferences(context);
         }
         if (BOOT_COMPLETED.equals(intent.getAction())) {
-            String rtpMaxport = mPref.getString(SettingsActivity.PREFERENCE_RTP_MAXPORT, "65535");
+            /*String rtpMaxport = mPref.getString(SettingsActivity.PREFERENCE_RTP_MAXPORT, "65535");
             String rtpMinport = mPref.getString(SettingsActivity.PREFERENCE_RTP_MINPORT, "8192");
             String apn = mPref.getString(SettingsActivity.PREFERENCE_APN, "CMWAP");
             System.putString(context.getContentResolver(),
                     "streaming_max_udp_port", rtpMaxport);
             System.putString(context.getContentResolver(),
                     "streaming_min_udp_port", rtpMinport);
-            System.putString(context.getContentResolver(), "apn", apn);
+            System.putString(context.getContentResolver(), "apn", apn);*/
         } else if (WRITE_SETTING_ACTION.equals(intent.getAction())) {
             int valueType = intent.getIntExtra("type", 0);
             String value = intent.getStringExtra("value");
             if (valueType == STREAMING_MAX_UDP_PORT_IO_HANDLER_TYPE) {
                 mPref.edit().putString(SettingsActivity.PREFERENCE_RTP_MAXPORT,
                         value).commit();
-                System.putString(context.getContentResolver(),
-                        "streaming_max_udp_port", value);
+                /*System.putString(context.getContentResolver(),
+                        "streaming_max_udp_port", value);*/
             } else if (valueType == STREAMING_MIN_UDP_PORT_IO_HANDLER_TYPE) {
                 mPref.edit().putString(SettingsActivity.PREFERENCE_RTP_MINPORT,
                         value).commit();
-                System.putString(context.getContentResolver(),
-                        "streaming_min_udp_port", value);
+                /*System.putString(context.getContentResolver(),
+                        "streaming_min_udp_port", value);*/
             } else if (valueType == STREAMING_CONNPROFILE_IO_HANDLER_TYPE) {
                 mPref.edit().putString(SettingsActivity.PREFERENCE_APN,
                         value).commit();
-                System.putString(context.getContentResolver(),
-                        "apn", value);
+                /*System.putString(context.getContentResolver(),
+                        "apn", value);*/
             }
         }
     }
