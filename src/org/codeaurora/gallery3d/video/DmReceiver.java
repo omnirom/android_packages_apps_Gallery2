@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.PowerManager;
+import android.os.UserHandle;
 import android.preference.PreferenceManager;
 import android.provider.Settings.System;
 import android.util.Log;
@@ -36,29 +37,29 @@ public class DmReceiver extends BroadcastReceiver {
             String rtpMaxport = mPref.getString(SettingsActivity.PREFERENCE_RTP_MAXPORT, "65535");
             String rtpMinport = mPref.getString(SettingsActivity.PREFERENCE_RTP_MINPORT, "8192");
             String apn = mPref.getString(SettingsActivity.PREFERENCE_APN, "CMWAP");
-            System.putString(context.getContentResolver(),
-                    "streaming_max_udp_port", rtpMaxport);
-            System.putString(context.getContentResolver(),
-                    "streaming_min_udp_port", rtpMinport);
-            System.putString(context.getContentResolver(), "apn", apn);
+            System.putStringForUser(context.getContentResolver(),
+                    "streaming_max_udp_port", rtpMaxport, UserHandle.USER_CURRENT);
+            System.putStringForUser(context.getContentResolver(),
+                    "streaming_min_udp_port", rtpMinport, UserHandle.USER_CURRENT);
+            System.putStringForUser(context.getContentResolver(), "apn", apn, UserHandle.USER_CURRENT);
         } else if (WRITE_SETTING_ACTION.equals(intent.getAction())) {
             int valueType = intent.getIntExtra("type", 0);
             String value = intent.getStringExtra("value");
             if (valueType == STREAMING_MAX_UDP_PORT_IO_HANDLER_TYPE) {
                 mPref.edit().putString(SettingsActivity.PREFERENCE_RTP_MAXPORT,
                         value).commit();
-                System.putString(context.getContentResolver(),
-                        "streaming_max_udp_port", value);
+                System.putStringForUser(context.getContentResolver(),
+                        "streaming_max_udp_port", value, UserHandle.USER_CURRENT);
             } else if (valueType == STREAMING_MIN_UDP_PORT_IO_HANDLER_TYPE) {
                 mPref.edit().putString(SettingsActivity.PREFERENCE_RTP_MINPORT,
                         value).commit();
-                System.putString(context.getContentResolver(),
-                        "streaming_min_udp_port", value);
+                System.putStringForUser(context.getContentResolver(),
+                        "streaming_min_udp_port", value, UserHandle.USER_CURRENT);
             } else if (valueType == STREAMING_CONNPROFILE_IO_HANDLER_TYPE) {
                 mPref.edit().putString(SettingsActivity.PREFERENCE_APN,
                         value).commit();
-                System.putString(context.getContentResolver(),
-                        "apn", value);
+                System.putStringForUser(context.getContentResolver(),
+                        "apn", value, UserHandle.USER_CURRENT);
             }
         }
     }
