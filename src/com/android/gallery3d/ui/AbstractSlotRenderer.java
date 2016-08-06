@@ -36,6 +36,7 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
     private final NinePatchTexture mFramePressed;
     private FadeOutTexture mFramePressedUp;
     private GLPaint mFramePaint;
+    private final ResourceTexture mSelectionIcon;
 
     protected AbstractSlotRenderer(Context context) {
         mVideoOverlay = new ResourceTexture(context, R.drawable.ic_video_thumb);
@@ -45,6 +46,7 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
         mFramePaint = new GLPaint();
         mFramePaint.setColor(context.getResources().getColor(R.color.accent));
         mFramePaint.setLineWidth(context.getResources().getDimensionPixelSize(R.dimen.selected_frame_width));
+        mSelectionIcon = new ResourceTexture(context, R.drawable.multiselect);
     }
 
     protected void drawContent(GLCanvas canvas,
@@ -113,6 +115,10 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
 
     protected void drawSelectedFrame(GLCanvas canvas, int width, int height) {
         canvas.drawRect(0, 0, width, height, mFramePaint);
+    }
+
+    protected void drawSelectedFrameNew(GLCanvas canvas, int width, int height) {
+         mSelectionIcon.draw(canvas,15,15);
     }
 
     protected static void drawFrame(GLCanvas canvas, Rect padding, Texture frame,

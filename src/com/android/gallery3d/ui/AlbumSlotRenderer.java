@@ -151,9 +151,9 @@ public class AlbumSlotRenderer extends AbstractSlotRenderer {
                 drawPressedFrame(canvas, width, height);
             }
         } else if ((entry.path != null) && (mHighlightItemPath == entry.path)) {
-            drawSelectedFrame(canvas, width, height);
+            drawSelectedFrameNew(canvas, width, height);
         } else if (mInSelectionMode && mSelectionManager.isItemSelected(entry.path)) {
-            drawSelectedFrame(canvas, width, height);
+            drawSelectedFrameNew(canvas, width, height);
         }
         return renderRequestFlags;
     }
