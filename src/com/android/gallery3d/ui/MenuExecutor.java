@@ -326,6 +326,23 @@ public class MenuExecutor {
         }
     }
 
+    public void onMenuClicked(int action, String confirmMsg,
+            final ProgressListener listener) {
+
+        if (confirmMsg != null) {
+            if (listener != null) listener.onConfirmDialogShown();
+            ConfirmDialogListener cdl = new ConfirmDialogListener(action, listener);
+            new AlertDialog.Builder(mActivity.getAndroidContext())
+                    .setMessage(confirmMsg)
+                    .setOnCancelListener(cdl)
+                    .setPositiveButton(R.string.ok, cdl)
+                    .setNegativeButton(R.string.cancel, cdl)
+                    .create().show();
+        } else {
+            onMenuClicked(action, listener);
+        }
+    }
+
     public void startAction(int action, int title, ProgressListener listener) {
         startAction(action, title, listener, false, true);
     }
