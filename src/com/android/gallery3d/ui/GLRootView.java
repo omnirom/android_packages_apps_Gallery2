@@ -25,9 +25,12 @@ import android.os.Build;
 import android.os.Process;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.View.OnApplyWindowInsetsListener;
+import android.view.WindowInsets;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.anim.CanvasAnimation;
@@ -110,6 +113,8 @@ public class GLRootView extends GLSurfaceView
     private long mLastDrawFinishTime;
     private boolean mInDownState = false;
     private boolean mFirstDraw = true;
+    private int mBottomMargin;
+    private int mTopMargin;
 
     public GLRootView(Context context) {
         this(context, null);
@@ -576,21 +581,6 @@ public class GLRootView extends GLSurfaceView
         mRenderLock.unlock();
     }
 
-    @Override
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void setLightsOutMode(boolean enabled) {
-        if (!ApiHelper.HAS_SET_SYSTEM_UI_VISIBILITY) return;
-
-        int flags = 0;
-        if (enabled) {
-            flags = STATUS_BAR_HIDDEN;
-            if (ApiHelper.HAS_VIEW_SYSTEM_UI_FLAG_LAYOUT_STABLE) {
-                flags |= (SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            }
-        }
-        setSystemUiVisibility(flags);
-    }
-
     // We need to unfreeze in the following methods and in onPause().
     // These methods will wait on GLThread. If we have freezed the GLRootView,
     // the GLThread will wait on main thread to call unfreeze and cause dead
@@ -625,6 +615,25 @@ public class GLRootView extends GLSurfaceView
             unfreeze();
         } finally {
             super.finalize();
+        }
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        mTopMargin = insets.getSystemWindowInsetTop();
+        mBottomMargin = insets.getSystemWindowInsetBottom();
+
+        if (mContentView != null) {
+            mContentView.setMargins(mTopMargin, mBottomMargin);
+            mContentView.invalidate();
+        }
+        return insets;
+    }
+
+    public void applySystemInsets() {
+        if (mContentView != null) {
+            mContentView.setMargins(mTopMargin, mBottomMargin);
+            mContentView.invalidate();
         }
     }
 }

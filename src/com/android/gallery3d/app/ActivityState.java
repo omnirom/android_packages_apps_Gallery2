@@ -214,9 +214,6 @@ abstract public class ActivityState {
 
         setScreenFlags();
 
-        boolean lightsOut = ((mFlags & FLAG_HIDE_STATUS_BAR) != 0);
-        mActivity.getGLRoot().setLightsOutMode(lightsOut);
-
         ResultEntry entry = mReceivedResults;
         if (entry != null) {
             mReceivedResults = null;

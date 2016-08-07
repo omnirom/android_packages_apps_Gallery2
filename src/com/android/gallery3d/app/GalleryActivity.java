@@ -60,12 +60,13 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 
-        if (getIntent().getBooleanExtra(KEY_DISMISS_KEYGUARD, false)) {
+        //if (getIntent().getBooleanExtra(KEY_DISMISS_KEYGUARD, false)) {
             getWindow().addFlags(
                     WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-        }
+        //}
 
         setContentView(R.layout.main);
+        showSystemUI();
 
         if (savedInstanceState != null) {
             getStateManager().restoreFromState(savedInstanceState);
@@ -206,7 +207,7 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
                 Path albumPath = dm.getDefaultSetOf(itemPath);
 
                 data.putString(PhotoPage.KEY_MEDIA_ITEM_PATH, itemPath.toString());
-                data.putBoolean(PhotoPage.KEY_READONLY, true);
+                //data.putBoolean(PhotoPage.KEY_READONLY, true);
 
                 // TODO: Make the parameter "SingleItemOnly" public so other
                 //       activities can reference it.

@@ -136,8 +136,8 @@ public class AlbumSetPage extends ActivityState implements
                 boolean changed, int left, int top, int right, int bottom) {
             mEyePosition.resetPosition();
 
-            int slotViewTop = mActionBar.getHeight() + mConfig.paddingTop;
-            int slotViewBottom = bottom - top - mConfig.paddingBottom;
+            int slotViewTop = mTopMargin + mConfig.paddingTop;
+            int slotViewBottom = bottom - top - mBottomMargin - mConfig.paddingBottom;
             int slotViewRight = right - left - mConfig.paddingRight;
 
             if (mShowDetails) {
@@ -459,7 +459,11 @@ public class AlbumSetPage extends ActivityState implements
     public void onResume() {
         super.onResume();
         mIsActive = true;
+        mActionBar.setTransparentMode(false);
+        mActivity.setSystemBarsTranlucent(false);
+
         setContentPane(mRootPane);
+        mActivity.getGLRootView().applySystemInsets();
 
         // Set the reload bit here to prevent it exit this page in clearLoadingBit().
         setLoadingBit(BIT_LOADING_RELOAD);

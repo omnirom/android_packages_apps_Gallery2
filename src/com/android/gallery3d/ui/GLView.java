@@ -82,6 +82,14 @@ public class GLView {
     private float [] mBackgroundColor;
     private StateTransitionAnimation mTransition;
 
+    protected int mTopMargin;
+    protected int mBottomMargin;
+
+    public void setMargins(int top, int bottom) {
+        mTopMargin = top;
+        mBottomMargin = bottom;
+    }
+
     public void startAnimation(CanvasAnimation animation) {
         GLRoot root = getGLRoot();
         if (root == null) throw new IllegalStateException();

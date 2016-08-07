@@ -163,8 +163,6 @@
     <dimen name="photoeditor_original_text_size">18dp</dimen>
     <dimen name="photoeditor_original_text_margin">4dp</dimen>
 
-    <dimen name="action_bar_elevation">8dp</dimen>
-
     <!-- FAB -->
     <!-- Floating action button -->
     <dimen name="floating_action_button_height">56dp</dimen>
