@@ -51,4 +51,5 @@
     <color name="primary_dark">#e64a19</color>
     <color name="accent">#ffc107</color>
     <color name="textColor">#ffffff</color>
+    <color name="photo_overlay">#66000000</color>
 </resources>

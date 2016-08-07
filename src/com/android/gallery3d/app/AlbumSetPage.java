@@ -459,6 +459,8 @@ public class AlbumSetPage extends ActivityState implements
     public void onResume() {
         super.onResume();
         mIsActive = true;
+        mActionBar.setTransparentMode(false);
+
         setContentPane(mRootPane);
 
         // Set the reload bit here to prevent it exit this page in clearLoadingBit().
@@ -475,6 +477,7 @@ public class AlbumSetPage extends ActivityState implements
             setLoadingBit(BIT_LOADING_SYNC);
             mSyncTask = mMediaSet.requestSync(AlbumSetPage.this);
         }
+        mActivity.resetSystemUI();
     }
 
     private void initializeData(Bundle data) {

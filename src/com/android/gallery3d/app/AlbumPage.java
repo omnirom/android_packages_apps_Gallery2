@@ -94,6 +94,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     private String mParentMediaSetString;
     private SlotView mSlotView;
     private Config.AlbumPage mConfig;
+    private GalleryActionBar mActionBar;
 
     private AlbumDataLoader mAlbumDataAdapter;
 
@@ -159,7 +160,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         protected void onLayout(
                 boolean changed, int left, int top, int right, int bottom) {
 
-            int slotViewTop = mActivity.getGalleryActionBar().getHeight() + mConfig.paddingTop;
+            int slotViewTop = mActionBar.getHeight() + mConfig.paddingTop;
             int slotViewBottom = bottom - top - mConfig.paddingBottom;
             int slotViewRight = right - left - mConfig.paddingRight;
 
@@ -290,11 +291,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     private void pickPhoto(int slotIndex, boolean startInFilmstrip) {
         if (!mIsActive) return;
 
-        if (!startInFilmstrip) {
-            // Launch photos in lights out mode
-            mActivity.getGLRoot().setLightsOutMode(true);
-        }
-
         MediaItem item = mAlbumDataAdapter.get(slotIndex);
 
         // Checking it is RTL or not
@@ -407,6 +403,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         mGetContent = data.getBoolean(GalleryActivity.KEY_GET_CONTENT, false);
         mShowClusterMenu = data.getBoolean(KEY_SHOW_CLUSTER_MENU, false);
         mDetailsSource = new MyDetailsSource();
+        mActionBar = mActivity.getGalleryActionBar();
         Context context = mActivity.getAndroidContext();
 
         if (data.getBoolean(KEY_AUTO_SELECT_ALL)) {
@@ -436,6 +433,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     protected void onResume() {
         super.onResume();
         mIsActive = true;
+        mActionBar.setTransparentMode(false);
 
         mResumeEffect = mActivity.getTransitionStore().get(KEY_RESUME_ANIMATION);
         if (mResumeEffect != null) {
@@ -448,10 +446,9 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
 
         boolean enableHomeButton = (mActivity.getStateManager().getStateCount() > 1) |
                 mParentMediaSetString != null;
-        GalleryActionBar actionBar = mActivity.getGalleryActionBar();
-        actionBar.setDisplayOptions(enableHomeButton, false);
+        mActionBar.setDisplayOptions(enableHomeButton, false);
         if (!mGetContent) {
-            actionBar.enableAlbumModeMenu(GalleryActionBar.ALBUM_GRID_MODE_SELECTED, this);
+            mActionBar.enableAlbumModeMenu(GalleryActionBar.ALBUM_GRID_MODE_SELECTED, this);
         }
 
         // Set the reload bit here to prevent it exit this page in clearLoadingBit().
@@ -467,6 +464,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             mSyncTask = mMediaSet.requestSync(this);
         }
         mInCameraAndWantQuitOnPause = mInCameraApp;
+        mActivity.resetSystemUI();
     }
 
     @Override
