@@ -38,6 +38,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.print.PrintHelper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -62,7 +63,7 @@ public class AbstractGalleryActivity extends Activity implements GalleryContext 
     private GalleryActionBar mActionBar;
     private OrientationManager mOrientationManager;
     private TransitionStore mTransitionStore = new TransitionStore();
-    private boolean mDisableToggleStatusBar;
+    private boolean mDisableToggleStatusBar = true;
     private PanoramaViewHelper mPanoramaViewHelper;
 
     private AlertDialog mAlertDialog = null;
@@ -377,5 +378,22 @@ public class AbstractGalleryActivity extends Activity implements GalleryContext 
         } catch (FileNotFoundException fnfe) {
             Log.e(TAG, "Error printing an image", fnfe);
         }
+    }
+
+    public void hideSystemUI() {
+        getWindow().getDecorView().setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_IMMERSIVE);
+    }
+
+    public void showSystemUI() {
+        getWindow().getDecorView().setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 }

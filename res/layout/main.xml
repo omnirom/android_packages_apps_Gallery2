@@ -4,7 +4,12 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <include layout="@layout/gl_root_group"/>
+    <FrameLayout android:id="@+id/gl_root_group_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        <include layout="@layout/gl_root_group"/>
+        <include layout="@layout/photopage_bottom_controls"/>
+    </FrameLayout>
     <FrameLayout android:id="@+id/header"
             android:visibility="gone"
             android:layout_alignParentTop="true"
@@ -17,4 +22,5 @@
             android:layout_alignParentEnd="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
 </RelativeLayout>
