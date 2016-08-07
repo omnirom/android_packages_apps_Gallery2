@@ -467,6 +467,8 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             mSyncTask = mMediaSet.requestSync(this);
         }
         mInCameraAndWantQuitOnPause = mInCameraApp;
+        actionBar.setTransparentMode(false);
+        mActivity.resetSystemUI();
     }
 
     @Override

@@ -5,6 +5,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <include layout="@layout/gl_root_group"/>
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:fitsSystemWindows="true" >
+        <include layout="@layout/photopage_bottom_controls"/>
+    </FrameLayout>
     <FrameLayout android:id="@+id/header"
             android:visibility="gone"
             android:layout_alignParentTop="true"

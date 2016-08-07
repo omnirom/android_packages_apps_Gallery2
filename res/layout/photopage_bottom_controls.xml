@@ -3,9 +3,8 @@
     android:id="@+id/photopage_bottom_controls"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
-    android:background="#42000000"
+    android:background="@drawable/root_bottom_bg"
     android:gravity="bottom"
     android:orientation="horizontal"
     android:visibility="gone" >
@@ -17,8 +16,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_edit"
-        android:visibility="gone" />
+        android:src="@drawable/ic_edit" />
 
     <ImageButton
         android:id="@+id/photopage_bottom_control_share"
@@ -27,8 +25,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_menu_share"
-        android:visibility="gone" />
+        android:src="@drawable/ic_menu_share" />
 
     <ImageButton
         android:id="@+id/photopage_bottom_control_delete"
@@ -37,7 +34,5 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_menu_trash"
-        android:visibility="gone" />
-
+        android:src="@drawable/ic_menu_trash" />
 </LinearLayout>
