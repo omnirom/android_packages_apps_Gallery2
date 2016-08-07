@@ -475,6 +475,8 @@ public class AlbumSetPage extends ActivityState implements
             setLoadingBit(BIT_LOADING_SYNC);
             mSyncTask = mMediaSet.requestSync(AlbumSetPage.this);
         }
+        mActionBar.setSinglePhotoMode(false);
+        mActivity.resetSystemUI();
     }
 
     private void initializeData(Bundle data) {
