@@ -20,7 +20,7 @@
     android:shape="rectangle"
     >
     <gradient
-        android:startColor="#66000000"
+        android:startColor="@color/photo_overlay"
         android:endColor="#00000000"
         android:angle="90" />
 </shape>

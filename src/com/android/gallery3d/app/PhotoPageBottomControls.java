@@ -17,6 +17,9 @@
 package com.android.gallery3d.app;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +40,7 @@ public class PhotoPageBottomControls implements OnClickListener {
 
     private Delegate mDelegate;
     private ViewGroup mContainer;
+    private Context mContext;
 
     private Animation mContainerAnimIn = new AlphaAnimation(0f, 1f);
     private Animation mContainerAnimOut = new AlphaAnimation(1f, 0f);
@@ -44,6 +48,7 @@ public class PhotoPageBottomControls implements OnClickListener {
 
     public PhotoPageBottomControls(Delegate delegate, Context context, ViewGroup layout) {
         mDelegate = delegate;
+        mContext = context;
 
         mContainer = (ViewGroup) layout.findViewById(R.id.photopage_bottom_controls);
         for (int i = mContainer.getChildCount() - 1; i >= 0; i--) {
@@ -88,6 +93,29 @@ public class PhotoPageBottomControls implements OnClickListener {
             if (child.getId() == id) {
                 child.setEnabled(enabled);
                 child.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+            }
+        }
+    }
+    public void setGradientBackground(boolean gradient) {
+        if (mContainer.getBackground() != null) {
+            Drawable[] arrayDrawable = new Drawable[2];
+            if (gradient) {
+                arrayDrawable[0] = mContainer.getBackground();
+                arrayDrawable[1] = mContext.getResources().getDrawable(R.drawable.root_bottom_bg);
+            } else {
+                arrayDrawable[0] = mContainer.getBackground();
+                arrayDrawable[1] = new ColorDrawable(mContext.getResources().getColor(R.color.photo_overlay));
+            }
+            TransitionDrawable transitionDrawable = new TransitionDrawable(arrayDrawable);
+            transitionDrawable.setCrossFadeEnabled(true);
+            mContainer.setBackground(transitionDrawable);
+            transitionDrawable.startTransition(500);
+        } else {
+            if (gradient) {
+                mContainer.setBackground(mContext.getResources().getDrawable(R.drawable.root_bottom_bg));
+            } else {
+                mContainer.setBackground(
+                        new ColorDrawable(mContext.getResources().getColor(R.color.photo_overlay)));
             }
         }
     }

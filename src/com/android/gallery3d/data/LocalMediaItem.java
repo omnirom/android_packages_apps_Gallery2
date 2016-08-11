@@ -20,6 +20,7 @@ import android.database.Cursor;
 
 import com.android.gallery3d.util.GalleryUtils;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -83,6 +84,9 @@ public abstract class LocalMediaItem extends MediaItem {
     public MediaDetails getDetails() {
         MediaDetails details = super.getDetails();
         details.addDetail(MediaDetails.INDEX_PATH, filePath);
+        if (caption == null && filePath != null) {
+            caption = new File(filePath).getName();
+        }
         details.addDetail(MediaDetails.INDEX_TITLE, caption);
         DateFormat formater = DateFormat.getDateTimeInstance();
         details.addDetail(MediaDetails.INDEX_DATETIME,

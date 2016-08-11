@@ -16,6 +16,8 @@
 
 package com.android.gallery3d.app;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.ActionBar.OnMenuVisibilityListener;
 import android.app.Activity;
@@ -34,10 +36,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -62,9 +69,7 @@ import com.android.gallery3d.data.SnailSource;
 import com.android.gallery3d.filtershow.FilterShowActivity;
 import com.android.gallery3d.filtershow.crop.CropActivity;
 import com.android.gallery3d.picasasource.PicasaSource;
-import com.android.gallery3d.ui.DetailsHelper;
-import com.android.gallery3d.ui.DetailsHelper.CloseListener;
-import com.android.gallery3d.ui.DetailsHelper.DetailsSource;
+import com.android.gallery3d.ui.DetailsAdapterNew;
 import com.android.gallery3d.ui.GLRootView;
 import com.android.gallery3d.ui.GLView;
 import com.android.gallery3d.ui.MenuExecutor;
@@ -139,7 +144,6 @@ public abstract class PhotoPage extends ActivityState implements
 
     private PhotoView mPhotoView;
     private PhotoPage.Model mModel;
-    private DetailsHelper mDetailsHelper;
     private boolean mShowDetails;
 
     // mMediaSet could be null if there is no KEY_MEDIA_SET_PATH supplied.
@@ -198,6 +202,8 @@ public abstract class PhotoPage extends ActivityState implements
 
     private int mLastSystemUiVis = 0;
     private boolean mIsSinglePhotoMode;
+    private ViewGroup mDetailsFooter;
+    private GridView mDetailsView;
 
     private final PanoramaSupportCallback mUpdatePanoramaMenuItemsCallback = new PanoramaSupportCallback() {
         @Override
@@ -245,9 +251,6 @@ public abstract class PhotoPage extends ActivityState implements
         protected void onLayout(
                 boolean changed, int left, int top, int right, int bottom) {
             mPhotoView.layout(0, 0, right - left, bottom - top);
-            if (mShowDetails) {
-                mDetailsHelper.layout(left, mActionBar.getHeight(), right, bottom);
-            }
         }
     };
 
@@ -557,13 +560,15 @@ public abstract class PhotoPage extends ActivityState implements
         }
 
         mPhotoView.setFilmMode(mStartInFilmstrip && mMediaSet.getMediaItemCount() > 1);
-        RelativeLayout galleryRoot = (RelativeLayout) ((Activity) mActivity)
+        RelativeLayout galleryRoot = (RelativeLayout) mActivity
                 .findViewById(mAppBridge != null ? R.id.content : R.id.gallery_root);
         if (galleryRoot != null) {
             if (mSecureAlbum == null) {
                 mBottomControls = new PhotoPageBottomControls(this, mActivity, galleryRoot);
             }
         }
+        mDetailsFooter = (ViewGroup) mActivity.findViewById(R.id.details_footer);
+        reloadDetailsView();
     }
 
     @Override
@@ -597,6 +602,13 @@ public abstract class PhotoPage extends ActivityState implements
                  mMenuExecutor.onMenuClicked(R.id.action_delete, confirmMsg,
                         mConfirmDialogListener);
                  return;
+            case R.id.photopage_bottom_control_info:
+                if (mShowDetails) {
+                    hideDetails();
+                } else {
+                    showDetails();
+                }
+                return;
             default:
                 return;
         }
@@ -728,15 +740,16 @@ public abstract class PhotoPage extends ActivityState implements
             mPhotoView.setWantPictureCenterCallbacks(true);
         }
 
-        if (mShowDetails) {
-            mDetailsHelper.reloadDetails();
-        }
         if ((mSecureAlbum == null)
                 && (mCurrentPhoto.getSupportedOperations() & MediaItem.SUPPORT_SHARE) != 0) {
             mCurrentPhoto.getPanoramaSupport(mUpdateShareURICallback);
         }
         updateSinglePhotoState();
         updateMenuOperations();
+
+        if (mShowDetails) {
+            reloadDetails();
+        }
     }
 
     private void updateCurrentPhoto(MediaItem photo) {
@@ -803,6 +816,10 @@ public abstract class PhotoPage extends ActivityState implements
     }
 
     private void hideBars() {
+        if (mShowDetails) {
+            hideDetails();
+            return;
+        }
         if (!mShowBars) return;
         mShowBars = false;
         showBottomControl(true);
@@ -1059,7 +1076,7 @@ public abstract class PhotoPage extends ActivityState implements
             case R.id.action_simple_edit: {
                 launchSimpleEditor();
                 return true;
-            }*/
+            }
             case R.id.action_details: {
                 if (mShowDetails) {
                     hideDetails();
@@ -1067,7 +1084,7 @@ public abstract class PhotoPage extends ActivityState implements
                     showDetails();
                 }
                 return true;
-            }
+            }*/
             case R.id.print: {
                 mActivity.printSelectedImage(manager.getContentUri(path));
                 return true;
@@ -1090,21 +1107,70 @@ public abstract class PhotoPage extends ActivityState implements
 
     private void hideDetails() {
         mShowDetails = false;
-        mDetailsHelper.hide();
+
+        mDetailsView.animate().alpha(0f).setDuration(300).setListener(
+            new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mDetailsFooter.setVisibility(View.GONE);
+                    if (mBottomControls != null) {
+                        mBottomControls.setGradientBackground(true);
+                    }
+                    mDetailsView.setAlpha(1f);
+                }
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+            });
     }
 
     private void showDetails() {
+        if (mModel == null || mModel.getMediaItem(0) == null) {
+            return;
+        }
         mShowDetails = true;
-        if (mDetailsHelper == null) {
-            mDetailsHelper = new DetailsHelper(mActivity, mRootPane, new MyDetailsSource());
-            mDetailsHelper.setCloseListener(new CloseListener() {
+
+        if (mBottomControls != null) {
+            mBottomControls.setGradientBackground(false);
+        }
+        mDetailsView.setAlpha(0f);
+        mDetailsFooter.setVisibility(View.VISIBLE);
+        DetailsAdapterNew adapter = new DetailsAdapterNew(mModel.getMediaItem(0).getDetails(), mActivity);
+        mDetailsView.setAdapter(adapter);
+        mDetailsView.animate().alpha(1f).setDuration(300).setListener(
+            new AnimatorListenerAdapter() {
                 @Override
-                public void onClose() {
-                    hideDetails();
+                public void onAnimationEnd(Animator animation) {
+                    mDetailsView.setAlpha(1f);
+                }
+                @Override
+                public void onAnimationStart(Animator animation) {
                 }
             });
+    }
+
+    private void reloadDetails() {
+        if (mModel == null || mModel.getMediaItem(0) == null) {
+            return;
         }
-        mDetailsHelper.show();
+        DetailsAdapterNew adapter = new DetailsAdapterNew(mModel.getMediaItem(0).getDetails(), mActivity);
+        mDetailsView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration config) {
+        reloadDetailsView();
+
+        if (mShowDetails) {
+            hideDetails();
+            showDetails();
+        }
+    }
+
+    private void reloadDetailsView() {
+        mDetailsFooter.removeAllViews();
+        mActivity.getLayoutInflater().inflate(R.layout.details_grid, mDetailsFooter, true);
+        mDetailsView = (GridView) mActivity.findViewById(R.id.details_grid);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1301,9 +1367,10 @@ public abstract class PhotoPage extends ActivityState implements
         mActivity.getGLRoot().unfreeze();
         mHandler.removeMessages(MSG_UNFREEZE_GLROOT);
 
-        DetailsHelper.pause();
         // Hide the detail dialog on exit
-        if (mShowDetails) hideDetails();
+        if (mShowDetails) {
+            hideDetails();
+        }
         if (mModel != null) {
             mModel.pause();
         }
@@ -1438,24 +1505,6 @@ public abstract class PhotoPage extends ActivityState implements
         // Remove all pending messages.
         mHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
-    }
-
-    private class MyDetailsSource implements DetailsSource {
-
-        @Override
-        public MediaDetails getDetails() {
-            return mModel.getMediaItem(0).getDetails();
-        }
-
-        @Override
-        public int size() {
-            return mMediaSet != null ? mMediaSet.getMediaItemCount() : 1;
-        }
-
-        @Override
-        public int setIndex() {
-            return mModel.getCurrentIndex();
-        }
     }
 
     @Override

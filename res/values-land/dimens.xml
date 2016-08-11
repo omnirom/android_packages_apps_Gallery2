@@ -17,4 +17,5 @@
     <!-- for manage cache bar -->
     <dimen name="manage_cache_bottom_height">39dp</dimen>
     <dimen name="capture_top_margin">0dip</dimen>
+    <dimen name="details_height">80dp</dimen>
 </resources>
