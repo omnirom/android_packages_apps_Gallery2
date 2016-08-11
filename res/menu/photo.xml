@@ -67,9 +67,9 @@
     <item android:id="@+id/action_setas"
             android:title="@string/set_image"
             android:showAsAction="never" />
-    <item android:id="@+id/action_details"
+    <!--<item android:id="@+id/action_details"
             android:title="@string/details"
-            android:showAsAction="never" />
+            android:showAsAction="never" />-->
     <item android:id="@+id/action_show_on_map"
             android:title="@string/show_on_map"
             android:showAsAction="never" />

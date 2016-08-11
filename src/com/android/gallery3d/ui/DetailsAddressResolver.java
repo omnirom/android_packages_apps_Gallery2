@@ -52,6 +52,7 @@ public class DetailsAddressResolver {
 
     public interface AddressResolvingListener {
         public void onAddressAvailable(String address);
+        public void onAddressAvailableNew(String key, String address);
     }
 
     public DetailsAddressResolver(AbstractGalleryActivity context) {
@@ -106,6 +107,8 @@ public class DetailsAddressResolver {
             String text = String.format("%s : %s", DetailsHelper.getDetailsName(
                     context, MediaDetails.INDEX_LOCATION), addressText);
             mListener.onAddressAvailable(text);
+            mListener.onAddressAvailableNew(DetailsHelper.getDetailsName(
+                    context, MediaDetails.INDEX_LOCATION), addressText);
         }
     }
 

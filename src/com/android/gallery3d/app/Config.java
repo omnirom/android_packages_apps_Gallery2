@@ -121,26 +121,5 @@ final class Config {
             paddingRight = r.getDimensionPixelSize(R.dimen.album_padding_right);
         }
     }
-
-    public static class ManageCachePage extends AlbumSetPage {
-        private static ManageCachePage sInstance;
-
-        public final int cachePinSize;
-        public final int cachePinMargin;
-
-        public static synchronized ManageCachePage get(Context context) {
-            if (sInstance == null) {
-                sInstance = new ManageCachePage(context);
-            }
-            return sInstance;
-        }
-
-        public ManageCachePage(Context context) {
-            super(context);
-            Resources r = context.getResources();
-            cachePinSize = r.getDimensionPixelSize(R.dimen.cache_pin_size);
-            cachePinMargin = r.getDimensionPixelSize(R.dimen.cache_pin_margin);
-        }
-    }
 }
 

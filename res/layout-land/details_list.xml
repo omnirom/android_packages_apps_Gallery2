@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/details_height"
             android:background="@color/details_background"
-            android:numColumns="1"
+            android:numColumns="2"
             android:smoothScrollbar="true"
             android:stretchMode="columnWidth"
             android:paddingTop="5dp" />
