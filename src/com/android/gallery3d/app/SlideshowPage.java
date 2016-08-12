@@ -112,7 +112,6 @@ public class SlideshowPage extends ActivityState {
     @Override
     public void onCreate(Bundle data, Bundle restoreState) {
         super.onCreate(data, restoreState);
-        mFlags |= (FLAG_HIDE_ACTION_BAR | FLAG_HIDE_STATUS_BAR);
         if (data.getBoolean(KEY_DREAM)) {
             // Dream screensaver only keeps screen on for plugged devices.
             mFlags |= FLAG_SCREEN_ON_WHEN_PLUGGED | FLAG_SHOW_WHEN_LOCKED;
@@ -172,6 +171,7 @@ public class SlideshowPage extends ActivityState {
     @Override
     public void onPause() {
         super.onPause();
+        mActivity.showSystemBars();
         mIsActive = false;
         mModel.pause();
         mSlideshowView.release();
@@ -183,6 +183,7 @@ public class SlideshowPage extends ActivityState {
     @Override
     public void onResume() {
         super.onResume();
+        mActivity.hideSystemBars();
         mIsActive = true;
         mModel.resume();
 

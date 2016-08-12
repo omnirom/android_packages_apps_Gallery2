@@ -22,6 +22,7 @@ import com.android.gallery3d.app.SlideshowPage.Slide;
 import com.android.gallery3d.data.ContentListener;
 import com.android.gallery3d.data.MediaItem;
 import com.android.gallery3d.data.MediaObject;
+import com.android.gallery3d.data.MediaSet;
 import com.android.gallery3d.data.Path;
 import com.android.gallery3d.util.Future;
 import com.android.gallery3d.util.FutureListener;
@@ -87,6 +88,9 @@ public class SlideshowDataAdapter implements SlideshowPage.Model {
         if (mInitialPath != null) {
             index = mSource.findItemIndex(mInitialPath, index);
             mInitialPath = null;
+            if (index == MediaSet.INDEX_NOT_FOUND) {
+                mLoadIndex = index = 0;
+            }
         }
         return mSource.getMediaItem(index);
     }

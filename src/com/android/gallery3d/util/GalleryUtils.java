@@ -73,6 +73,7 @@ public class GalleryUtils {
 
     private static final String KEY_CAMERA_UPDATE = "camera-update";
     private static final String KEY_HAS_CAMERA = "has-camera";
+    private static final String KEY_ALBUM_MODE = "album-mode";
 
     private static float sPixelDensity = -1f;
     private static boolean sCameraAvailableInitialized = false;
@@ -420,5 +421,15 @@ public class GalleryUtils {
         int w = item.getWidth();
         int h = item.getHeight();
         return (h > 0 && w / h >= 2);
+    }
+
+    public static int getAlbumMode(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(KEY_ALBUM_MODE, 0);
+    }
+
+    public static void setAlbumMode(Context context, int value) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putInt(KEY_ALBUM_MODE, value).commit();
     }
 }

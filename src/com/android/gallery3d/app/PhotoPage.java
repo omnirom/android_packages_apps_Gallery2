@@ -158,13 +158,11 @@ public abstract class PhotoPage extends ActivityState implements
     private boolean mShowBars = true;
     private volatile boolean mActionBarAllowed = true;
     private GalleryActionBar mActionBar;
-    private boolean mIsMenuVisible;
     private boolean mHaveImageEditor;
     private PhotoPageBottomControls mBottomControls;
     private MediaItem mCurrentPhoto = null;
     private MenuExecutor mMenuExecutor;
     private boolean mIsActive;
-    private boolean mShowSpinner;
     private String mSetPathString;
     // This is the original mSetPathString before adding the camera preview item.
     private boolean mReadOnlyView = false;
@@ -196,9 +194,6 @@ public abstract class PhotoPage extends ActivityState implements
     private boolean mDeleteIsFocus;  // whether the deleted item was in focus
 
     private Uri[] mNfcPushUris = new Uri[1];
-
-    private final MyMenuVisibilityListener mMenuVisibilityListener =
-            new MyMenuVisibilityListener();
 
     private int mLastSystemUiVis = 0;
     private boolean mIsSinglePhotoMode;
@@ -232,13 +227,6 @@ public abstract class PhotoPage extends ActivityState implements
         public void pause();
         public boolean isEmpty();
         public void setCurrentPhoto(Path path, int indexHint);
-    }
-
-    private class MyMenuVisibilityListener implements OnMenuVisibilityListener {
-        @Override
-        public void onMenuVisibilityChanged(boolean isVisible) {
-            mIsMenuVisible = isVisible;
-        }
     }
 
     @Override
@@ -384,7 +372,6 @@ public abstract class PhotoPage extends ActivityState implements
         boolean inCameraRoll = data.getBoolean(KEY_IN_CAMERA_ROLL, false);
         mCurrentIndex = data.getInt(KEY_INDEX_HINT, 0);
         if (mSetPathString != null) {
-            mShowSpinner = true;
             mAppBridge = (AppBridge) data.getParcelable(KEY_APP_BRIDGE);
             if (mAppBridge != null) {
                 mHasCameraScreennailOrPlaceholder = true;
@@ -411,7 +398,6 @@ public abstract class PhotoPage extends ActivityState implements
                     if (SecureSource.isSecurePath(mSetPathString)) {
                         mSecureAlbum = (SecureAlbum) mActivity.getDataManager()
                                 .getMediaSet(mSetPathString);
-                        mShowSpinner = false;
                     }
                     mSetPathString = "/filter/empty/{"+mSetPathString+"}";
                 }
@@ -556,7 +542,6 @@ public abstract class PhotoPage extends ActivityState implements
             mModel = new SinglePhotoDataAdapter(mActivity, mPhotoView, mediaItem);
             mPhotoView.setModel(mModel);
             updateCurrentPhoto(mediaItem);
-            mShowSpinner = false;
         }
 
         mPhotoView.setFilmMode(mStartInFilmstrip && mMediaSet.getMediaItemCount() > 1);
@@ -768,10 +753,6 @@ public abstract class PhotoPage extends ActivityState implements
         // it could be null if onCreateActionBar has not been called yet
         if (menu == null) return;
 
-        MenuItem item = menu.findItem(R.id.action_slideshow);
-        if (item != null) {
-            item.setVisible((mSecureAlbum == null) && canDoSlideShow());
-        }
         if (mCurrentPhoto == null) return;
 
         int supportedOperations = mCurrentPhoto.getSupportedOperations();
@@ -788,13 +769,17 @@ public abstract class PhotoPage extends ActivityState implements
         }
         MenuExecutor.updateMenuOperation(menu, supportedOperations);
 
+        MenuItem item = menu.findItem(R.id.action_layout);
+        if (item != null) {
+            item.setVisible(mPhotoView.getFilmMode());
+        }
         // enable/disable edit button
         if (mBottomControls != null) {
             mBottomControls.enableItem(R.id.photopage_bottom_control_edit, canEditPhoto());
         }
     }
 
-    private boolean canDoSlideShow() {
+    private boolean isCurrentItemImage() {
         if (mMediaSet == null || mCurrentPhoto == null) {
             return false;
         }
@@ -947,7 +932,6 @@ public abstract class PhotoPage extends ActivityState implements
         mActionBar.createActionBarMenu(R.menu.photo, menu);
         mHaveImageEditor = GalleryUtils.isEditorAvailable(mActivity, "image/*");
         updateMenuOperations();
-        mActionBar.setTitle(mMediaSet != null ? mMediaSet.getName() : "");
         return true;
     }
 
@@ -999,6 +983,7 @@ public abstract class PhotoPage extends ActivityState implements
             } else {
                 mActivity.getStateManager().switchState(this, AlbumPage.class, data);
             }
+            GalleryUtils.setAlbumMode(mActivity, 0);
         }
     }
 
@@ -1100,6 +1085,10 @@ public abstract class PhotoPage extends ActivityState implements
                 mSelectionManager.toggle(path);
                 mMenuExecutor.onMenuClicked(item, confirmMsg, mConfirmDialogListener);
                 return true;
+            case R.id.action_layout: {
+                switchToGrid();
+                return true;
+            }
             default :
                 return false;
         }
@@ -1376,10 +1365,6 @@ public abstract class PhotoPage extends ActivityState implements
         }
         mPhotoView.pause();
 
-        mActionBar.removeOnMenuVisibilityListener(mMenuVisibilityListener);
-        if (mShowSpinner) {
-            mActionBar.disableAlbumModeMenu(true);
-        }
         onCommitDeleteImage();
         mMenuExecutor.pause();
         if (mMediaSet != null) mMediaSet.clearDeletion();
@@ -1395,13 +1380,10 @@ public abstract class PhotoPage extends ActivityState implements
 
     @Override
     public void onFilmModeChanged(boolean enabled) {
-        if (mShowSpinner) {
-            if (enabled) {
-                mActionBar.enableAlbumModeMenu(
-                        GalleryActionBar.ALBUM_FILMSTRIP_MODE_SELECTED, this);
-            } else {
-                mActionBar.disableAlbumModeMenu(true);
-            }
+        if (enabled) {
+            mActionBar.setTitle(mMediaSet.getName());
+        } else {
+            mActionBar.setTitle("");
         }
         if (enabled) {
             UsageStatistics.onContentViewChanged(
@@ -1420,7 +1402,6 @@ public abstract class PhotoPage extends ActivityState implements
             mBottomControls.hide(false);
         }
         updateSinglePhotoState();
-        updateMenuOperations();
     }
 
     private void transitionFromAlbumPageIfNeeded() {
@@ -1475,19 +1456,20 @@ public abstract class PhotoPage extends ActivityState implements
         mModel.resume();
         mPhotoView.resume();
         mActionBar.setDisplayOptions(
-                ((mSecureAlbum == null) && (mSetPathString != null)), false);
-        mActionBar.addOnMenuVisibilityListener(mMenuVisibilityListener);
-        if (mShowSpinner && mPhotoView.getFilmMode()) {
-            mActionBar.enableAlbumModeMenu(
-                    GalleryActionBar.ALBUM_FILMSTRIP_MODE_SELECTED, this);
+                ((mSecureAlbum == null) && (mSetPathString != null)), true);
+
+        if (mPhotoView.getFilmMode() && mMediaSet != null) {
+            mActionBar.setTitle(mMediaSet.getName());
+        } else {
+            mActionBar.setTitle("");
         }
+
         boolean haveImageEditor = GalleryUtils.isEditorAvailable(mActivity, "image/*");
         if (haveImageEditor != mHaveImageEditor) {
             mHaveImageEditor = haveImageEditor;
         }
         mRecenterCameraOnResume = true;
         mHandler.sendEmptyMessageDelayed(MSG_UNFREEZE_GLROOT, UNFREEZE_GLROOT_TIMEOUT);
-        updateMenuOperations();
     }
 
     @Override
