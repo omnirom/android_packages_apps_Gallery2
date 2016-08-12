@@ -14,14 +14,18 @@
      limitations under the License.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_camera"
-            android:icon="@drawable/ic_menu_camera_holo_light"
+    <!--<item android:id="@+id/action_camera"
+            android:icon="@drawable/camera"
             android:title="@string/switch_to_camera"
-            android:showAsAction="ifRoom" />
+            android:showAsAction="ifRoom" />-->
+    <item android:id="@+id/action_layout"
+            android:title="@string/layout_filmstrip"
+            android:icon="@drawable/filmstrip_layout"
+            android:showAsAction="ifRoom"/>
     <item android:id="@+id/action_slideshow"
-            android:icon="@drawable/ic_menu_slideshow_holo_light"
+            android:icon="@drawable/slideshow"
             android:title="@string/slideshow"
-            android:showAsAction="never" />
+            android:showAsAction="ifRoom" />
     <item android:id="@+id/action_select"
             android:title="@string/select_item"
             android:showAsAction="never" />

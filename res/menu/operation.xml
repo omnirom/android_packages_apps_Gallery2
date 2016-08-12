@@ -14,11 +14,6 @@
      limitations under the License.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_import"
-            android:title="@string/Import"
-            android:icon="@drawable/ic_menu_ptp_holo_light"
-            android:showAsAction="always|withText"
-            android:visible="false" />
     <!-- Ideally, showAsAction for share_panorama and share should be reversed.
          But, if share_panorama is set to never, it doesn't seem to get promoted
          to the action bar and stays on the overflow menu. -->

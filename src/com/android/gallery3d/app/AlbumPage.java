@@ -436,9 +436,9 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
 
         boolean enableHomeButton = (mActivity.getStateManager().getStateCount() > 1) |
                 mParentMediaSetString != null;
-        mActionBar.setDisplayOptions(enableHomeButton, false);
+        mActionBar.setDisplayOptions(enableHomeButton, true);
         if (!mGetContent) {
-            mActionBar.enableAlbumModeMenu(GalleryActionBar.ALBUM_GRID_MODE_SELECTED, this);
+            mActionBar.setTitle(mMediaSet.getName());
         }
 
         // Set the reload bit here to prevent it exit this page in clearLoadingBit().
@@ -551,15 +551,8 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             actionBar.setTitle(GalleryUtils.getSelectionModePrompt(typeBits));
         } else {
             inflator.inflate(R.menu.album, menu);
-            actionBar.setTitle(mMediaSet.getName());
-
             FilterUtils.setupMenuItems(actionBar, mMediaSetPath, true);
-
             menu.findItem(R.id.action_group_by).setVisible(mShowClusterMenu);
-            menu.findItem(R.id.action_camera).setVisible(
-                    MediaSetUtils.isCameraSource(mMediaSetPath)
-                    && GalleryUtils.isCameraAvailable(mActivity));
-
         }
         actionBar.setSubtitle(null);
         return true;
@@ -593,6 +586,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         } else {
             pickPhoto(targetPhoto, true);
         }
+        GalleryUtils.setAlbumMode(mActivity, 1);
     }
 
     @Override
@@ -623,8 +617,8 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
                         SlideshowPage.class, REQUEST_SLIDESHOW, data);
                 return true;
             }
-            case R.id.action_camera: {
-                GalleryUtils.startCameraActivity(mActivity);
+            case R.id.action_layout: {
+                switchToFilmstrip();
                 return true;
             }
             default:
