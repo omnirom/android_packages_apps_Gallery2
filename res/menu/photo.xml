@@ -14,20 +14,15 @@
      limitations under the License.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_import"
-            android:title="@string/Import"
-            android:icon="@drawable/ic_menu_ptp_holo_light"
-            android:showAsAction="always|withText"
-            android:visible="false" />
     <!-- Ideally, showAsAction for share_panorama and share should be reversed.
          But, if share_panorama is set to never, it doesn't seem to get promoted
          to the action bar and stays on the overflow menu. -->
-    <item android:id="@+id/action_share_panorama"
+    <!--<item android:id="@+id/action_share_panorama"
             android:icon="@drawable/ic_menu_share"
             android:title="@string/share_panorama"
             android:visible="false"
             android:showAsAction="ifRoom" />
-    <!--<item android:id="@+id/action_share"
+    <item android:id="@+id/action_share"
             android:icon="@drawable/ic_menu_share"
             android:title="@string/share"
             android:visible="false"
@@ -37,10 +32,14 @@
             android:title="@string/delete"
             android:visible="false"
             android:showAsAction="never" /> -->
+    <item android:id="@+id/action_layout"
+            android:title="@string/layout_grid"
+            android:icon="@drawable/grid_layout"
+            android:showAsAction="ifRoom"/>
     <item android:id="@+id/action_slideshow"
-            android:icon="@drawable/ic_menu_slideshow_holo_light"
+            android:icon="@drawable/slideshow"
             android:title="@string/slideshow"
-            android:showAsAction="never" />
+            android:showAsAction="ifRoom" />
     <!--<item android:id="@+id/action_edit"
             android:title="@string/edit"
             android:showAsAction="never"

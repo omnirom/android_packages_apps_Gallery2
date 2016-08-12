@@ -208,7 +208,11 @@ public class AlbumSetPage extends ActivityState implements
         }
     }
 
-    private static boolean albumShouldOpenInFilmstrip(MediaSet album) {
+    private boolean albumShouldOpenInFilmstrip(MediaSet album) {
+        return GalleryUtils.getAlbumMode(mActivity) == 1;
+    }
+
+    private boolean albumShouldOpenInSinglePhotoPage(MediaSet album) {
         int itemCount = album.getMediaItemCount();
         ArrayList<MediaItem> list = (itemCount == 1) ? album.getMediaItem(0, 1) : null;
         // open in film strip only if there's one item in the album and the item exists
@@ -266,16 +270,26 @@ public class AlbumSetPage extends ActivityState implements
             mActivity.getStateManager().startStateForResult(
                     AlbumSetPage.class, REQUEST_DO_ANIMATION, data);
         } else {
-            if (!mGetContent && albumShouldOpenInFilmstrip(targetSet)) {
+            if (!mGetContent && albumShouldOpenInSinglePhotoPage(targetSet)) {
                 data.putParcelable(PhotoPage.KEY_OPEN_ANIMATION_RECT,
                         mSlotView.getSlotRect(slotIndex, mRootPane));
                 data.putInt(PhotoPage.KEY_INDEX_HINT, 0);
                 data.putString(PhotoPage.KEY_MEDIA_SET_PATH,
                         mediaPath);
-                //data.putBoolean(PhotoPage.KEY_START_IN_FILMSTRIP, true);
                 data.putBoolean(PhotoPage.KEY_IN_CAMERA_ROLL, targetSet.isCameraRoll());
                 mActivity.getStateManager().startStateForResult(
                         SinglePhotoPage.class, AlbumPage.REQUEST_PHOTO, data);
+                return;
+            }
+            if (!mGetContent && albumShouldOpenInFilmstrip(targetSet)) {
+                data.putParcelable(PhotoPage.KEY_OPEN_ANIMATION_RECT,
+                        mSlotView.getSlotRect(slotIndex, mRootPane));
+                data.putString(PhotoPage.KEY_MEDIA_SET_PATH,
+                        mediaPath);
+                data.putBoolean(PhotoPage.KEY_START_IN_FILMSTRIP, true);
+                data.putBoolean(PhotoPage.KEY_IN_CAMERA_ROLL, targetSet.isCameraRoll());
+                mActivity.getStateManager().startStateForResult(
+                        FilmstripPage.class, AlbumPage.REQUEST_PHOTO, data);
                 return;
             }
             data.putString(AlbumPage.KEY_MEDIA_PATH, mediaPath);
@@ -444,10 +458,12 @@ public class AlbumSetPage extends ActivityState implements
         mActionModeHandler.pause();
         mEyePosition.pause();
         DetailsHelper.pause();
-        // Call disableClusterMenu to avoid receiving callback after paused.
-        // Don't hide menu here otherwise the list menu will disappear earlier than
-        // the action bar, which is janky and unwanted behavior.
-        mActionBar.disableClusterMenu(false);
+        if (mShowClusterMenu) {
+            // Call disableClusterMenu to avoid receiving callback after paused.
+            // Don't hide menu here otherwise the list menu will disappear earlier than
+            // the action bar, which is janky and unwanted behavior.
+            mActionBar.disableClusterMenu(true);
+        }
         if (mSyncTask != null) {
             mSyncTask.cancel();
             mSyncTask = null;
@@ -558,7 +574,7 @@ public class AlbumSetPage extends ActivityState implements
                     selectAlbums ? R.string.select_album : R.string.select_group));
 
             MenuItem cameraItem = menu.findItem(R.id.action_camera);
-            cameraItem.setVisible(GalleryUtils.isCameraAvailable(activity));
+            cameraItem.setVisible(GalleryUtils.isAnyCameraAvailable(activity));
 
             FilterUtils.setupMenuItems(mActionBar, mMediaSet.getPath(), false);
 

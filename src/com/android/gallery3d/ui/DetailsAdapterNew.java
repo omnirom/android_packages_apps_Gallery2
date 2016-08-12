@@ -76,7 +76,6 @@ public class DetailsAdapterNew extends BaseAdapter
         String path = null;
         for (Entry<Integer, Object> detail : details) {
             String value;
-            Log.d("maxwen", DetailsHelper.getDetailsName(context, detail.getKey()) + ":" + detail.getValue()); 
             switch (detail.getKey()) {
                 case MediaDetails.INDEX_LOCATION: {
                     mLatlng = (double[]) detail.getValue();

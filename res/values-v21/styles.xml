@@ -46,9 +46,13 @@
         <item name="android:displayOptions">useLogo|showTitle</item>
         <item name="android:background">@color/primary</item>
         <item name="android:backgroundStacked">@null</item>
+        <item name="android:titleTextStyle">@style/ActionBarTitle</item>
     </style>
     <style name="PopupThemePrimary" parent="@android:style/Widget.Material">
         <item name="android:colorBackground">@color/primary</item>
+    </style>
+    <style name="ActionBarTitle" parent="android:style/TextAppearance.Material.Widget.ActionBar.Title">
+        <item name="android:textSize">16sp</item>
     </style>
     <style name="ActionBarTwoLinePrimary" parent="@android:style/TextAppearance.Material.Widget.PopupMenu.Small">
         <item name="android:colorBackground">@color/primary</item>
@@ -62,5 +66,4 @@
         <item name="android:colorBackground">@color/primary</item>
         <item name="android:textColor">@color/textColor</item>
     </style>
-
 </resources>
