@@ -115,7 +115,6 @@ public class AlbumSetPage extends ActivityState implements
     private int mLoadingBits = 0;
     private boolean mInitialSynced = false;
 
-    private Button mCameraButton;
     private boolean mShowedEmptyToastForSelf = false;
 
     @Override
@@ -355,50 +354,7 @@ public class AlbumSetPage extends ActivityState implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        cleanupCameraButton();
         mActionModeHandler.destroy();
-    }
-
-    private boolean setupCameraButton() {
-        if (!GalleryUtils.isCameraAvailable(mActivity)) return false;
-        RelativeLayout galleryRoot = (RelativeLayout) ((Activity) mActivity)
-                .findViewById(R.id.gallery_root);
-        if (galleryRoot == null) return false;
-
-        mCameraButton = new Button(mActivity);
-        mCameraButton.setText(R.string.camera_label);
-        mCameraButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.frame_overlay_gallery_camera, 0, 0);
-        mCameraButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                GalleryUtils.startCameraActivity(mActivity);
-            }
-        });
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-        galleryRoot.addView(mCameraButton, lp);
-        return true;
-    }
-
-    private void cleanupCameraButton() {
-        if (mCameraButton == null) return;
-        RelativeLayout galleryRoot = (RelativeLayout) ((Activity) mActivity)
-                .findViewById(R.id.gallery_root);
-        if (galleryRoot == null) return;
-        galleryRoot.removeView(mCameraButton);
-        mCameraButton = null;
-    }
-
-    private void showCameraButton() {
-        if (mCameraButton == null && !setupCameraButton()) return;
-        mCameraButton.setVisibility(View.VISIBLE);
-    }
-
-    private void hideCameraButton() {
-        if (mCameraButton == null) return;
-        mCameraButton.setVisibility(View.GONE);
     }
 
     private void clearLoadingBit(int loadingBit) {
@@ -418,7 +374,6 @@ public class AlbumSetPage extends ActivityState implements
                     mShowedEmptyToastForSelf = true;
                     showEmptyAlbumToast(Toast.LENGTH_LONG);
                     mSlotView.invalidate();
-                    showCameraButton();
                 }
                 return;
             }
@@ -429,7 +384,6 @@ public class AlbumSetPage extends ActivityState implements
         if (mShowedEmptyToastForSelf) {
             mShowedEmptyToastForSelf = false;
             hideEmptyAlbumToast();
-            hideCameraButton();
         }
     }
 
@@ -449,7 +403,7 @@ public class AlbumSetPage extends ActivityState implements
             // Call disableClusterMenu to avoid receiving callback after paused.
             // Don't hide menu here otherwise the list menu will disappear earlier than
             // the action bar, which is janky and unwanted behavior.
-            mActionBar.disableClusterMenu(true);
+            mActionBar.disableClusterMenu(false);
         }
         if (mSyncTask != null) {
             mSyncTask.cancel();
@@ -555,13 +509,13 @@ public class AlbumSetPage extends ActivityState implements
             boolean wasShowingClusterMenu = mShowClusterMenu;
             mShowClusterMenu = !inAlbum;
             boolean selectAlbums = !inAlbum &&
-                    mActionBar.getClusterTypeAction() == FilterUtils.CLUSTER_BY_ALBUM;
+                    mSelectedAction == FilterUtils.CLUSTER_BY_ALBUM;
             MenuItem selectItem = menu.findItem(R.id.action_select);
             selectItem.setTitle(activity.getString(
                     selectAlbums ? R.string.select_album : R.string.select_group));
 
             MenuItem cameraItem = menu.findItem(R.id.action_camera);
-            cameraItem.setVisible(GalleryUtils.isAnyCameraAvailable(activity));
+            cameraItem.setVisible(GalleryUtils.isAnyCameraAvailable(activity) && selectAlbums);
 
             FilterUtils.setupMenuItems(mActionBar, mMediaSet.getPath(), false);
 
@@ -640,7 +594,7 @@ public class AlbumSetPage extends ActivityState implements
 
     private String getSelectedString() {
         int count = mSelectionManager.getSelectedCount();
-        int action = mActionBar.getClusterTypeAction();
+        int action = mSelectedAction;
         int string = action == FilterUtils.CLUSTER_BY_ALBUM
                 ? R.plurals.number_of_albums_selected
                 : R.plurals.number_of_groups_selected;

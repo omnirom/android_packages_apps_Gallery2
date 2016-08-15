@@ -25,6 +25,7 @@ import com.android.gallery3d.picasasource.PicasaSource;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+// maxwen DISABLED!
 public class FaceClustering extends Clustering {
     @SuppressWarnings("unused")
     private static final String TAG = "FaceClustering";

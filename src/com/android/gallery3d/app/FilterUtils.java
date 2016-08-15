@@ -63,6 +63,7 @@ public class FilterUtils {
     public static final int CLUSTER_BY_TAG = 8;
     public static final int CLUSTER_BY_SIZE = 16;
     public static final int CLUSTER_BY_FACE = 32;
+    public static final int CLUSTER_BY_TYPE = 64;
 
     public static final int FILTER_IMAGE_ONLY = 1;
     public static final int FILTER_VIDEO_ONLY = 2;
@@ -94,6 +95,8 @@ public class FilterUtils {
                 (ctype & CLUSTER_BY_TAG) != 0, (ccurrent & CLUSTER_BY_TAG) != 0);
         setMenuItemApplied(actionBar, CLUSTER_BY_FACE,
                 (ctype & CLUSTER_BY_FACE) != 0, (ccurrent & CLUSTER_BY_FACE) != 0);
+        setMenuItemApplied(actionBar, CLUSTER_BY_TYPE,
+                (ctype & CLUSTER_BY_TYPE) != 0, (ccurrent & CLUSTER_BY_TYPE) != 0);
 
         actionBar.setClusterItemVisibility(CLUSTER_BY_ALBUM, !inAlbum || ctype == 0);
 
@@ -159,6 +162,8 @@ public class FilterUtils {
             return CLUSTER_BY_SIZE;
         } else if (s.equals("face")) {
             return CLUSTER_BY_FACE;
+        } else if (s.equals("type")) {
+            return CLUSTER_BY_TYPE;
         }
         return 0;
     }
@@ -207,6 +212,9 @@ public class FilterUtils {
                 break;
             case CLUSTER_BY_FACE:
                 kind = "face";
+                break;
+            case CLUSTER_BY_TYPE:
+                kind = "type";
                 break;
             default: /* CLUSTER_BY_ALBUM */
                 return base;

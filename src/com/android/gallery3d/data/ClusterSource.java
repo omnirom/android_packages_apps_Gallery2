@@ -24,12 +24,14 @@ class ClusterSource extends MediaSource {
     static final int CLUSTER_ALBUMSET_TAG = 2;
     static final int CLUSTER_ALBUMSET_SIZE = 3;
     static final int CLUSTER_ALBUMSET_FACE = 4;
+    static final int CLUSTER_ALBUMSET_TYPE = 5;
 
     static final int CLUSTER_ALBUM_TIME = 0x100;
     static final int CLUSTER_ALBUM_LOCATION = 0x101;
     static final int CLUSTER_ALBUM_TAG = 0x102;
     static final int CLUSTER_ALBUM_SIZE = 0x103;
     static final int CLUSTER_ALBUM_FACE = 0x104;
+    static final int CLUSTER_ALBUM_TYPE = 0x105;
 
     GalleryApp mApplication;
     PathMatcher mMatcher;
@@ -43,12 +45,15 @@ class ClusterSource extends MediaSource {
         mMatcher.add("/cluster/*/tag", CLUSTER_ALBUMSET_TAG);
         mMatcher.add("/cluster/*/size", CLUSTER_ALBUMSET_SIZE);
         mMatcher.add("/cluster/*/face", CLUSTER_ALBUMSET_FACE);
+        mMatcher.add("/cluster/*/type", CLUSTER_ALBUMSET_TYPE);
 
         mMatcher.add("/cluster/*/time/*", CLUSTER_ALBUM_TIME);
         mMatcher.add("/cluster/*/location/*", CLUSTER_ALBUM_LOCATION);
         mMatcher.add("/cluster/*/tag/*", CLUSTER_ALBUM_TAG);
         mMatcher.add("/cluster/*/size/*", CLUSTER_ALBUM_SIZE);
         mMatcher.add("/cluster/*/face/*", CLUSTER_ALBUM_FACE);
+        mMatcher.add("/cluster/*/type/*", CLUSTER_ALBUM_TYPE);
+
     }
 
     // The names we accept are:
@@ -68,12 +73,14 @@ class ClusterSource extends MediaSource {
             case CLUSTER_ALBUMSET_TAG:
             case CLUSTER_ALBUMSET_SIZE:
             case CLUSTER_ALBUMSET_FACE:
+            case CLUSTER_ALBUMSET_TYPE:
                 return new ClusterAlbumSet(path, mApplication, sets[0], matchType);
             case CLUSTER_ALBUM_TIME:
             case CLUSTER_ALBUM_LOCATION:
             case CLUSTER_ALBUM_TAG:
             case CLUSTER_ALBUM_SIZE:
-            case CLUSTER_ALBUM_FACE: {
+            case CLUSTER_ALBUM_FACE:
+            case CLUSTER_ALBUM_TYPE: {
                 MediaSet parent = dataManager.getMediaSet(path.getParent());
                 // The actual content in the ClusterAlbum will be filled later
                 // when the reload() method in the parent is run.

@@ -64,7 +64,7 @@
         <item name="android:colorBackground">@color/primary</item>
         <item name="android:textColor">@color/textColor</item>
     </style>
-    <style name="ActionBarMenuItem" parent="@android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+    <style name="ActionBarMenuItem" parent="@style/ActionBarTitle">
         <item name="android:colorBackground">@color/primary</item>
         <item name="android:textColor">@color/textColor</item>
     </style>

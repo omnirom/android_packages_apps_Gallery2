@@ -608,6 +608,9 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
                 return true;
             }
             case R.id.action_slideshow: {
+                if (mAlbumDataAdapter.size() == 0) {
+                    return true;
+                }
                 mInCameraAndWantQuitOnPause = false;
                 Bundle data = new Bundle();
                 data.putString(SlideshowPage.KEY_SET_PATH,
@@ -743,10 +746,9 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         mLoadingBits &= ~loadTaskBit;
         if (mLoadingBits == 0 && mIsActive) {
             if (mAlbumDataAdapter.size() == 0) {
-                Intent result = new Intent();
-                result.putExtra(KEY_EMPTY_ALBUM, true);
-                setStateResult(Activity.RESULT_OK, result);
-                mActivity.getStateManager().finishState(this);
+                mSlotView.invalidate();
+                Toast.makeText(mActivity, R.string.empty_album,
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }

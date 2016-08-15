@@ -93,6 +93,9 @@ public class ClusterAlbumSet extends MediaSet implements ContentListener {
             case ClusterSource.CLUSTER_ALBUMSET_FACE:
                 clustering = new FaceClustering(context);
                 break;
+            case ClusterSource.CLUSTER_ALBUMSET_TYPE:
+                clustering = new TypeClustering(context);
+                break;
             default: /* CLUSTER_ALBUMSET_SIZE */
                 clustering = new SizeClustering(context);
                 break;

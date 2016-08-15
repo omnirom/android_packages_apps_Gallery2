@@ -102,10 +102,12 @@ public class GalleryActionBar implements OnNavigationListener {
                 R.string.locations, R.string.location, R.string.group_by_location),
         new ActionItem(FilterUtils.CLUSTER_BY_TIME, true, false, R.string.times,
                 R.string.time, R.string.group_by_time),
-        new ActionItem(FilterUtils.CLUSTER_BY_FACE, true, false, R.string.people,
-                R.string.group_by_faces),
-        new ActionItem(FilterUtils.CLUSTER_BY_TAG, true, false, R.string.tags,
-                R.string.group_by_tags)
+        //new ActionItem(FilterUtils.CLUSTER_BY_FACE, true, false, R.string.people,
+        //        R.string.group_by_faces),
+        //new ActionItem(FilterUtils.CLUSTER_BY_TAG, true, false, R.string.tags,
+        //        R.string.group_by_tags)
+        new ActionItem(FilterUtils.CLUSTER_BY_TYPE, true, false, R.string.type,
+                R.string.types, R.string.group_by_type),
     };
 
     private class ClusterAdapter extends BaseAdapter {
@@ -231,9 +233,9 @@ public class GalleryActionBar implements OnNavigationListener {
         }
     }
 
-    public int getClusterTypeAction() {
+    /*public int getClusterTypeAction() {
         return sClusterItems[mCurrentIndex].action;
-    }
+    }*/
 
     public void enableClusterMenu(int action, ClusterRunner runner) {
         if (mActionBar != null) {

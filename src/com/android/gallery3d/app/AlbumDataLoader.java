@@ -64,7 +64,7 @@ public class AlbumDataLoader {
     private int mContentStart = 0;
     private int mContentEnd = 0;
 
-    private final MediaSet mSource;
+    private MediaSet mSource;
     private long mSourceVersion = MediaObject.INVALID_DATA_VERSION;
 
     private final Handler mMainHandler;
@@ -107,6 +107,10 @@ public class AlbumDataLoader {
                 }
             }
         };
+    }
+
+    public void updateMediaSet(MediaSet mediaSet) {
+        mSource = mediaSet;
     }
 
     public void resume() {

@@ -26,4 +26,9 @@
     <string name="video_settings">Video</string>
     <string name="video_one_title">Video1</string>
     <string name="video_two_title">Video2</string>
-</resources>
+    <string name="group_by_type">By type</string>
+    <string name="types">Types</string>
+    <string name="type">Type</string>
+    <string name="type_videos">Videos</string>
+    <string name="type_images">Images</string>
+    </resources>
