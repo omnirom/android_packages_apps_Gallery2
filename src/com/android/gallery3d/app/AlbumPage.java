@@ -477,6 +477,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             mSyncTask = null;
             clearLoadingBit(BIT_LOADING_SYNC);
         }
+        GalleryUtils.setAlbumZoomLevel(mActivity, mSlotView.getZoomLevel());
     }
 
     @Override

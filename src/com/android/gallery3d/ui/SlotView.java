@@ -19,8 +19,10 @@ package com.android.gallery3d.ui;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
@@ -65,6 +67,8 @@ public class SlotView extends GLView {
     }
 
     private final GestureDetector mGestureDetector;
+    private final ScaleGestureDetector mScaleGestureDetector;
+
     private final ScrollerHelper mScroller;
     private final Paper mPaper;
 
@@ -100,6 +104,7 @@ public class SlotView extends GLView {
     public SlotView(AbstractGalleryActivity activity, Spec spec) {
         mIsWide = activity.getResources().getBoolean(R.bool.config_scroll_horizontal);
         mGestureDetector = new GestureDetector(activity, new MyGestureListener());
+        mScaleGestureDetector = new ScaleGestureDetector(activity, new MyScaleGestureListener());
         mScroller = new ScrollerHelper(activity);
         mHandler = new SynchronizedHandler(activity.getGLRoot());
         mPaper = new Paper(mIsWide);
@@ -165,8 +170,27 @@ public class SlotView extends GLView {
         updateScrollPosition(position, false);
     }
 
-    public void setSlotSpec(Spec spec) {
+    private void setSlotSpec(Spec spec) {
         mLayout.setSlotSpec(spec);
+    }
+
+    public void setZoomLevel(int zoomLevel) {
+        Spec spec = mLayout.getSlotSpec();
+        spec.zoomLevel = zoomLevel;
+        mLayout.setSlotSpec(spec);
+    }
+
+    public int getZoomLevel() {
+        Spec spec = mLayout.getSlotSpec();
+        return spec.zoomLevel;
+    }
+
+    private Spec getSlotSpec() {
+        return mLayout.getSlotSpec();
+    }
+
+    public void updateLayoutParameters() {
+        mLayout.initLayoutParameters();
     }
 
     @Override
@@ -225,7 +249,9 @@ public class SlotView extends GLView {
     @Override
     protected boolean onTouch(MotionEvent event) {
         if (mUIListener != null) mUIListener.onUserInteraction();
+        mScaleGestureDetector.onTouchEvent(event);
         mGestureDetector.onTouchEvent(event);
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mDownInScrolling = !mScroller.isFinished();
@@ -413,10 +439,14 @@ public class SlotView extends GLView {
 
         public int rowsLand = -1;
         public int rowsPort = -1;
-        public int colsLand = -1;
-        public int colsPort = -1;
         public int slotGap = -1;
         public boolean usePadding = true;
+
+        public int colsLandMin = -1;
+        public int colsLandMax = -1;
+        public int colsPortMin = -1;
+        public int colsPortMax = -1;
+        public int zoomLevel = 0;
     }
 
     public class Layout {
@@ -443,6 +473,10 @@ public class SlotView extends GLView {
 
         public void setSlotSpec(Spec spec) {
             mSpec = spec;
+        }
+
+        public Spec getSlotSpec() {
+            return mSpec;
         }
 
         public boolean setSlotCount(int slotCount) {
@@ -529,7 +563,7 @@ public class SlotView extends GLView {
             }
         }
 
-        private void initLayoutParameters() {
+        public void initLayoutParameters() {
             // Initialize mSlotWidth and mSlotHeight from mSpec
             if (mSpec.slotWidth != -1) {
                 mSlotGap = 0;
@@ -542,7 +576,7 @@ public class SlotView extends GLView {
                     mSlotHeight = Math.max(1, (mHeight - (rows - 1) * mSlotGap) / rows);
                     mSlotWidth = mSlotHeight - mSpec.slotHeightAdditional;
                 } else {
-                    int cols = (mWidth > mHeight) ? mSpec.colsLand : mSpec.colsPort;
+                    int cols = ((mWidth > mHeight) ? mSpec.colsLandMin : mSpec.colsPortMin) + mSpec.zoomLevel;
                     mSlotGap = mSpec.slotGap;
                     mSlotHeight = Math.max(1, (mWidth - (cols - 1) * mSlotGap) / cols);
                     mSlotWidth = mSlotHeight - mSpec.slotHeightAdditional;
@@ -752,6 +786,47 @@ public class SlotView extends GLView {
             } finally {
                 unlockRendering();
             }
+        }
+    }
+
+    private class MyScaleGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
+        float mSpanStart;
+        int mLatestArea;
+
+        private int getSpanArea(float spanDelta) {
+            return (int)(spanDelta / 100);
+        }
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            float scaleFactor = detector.getScaleFactor();
+            float spanDelta = Math.abs(detector.getCurrentSpan() - mSpanStart);
+            int newArea = getSpanArea(spanDelta);
+            if (mLatestArea != newArea) {
+                Spec spec = getSlotSpec();
+                int zoomLevel = spec.zoomLevel;
+                if (scaleFactor > 1) {
+                    zoomLevel = Math.max(0, zoomLevel - 1);
+                } else {
+                    zoomLevel = Math.min(spec.colsLandMax - spec.colsLandMin, zoomLevel + 1);
+                }
+                setZoomLevel(zoomLevel);
+                updateLayoutParameters();
+                invalidate();
+                mLatestArea = newArea;
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            mSpanStart = detector.getCurrentSpan();
+            mLatestArea = 0;
+            return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
         }
     }
 

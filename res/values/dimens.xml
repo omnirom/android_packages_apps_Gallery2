@@ -112,8 +112,12 @@
     <!-- configuration for legacy album set page -->
     <integer name="albumset_rows_land">2</integer>
     <integer name="albumset_rows_port">3</integer>
-    <integer name="albumset_cols_land">3</integer>
-    <integer name="albumset_cols_port">2</integer>
+
+    <integer name="albumset_cols_land_min">2</integer>
+    <integer name="albumset_cols_land_max">5</integer>
+    <integer name="albumset_cols_port_min">1</integer>
+    <integer name="albumset_cols_port_max">4</integer>
+
     <dimen name="albumset_padding_top">3dp</dimen>
     <dimen name="albumset_padding_bottom">3dp</dimen>
     <dimen name="albumset_padding_left">3dp</dimen>
@@ -132,8 +136,12 @@
     <!-- configuration for album page -->
     <integer name="album_rows_land">3</integer>
     <integer name="album_rows_port">4</integer>
-    <integer name="album_cols_land">6</integer>
-    <integer name="album_cols_port">3</integer>
+
+   <integer name="album_cols_land_min">2</integer>
+   <integer name="album_cols_land_max">6</integer>
+   <integer name="album_cols_port_min">1</integer>
+   <integer name="album_cols_port_max">5</integer>
+
     <dimen name="album_padding_top">3dp</dimen>
     <dimen name="album_padding_bottom">3dp</dimen>
     <dimen name="album_padding_left">3dp</dimen>
