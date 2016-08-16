@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import com.android.gallery3d.R;
 import com.android.gallery3d.ui.AlbumSetSlotRenderer;
 import com.android.gallery3d.ui.SlotView;
+import com.android.gallery3d.util.GalleryUtils;
 
 final class Config {
     public static class AlbumSetPage {
@@ -50,8 +51,14 @@ final class Config {
             slotViewSpec = new SlotView.Spec();
             slotViewSpec.rowsLand = r.getInteger(R.integer.albumset_rows_land);
             slotViewSpec.rowsPort = r.getInteger(R.integer.albumset_rows_port);
-            slotViewSpec.colsLand = r.getInteger(R.integer.albumset_cols_land);
-            slotViewSpec.colsPort = r.getInteger(R.integer.albumset_cols_port);
+
+            int zoomLevel = GalleryUtils.getAlbumsetZoomLevel(context);
+            slotViewSpec.zoomLevel = zoomLevel;
+
+            slotViewSpec.colsLandMin = r.getInteger(R.integer.albumset_cols_land_min);
+            slotViewSpec.colsPortMin = r.getInteger(R.integer.albumset_cols_port_min);
+            slotViewSpec.colsLandMax = r.getInteger(R.integer.albumset_cols_land_max);
+            slotViewSpec.colsPortMax = r.getInteger(R.integer.albumset_cols_port_max);
             slotViewSpec.slotGap = r.getDimensionPixelSize(R.dimen.albumset_slot_gap);
             slotViewSpec.slotHeightAdditional = 0;
             slotViewSpec.usePadding = r.getBoolean(R.bool.config_grid_use_padding);
@@ -110,8 +117,14 @@ final class Config {
             slotViewSpec = new SlotView.Spec();
             slotViewSpec.rowsLand = r.getInteger(R.integer.album_rows_land);
             slotViewSpec.rowsPort = r.getInteger(R.integer.album_rows_port);
-            slotViewSpec.colsLand = r.getInteger(R.integer.album_cols_land);
-            slotViewSpec.colsPort = r.getInteger(R.integer.album_cols_port);
+
+            int zoomLevel = GalleryUtils.getAlbumZoomLevel(context);
+            slotViewSpec.zoomLevel = zoomLevel;
+
+            slotViewSpec.colsLandMin = r.getInteger(R.integer.album_cols_land_min);
+            slotViewSpec.colsPortMin = r.getInteger(R.integer.album_cols_port_min);
+            slotViewSpec.colsLandMax = r.getInteger(R.integer.album_cols_land_max);
+            slotViewSpec.colsPortMax = r.getInteger(R.integer.album_cols_port_max);
             slotViewSpec.slotGap = r.getDimensionPixelSize(R.dimen.album_slot_gap);
             slotViewSpec.usePadding = r.getBoolean(R.bool.config_grid_use_padding);
 
