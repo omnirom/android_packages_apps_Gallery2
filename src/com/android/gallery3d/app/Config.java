@@ -52,6 +52,10 @@ final class Config {
             slotViewSpec.rowsPort = r.getInteger(R.integer.albumset_rows_port);
             slotViewSpec.colsLand = r.getInteger(R.integer.albumset_cols_land);
             slotViewSpec.colsPort = r.getInteger(R.integer.albumset_cols_port);
+            slotViewSpec.colsLandMin = r.getInteger(R.integer.albumset_cols_land_min);
+            slotViewSpec.colsPortMin = r.getInteger(R.integer.albumset_cols_port_min);
+            slotViewSpec.colsLandMax = r.getInteger(R.integer.albumset_cols_land_max);
+            slotViewSpec.colsPortMax = r.getInteger(R.integer.albumset_cols_port_max);
             slotViewSpec.slotGap = r.getDimensionPixelSize(R.dimen.albumset_slot_gap);
             slotViewSpec.slotHeightAdditional = 0;
             slotViewSpec.usePadding = r.getBoolean(R.bool.config_grid_use_padding);
@@ -112,6 +116,10 @@ final class Config {
             slotViewSpec.rowsPort = r.getInteger(R.integer.album_rows_port);
             slotViewSpec.colsLand = r.getInteger(R.integer.album_cols_land);
             slotViewSpec.colsPort = r.getInteger(R.integer.album_cols_port);
+            slotViewSpec.colsLandMin = r.getInteger(R.integer.album_cols_land_min);
+            slotViewSpec.colsPortMin = r.getInteger(R.integer.album_cols_port_min);
+            slotViewSpec.colsLandMax = r.getInteger(R.integer.album_cols_land_max);
+            slotViewSpec.colsPortMax = r.getInteger(R.integer.album_cols_port_max);
             slotViewSpec.slotGap = r.getDimensionPixelSize(R.dimen.album_slot_gap);
             slotViewSpec.usePadding = r.getBoolean(R.bool.config_grid_use_padding);
 
