@@ -77,6 +77,8 @@ public class GalleryUtils {
     private static final String KEY_RANDOM_SLIDESHOW = "slideshow_random";
     private static final String KEY_REPEAT_SLIDESHOW = "slideshow_repeat";
     private static final String KEY_DURATION_SLIDESHOW = "slideshow_duration";
+    private static final String KEY_ALBUMSET_ZOOM_LEVEL = "albumset_zoom_level";
+    private static final String KEY_ALBUM_ZOOM_LEVEL = "album_zoom_level";
 
     private static float sPixelDensity = -1f;
     private static boolean sCameraAvailableInitialized = false;
@@ -449,5 +451,25 @@ public class GalleryUtils {
     public static int getSlideshowDuration(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(KEY_DURATION_SLIDESHOW, 3) * 1000;
+    }
+
+    public static int getAlbumsetZoomLevel(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(KEY_ALBUMSET_ZOOM_LEVEL, 1);
+    }
+
+    public static int getAlbumZoomLevel(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(KEY_ALBUM_ZOOM_LEVEL, 2);
+    }
+
+    public static void setAlbumsetZoomLevel(Context context, int value) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putInt(KEY_ALBUMSET_ZOOM_LEVEL, value).commit();
+    }
+
+    public static void setAlbumZoomLevel(Context context, int value) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putInt(KEY_ALBUM_ZOOM_LEVEL, value).commit();
     }
 }

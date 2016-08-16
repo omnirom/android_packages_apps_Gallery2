@@ -37,5 +37,14 @@
     <dimen name="effect_setting_type_text_left_padding">@dimen/effect_setting_type_text_left_padding_xlarge</dimen>
     <dimen name="onscreen_indicators_height">@dimen/onscreen_indicators_height_xlarge</dimen>
     <dimen name="onscreen_exposure_indicator_text_size">@dimen/onscreen_exposure_indicator_text_size_xlarge</dimen>
+    <dimen name="appwidget_width">240dp</dimen>
+    <dimen name="appwidget_height">240dp</dimen>
+    <dimen name="stack_photo_width">220dp</dimen>
+    <dimen name="stack_photo_height">165dp</dimen>
+    <!-- configuration for album set page -->
+    <dimen name="albumset_title_font_size">14sp</dimen>
+    <dimen name="albumset_count_font_size">11sp</dimen>
+    <dimen name="albumset_title_right_margin">23dp</dimen>
+    <dimen name="albumset_icon_size">27dp</dimen>
 </resources>
 

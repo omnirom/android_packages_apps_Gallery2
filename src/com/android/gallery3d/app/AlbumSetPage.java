@@ -410,6 +410,7 @@ public class AlbumSetPage extends ActivityState implements
             mSyncTask = null;
             clearLoadingBit(BIT_LOADING_SYNC);
         }
+        GalleryUtils.setAlbumsetZoomLevel(mActivity, mSlotView.getZoomLevel());
     }
 
     @Override
