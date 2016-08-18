@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.text.format.Formatter;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -155,6 +156,10 @@ public class DetailsAdapterNew extends BaseAdapter
                     break;
                 case MediaDetails.INDEX_ORIENTATION:
                     value = toLocalInteger(detail.getValue());
+                    break;
+                case MediaDetails.INDEX_DATETIME:
+                    value = DateUtils.formatDateTime(context, (Long) detail.getValue(),
+                            DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME);
                     break;
                 default: {
                     Object valueObj = detail.getValue();
