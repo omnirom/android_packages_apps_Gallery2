@@ -77,7 +77,7 @@
     <!--  String displayed when exiting with unsaved changes [CHAR LIMIT=NONE] -->
     <string name="save_before_exit">Do you want to save before exiting?</string>
     <!--  String displayed when saving and exiting editor [CHAR LIMIT=NONE] -->
-    <string name="save_and_exit">Save and Exit</string>
+    <string name="save_and_exit">Save</string>
     <!--  String displayed when saving and exiting editor [CHAR LIMIT=NONE] -->
     <string name="save_and_processing">Processing full resolution image...</string>
     <!--  String displayed when exiting editor[CHAR LIMIT=NONE] -->
