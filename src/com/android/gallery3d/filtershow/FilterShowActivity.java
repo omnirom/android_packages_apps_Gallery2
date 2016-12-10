@@ -1344,6 +1344,11 @@ public class FilterShowActivity extends FragmentActivity implements OnItemClickL
                         done();
                     }
                 });
+                builder.setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
                 builder.show();
             }
         } else {
