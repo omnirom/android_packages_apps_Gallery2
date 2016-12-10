@@ -92,7 +92,7 @@ public class PhotoPageBottomControls implements OnClickListener {
             View child = mContainer.getChildAt(i);
             if (child.getId() == id) {
                 child.setEnabled(enabled);
-                child.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+                child.setVisibility(enabled ? View.VISIBLE : View.GONE);
             }
         }
     }

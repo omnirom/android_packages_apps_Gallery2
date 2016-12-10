@@ -218,7 +218,7 @@ public class DetailsAdapterNew extends BaseAdapter
         TextView value = (TextView) tv.findViewById(R.id.value);
         title.setText(p.first);
         value.setText(p.second);
-        if (mLocationIndex != -1 && position == mLocationIndex) {
+        /*if (mLocationIndex != -1 && position == mLocationIndex) {
             value.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -228,7 +228,7 @@ public class DetailsAdapterNew extends BaseAdapter
                 }
             });
             value.setClickable(true);
-        }
+        }*/
         return tv;
     }
 
