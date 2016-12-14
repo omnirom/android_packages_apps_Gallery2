@@ -64,8 +64,6 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 
         if (getIntent().getBooleanExtra(KEY_DISMISS_KEYGUARD, false)) {
             setDismissKeyguard(true);

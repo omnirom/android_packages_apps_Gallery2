@@ -21,43 +21,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.ui.GLRootView;
 
-public class PickerActivity extends AbstractGalleryActivity
-        implements OnClickListener {
+public class PickerActivity extends AbstractGalleryActivity {
 
     public static final String KEY_ALBUM_PATH = "album-path";
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // We show the picker in two ways. One smaller screen we use a full
-        // screen window with an action bar. On larger screen we use a dialog.
-        boolean isDialog = getResources().getBoolean(R.bool.picker_is_dialog);
-
-        if (!isDialog) {
-            requestWindowFeature(Window.FEATURE_ACTION_BAR);
-            requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-        }
-
-        setContentView(R.layout.dialog_picker);
-
-        if (isDialog) {
-            // In dialog mode, we don't have the action bar to show the
-            // "cancel" action, so we show an additional "cancel" button.
-            View view = findViewById(R.id.cancel);
-            view.setOnClickListener(this);
-            view.setVisibility(View.VISIBLE);
-
-            // We need this, otherwise the view will be dimmed because it
-            // is "behind" the dialog.
-            ((GLRootView) findViewById(R.id.gl_root_view)).setZOrderOnTop(true);
-        }
+        setContentView(R.layout.main);
     }
 
     @Override
@@ -74,10 +50,5 @@ public class PickerActivity extends AbstractGalleryActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.cancel) finish();
     }
 }

@@ -41,8 +41,7 @@
     <style name="Theme.Settings" parent="Theme.Gallery">
     </style>
     <style name="Theme.Gallery.Dialog" parent="DialogTheme"/>
-    <style name="DialogPickerTheme" parent="DialogTheme">
-    </style>
+
     <style name="Material.ActionBar" parent="@android:style/Widget.Material.ActionBar">
         <item name="android:title"></item>
         <item name="android:displayOptions">useLogo|showTitle</item>

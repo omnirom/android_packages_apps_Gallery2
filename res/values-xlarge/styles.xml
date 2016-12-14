@@ -14,10 +14,6 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <style name="DialogPickerTheme" parent="android:Theme.Holo.Dialog">
-    </style>
-    <bool name="picker_is_dialog">true</bool>
-
     <!-- Camera resources below -->
 
     <style name="ReviewControlText" parent="@style/ReviewControlText_xlarge" />
