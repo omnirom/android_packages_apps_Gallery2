@@ -315,6 +315,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
                     mSlotView.getSlotRect(slotIndex, mRootPane));
             data.putString(PhotoPage.KEY_MEDIA_SET_PATH,
                     mMediaSetPath.toString());
+            Log.d(TAG, "mMediaSetPath=" + mMediaSetPath);
 
             // Item not ready yet, don't pass the photo path to bundle
             if (!isLayoutRtl && item != null) {
