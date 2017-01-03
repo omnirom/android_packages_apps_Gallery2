@@ -241,16 +241,6 @@ public class GalleryUtils {
         return prefs.getBoolean(KEY_HAS_CAMERA, true);
     }
 
-    public static boolean isCameraAvailable(Context context) {
-        if (sCameraAvailableInitialized) return sCameraAvailable;
-        PackageManager pm = context.getPackageManager();
-        Intent cameraIntent = IntentHelper.getCameraIntent(context);
-        List<ResolveInfo> apps = pm.queryIntentActivities(cameraIntent, 0);
-        sCameraAvailableInitialized = true;
-        sCameraAvailable = !apps.isEmpty();
-        return sCameraAvailable;
-    }
-
     public static void startCameraActivity(Context context) {
         Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
