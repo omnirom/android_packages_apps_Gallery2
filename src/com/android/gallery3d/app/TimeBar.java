@@ -22,6 +22,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -54,6 +55,7 @@ public class TimeBar extends View {
     private static final int V_PADDING_IN_DP = 30;
 
     private static final int TEXT_SIZE_IN_DP = 14;
+    private static final int PROGRESS_WIDTH_IN_DP = 3;
 
     private static final String TAG = "Gallery3D/TimeBar";
     private static final boolean LOG = false;
@@ -103,20 +105,24 @@ public class TimeBar extends View {
         mProgressBar = new Rect();
         mPlayedBar = new Rect();
 
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+
         mProgressPaint = new Paint();
         mProgressPaint.setColor(0xFF808080);
+        mProgressPaint.setStrokeWidth(metrics.density * (PROGRESS_WIDTH_IN_DP - 1));
         mPlayedPaint = new Paint();
         mPlayedPaint.setColor(0xFFFFFFFF);
+        mPlayedPaint.setStrokeWidth(metrics.density * PROGRESS_WIDTH_IN_DP);
 
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         float textSizeInPx = metrics.density * TEXT_SIZE_IN_DP;
         mTimeTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mTimeTextPaint.setColor(0xFFCECECE);
+        mTimeTextPaint.setColor(0xFFFFFFFF);
         mTimeTextPaint.setTextSize(textSizeInPx);
         mTimeTextPaint.setTextAlign(Paint.Align.CENTER);
+        mTimeTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
 
         mTimeBounds = new Rect();
-        mTimeTextPaint.getTextBounds("0:00:00", 0, 7, mTimeBounds);
+        mTimeTextPaint.getTextBounds("00:00:00", 0, 8, mTimeBounds);
 
         mScrubber = BitmapFactory.decodeResource(getResources(), R.drawable.scrubber_knob);
         mScrubberPadding = (int) (metrics.density * SCRUBBER_PADDING_IN_DP);
@@ -244,7 +250,7 @@ public class TimeBar extends View {
             mScrubberTop = progressY - mScrubber.getHeight() / 2 + 1;
             mProgressBar.set(
                     getPaddingLeft() + margin, progressY,
-                    w - getPaddingRight() - margin, progressY + 4);
+                    w - getPaddingRight() - margin, progressY + 1);
         }
         update();
     }
@@ -253,9 +259,9 @@ public class TimeBar extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         // draw progress bars
-        canvas.drawRect(mProgressBar, mProgressPaint);
+        canvas.drawLine(mProgressBar.left, mProgressBar.top, mProgressBar.right, mProgressBar.top, mProgressPaint);
         mSecondaryProgressExt.draw(canvas, mProgressBar);
-        canvas.drawRect(mPlayedBar, mPlayedPaint);
+        canvas.drawLine(mPlayedBar.left, mPlayedBar.top, mPlayedBar.right, mPlayedBar.top, mPlayedPaint);
 
         // draw scrubber and timers
         if (mShowScrubber) {
@@ -562,12 +568,12 @@ class TimeBarLayoutExtImpl implements ITimeBarLayoutExt {
 
     @Override
     public int getProgressMargin(int originalMargin) {
-        return 0;
+        return originalMargin;
     }
 
     @Override
     public int getProgressOffset(Rect timeBounds) {
-        return (timeBounds.height() + mTextPadding) / 2;
+        return timeBounds.height() / 2;
     }
 
     @Override
