@@ -251,6 +251,8 @@ public abstract class PhotoPage extends ActivityState implements
         mRootPane.addComponent(mPhotoView);
         mApplication = (GalleryApp) ((Activity) mActivity).getApplication();
 
+        Log.d(TAG, "data=" + data);
+
         mHandler = new SynchronizedHandler(mActivity.getGLRoot()) {
             @Override
             public void handleMessage(Message message) {
@@ -351,6 +353,7 @@ public abstract class PhotoPage extends ActivityState implements
             }
         };
 
+        
         mSetPathString = data.getString(KEY_MEDIA_SET_PATH);
         mReadOnlyView = data.getBoolean(KEY_READONLY);
         mOriginalSetPathString = mSetPathString;
@@ -413,6 +416,7 @@ public abstract class PhotoPage extends ActivityState implements
             }
             mSelectionManager.setSourceMediaSet(originalSet);
             mSetPathString = "/filter/delete/{" + mSetPathString + "}";
+            Log.d(TAG, "mSetPathString=" + mSetPathString + " mOriginalSetPathString=" + mOriginalSetPathString);
             mMediaSet = (FilterDeleteSet) mActivity.getDataManager()
                     .getMediaSet(mSetPathString);
             if (mMediaSet == null) {
