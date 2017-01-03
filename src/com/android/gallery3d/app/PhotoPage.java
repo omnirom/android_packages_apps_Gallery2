@@ -250,7 +250,6 @@ public abstract class PhotoPage extends ActivityState implements
         mPhotoView.setListener(this);
         mRootPane.addComponent(mPhotoView);
         mApplication = (GalleryApp) ((Activity) mActivity).getApplication();
-
         mHandler = new SynchronizedHandler(mActivity.getGLRoot()) {
             @Override
             public void handleMessage(Message message) {
@@ -397,11 +396,6 @@ public abstract class PhotoPage extends ActivityState implements
 
                 // Start from the screen nail.
                 itemPath = screenNailItemPath;
-            } else if (inCameraRoll && GalleryUtils.isCameraAvailable(mActivity)) {
-                mSetPathString = "/combo/item/{" + FilterSource.FILTER_CAMERA_SHORTCUT +
-                        "," + mSetPathString + "}";
-                mCurrentIndex++;
-                mHasCameraScreennailOrPlaceholder = true;
             }
 
             MediaSet originalSet = mActivity.getDataManager()
