@@ -16,6 +16,7 @@
 
 package com.android.gallery3d.app;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,6 +30,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -57,9 +59,12 @@ import com.android.gallery3d.util.ThreadPool;
 import com.android.photos.data.GalleryBitmapPool;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class AbstractGalleryActivity extends Activity implements GalleryContext {
     private static final String TAG = "AbstractGalleryActivity";
+    private static final int PERMISSION_REQUEST_LOCATION = 2;
+
     private GLRootView mGLRootView;
     private StateManager mStateManager;
     private GalleryActionBar mActionBar;
@@ -74,6 +79,8 @@ public class AbstractGalleryActivity extends Activity implements GalleryContext 
         }
     };
     private IntentFilter mMountFilter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
+    private Runnable mRunWithPermission;
+    private Runnable mRunWithoutPermission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -412,5 +419,61 @@ public class AbstractGalleryActivity extends Activity implements GalleryContext 
     }
     protected void hideProgress() {
         mProgress.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[],
+            int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_LOCATION: {
+                if (checkPermissionGrantResults(grantResults)) {
+                    if (mRunWithPermission != null) {
+                        mRunWithPermission.run();
+                    }
+                } else {
+                    if (mRunWithoutPermission != null) {
+                        mRunWithoutPermission.run();
+                    }
+                }
+            }
+        }
+    }
+
+    public void doRunWithLocationPermission(Runnable runWithPermission, Runnable runWithoutPermission) {
+        mRunWithPermission = runWithPermission;
+        mRunWithoutPermission = runWithoutPermission;
+        String[] permissions = {
+                Manifest.permission.ACCESS_FINE_LOCATION
+        };
+
+        if (!hasLocationPermission()) {
+            requestPermissions(permissions, PERMISSION_REQUEST_LOCATION);
+        }  else {
+            runWithPermission.run();
+        }
+    }
+
+    public boolean hasLocationPermission() {
+        boolean needRequest = false;
+
+        String[] permissions = {
+                Manifest.permission.ACCESS_FINE_LOCATION
+        };
+        for (String permission : permissions) {
+            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                needRequest = true;
+                break;
+            }
+        }
+        return !needRequest;
+    }
+
+    private boolean checkPermissionGrantResults(int[] grantResults) {
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 }

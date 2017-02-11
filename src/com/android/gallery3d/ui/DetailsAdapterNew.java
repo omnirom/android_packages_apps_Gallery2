@@ -60,10 +60,12 @@ public class DetailsAdapterNew extends BaseAdapter
     private int mWidthIndex = -1;
     private int mHeightIndex = -1;
     private MediaDetails mDetails;
+    private boolean mWithLocationPermission;
 
-    public DetailsAdapterNew(MediaDetails details, AbstractGalleryActivity activity) {
+    public DetailsAdapterNew(MediaDetails details, AbstractGalleryActivity activity, boolean withLocationPermission) {
         mActivity = activity;
         mDetails = details;
+        mWithLocationPermission = withLocationPermission;
         Context context = mActivity.getAndroidContext();
         mItems = new ArrayList<Pair<String, String>>(details.size());
         mLocationIndex = -1;
@@ -80,7 +82,11 @@ public class DetailsAdapterNew extends BaseAdapter
                 case MediaDetails.INDEX_LOCATION: {
                     mLatlng = (double[]) detail.getValue();
                     mLocationIndex = mItems.size();
-                    value = DetailsHelper.resolveAddress(mActivity, mLatlng, this);
+                    if (mWithLocationPermission) {
+                        value = DetailsHelper.resolveAddress(mActivity, mLatlng, this);
+                    } else {
+                        value = GalleryUtils.formatLatitudeLongitude("(%f,%f)", mLatlng[0], mLatlng[1]);
+                    }
                     break;
                 }
                 case MediaDetails.INDEX_SIZE: {

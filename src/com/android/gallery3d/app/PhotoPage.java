@@ -196,6 +196,7 @@ public abstract class PhotoPage extends ActivityState implements
     private boolean mIsSinglePhotoMode;
     private ViewGroup mDetailsFooter;
     private GridView mDetailsView;
+    private DetailsAdapterNew mDetailsAdapter;
 
     private final PanoramaSupportCallback mUpdatePanoramaMenuItemsCallback = new PanoramaSupportCallback() {
         @Override
@@ -1117,6 +1118,22 @@ public abstract class PhotoPage extends ActivityState implements
     }
 
     private void showDetails() {
+        mActivity.doRunWithLocationPermission(
+            new Runnable() {
+                @Override
+                public void run() {
+                    doShowDetails(true);
+                }
+            },
+            new Runnable() {
+                @Override
+                public void run() {
+                    doShowDetails(false);
+                }
+            });
+    }
+
+    private void doShowDetails(boolean withLocationPermission) {
         if (mModel == null || mModel.getMediaItem(0) == null) {
             return;
         }
@@ -1127,8 +1144,9 @@ public abstract class PhotoPage extends ActivityState implements
         }
         mDetailsView.setAlpha(0f);
         mDetailsFooter.setVisibility(View.VISIBLE);
-        DetailsAdapterNew adapter = new DetailsAdapterNew(mModel.getMediaItem(0).getDetails(), mActivity);
-        mDetailsView.setAdapter(adapter);
+        mDetailsAdapter = new DetailsAdapterNew(mModel.getMediaItem(0).getDetails(),
+                mActivity, withLocationPermission);
+        mDetailsView.setAdapter(mDetailsAdapter);
         mDetailsView.animate().alpha(1f).setDuration(300).setListener(
             new AnimatorListenerAdapter() {
                 @Override
@@ -1142,11 +1160,10 @@ public abstract class PhotoPage extends ActivityState implements
     }
 
     private void reloadDetails() {
-        if (mModel == null || mModel.getMediaItem(0) == null) {
+        if (mModel == null || mModel.getMediaItem(0) == null || mDetailsAdapter == null) {
             return;
         }
-        DetailsAdapterNew adapter = new DetailsAdapterNew(mModel.getMediaItem(0).getDetails(), mActivity);
-        mDetailsView.setAdapter(adapter);
+        mDetailsAdapter.notifyDataSetChanged();
     }
 
     @Override

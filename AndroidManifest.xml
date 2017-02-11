@@ -24,7 +24,7 @@
 
     <original-package android:name="com.android.gallery3d" />
 
-    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="23" />
+    <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="23" />
 
     <permission android:name="com.android.gallery3d.permission.GALLERY_PROVIDER"
             android:protectionLevel="signatureOrSystem" />
@@ -216,23 +216,6 @@
                 android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity-alias>
-
-        <!-- This activity acts as a trampoline to the new Camera activity
-             in com.android.camera2 package, so that existing shortcuts
-             are preserved. -->
-        <activity android:name="com.android.camera.CameraActivity"
-            android:icon="@mipmap/ic_launcher_camera"
-            android:label="@string/camera_label"
-            android:taskAffinity="com.android.camera.CameraActivity"
-            android:theme="@style/android:Theme.NoDisplay" />
-        <activity-alias android:name="com.android.camera.CameraLauncher"
-            android:label="@string/camera_label"
-            android:targetActivity="com.android.camera.CameraActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity-alias>
 
