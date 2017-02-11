@@ -312,14 +312,33 @@ public class AlbumSetPage extends ActivityState implements
         mSlotView.invalidate();
     }
 
-    @Override
-    public void doCluster(int clusterType) {
+    public void doRunClusterAction(int clusterType) {
         String basePath = mMediaSet.getPath().toString();
         String newPath = FilterUtils.switchClusterPath(basePath, clusterType);
         Bundle data = new Bundle(getData());
         data.putString(AlbumSetPage.KEY_MEDIA_PATH, newPath);
         data.putInt(KEY_SELECTED_CLUSTER_TYPE, clusterType);
         mActivity.getStateManager().switchState(this, AlbumSetPage.class, data);
+    }
+
+    @Override
+    public void doCluster(final int clusterType) {
+        // if type is location - check for perms
+        if (clusterType == FilterUtils.CLUSTER_BY_LOCATION) {
+            mActivity.doRunWithLocationPermission(new Runnable() {
+                @Override
+                public void run() {
+                    doRunClusterAction(clusterType);
+                }
+            }, new Runnable() {
+                @Override
+                public void run() {
+                    doRunClusterAction(FilterUtils.CLUSTER_BY_ALBUM);
+                }
+            });
+        } else {
+            doRunClusterAction(clusterType);
+        }
     }
 
     @Override

@@ -300,8 +300,7 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
         boolean needRequest = false;
         String[] permissions = {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.READ_EXTERNAL_STORAGE
         };
         ArrayList<String> permissionList = new ArrayList<String>();
         for (String permission : permissions) {
