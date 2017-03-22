@@ -34,19 +34,15 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
     private final ResourceTexture mVideoPlayIcon;
     private final ResourceTexture mPanoramaIcon;
     private final NinePatchTexture mFramePressed;
+    private final ResourceTexture mSelectedOverlay;
     private FadeOutTexture mFramePressedUp;
-    private GLPaint mFramePaint;
-    private final ResourceTexture mSelectionIcon;
 
     protected AbstractSlotRenderer(Context context) {
         mVideoOverlay = new ResourceTexture(context, R.drawable.ic_video_thumb);
         mVideoPlayIcon = new ResourceTexture(context, R.drawable.ic_gallery_play);
         mPanoramaIcon = new ResourceTexture(context, R.drawable.ic_360pano_holo_light);
         mFramePressed = new NinePatchTexture(context, R.drawable.grid_pressed);
-        mFramePaint = new GLPaint();
-        mFramePaint.setColor(context.getResources().getColor(R.color.accent));
-        mFramePaint.setLineWidth(context.getResources().getDimensionPixelSize(R.dimen.selected_frame_width));
-        mSelectionIcon = new ResourceTexture(context, R.drawable.multiselect);
+        mSelectedOverlay  = new ResourceTexture(context, R.drawable.grid_selected_overlay);
     }
 
     protected void drawContent(GLCanvas canvas,
@@ -113,13 +109,8 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
         drawFrame(canvas, mFramePressed.getPaddings(), mFramePressed, 0, 0, width, height);
     }
 
-    private void drawSelectedFrame(GLCanvas canvas, int width, int height) {
-        canvas.drawRect(0, 0, width, height, mFramePaint);
-    }
-
     protected void drawSelectedOverlay(GLCanvas canvas, int width, int height) {
-         mSelectionIcon.draw(canvas,15,15);
-         drawSelectedFrame(canvas, width, height);
+        mSelectedOverlay.draw(canvas, 0, 0, width, height);
     }
 
     protected static void drawFrame(GLCanvas canvas, Rect padding, Texture frame,
