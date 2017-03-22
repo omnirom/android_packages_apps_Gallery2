@@ -47,35 +47,15 @@ public class AlbumLabelMaker {
     private int mBitmapWidth;
     private int mBitmapHeight;
 
-    private final LazyLoadedBitmap mLocalSetIcon;
-    private final LazyLoadedBitmap mPicasaIcon;
-    private final LazyLoadedBitmap mCameraIcon;
-
     public AlbumLabelMaker(Context context, AlbumSetSlotRenderer.LabelSpec spec) {
         mContext = context;
         mSpec = spec;
         mTitlePaint = getTextPaint(spec.titleFontSize, spec.titleColor, false);
         mCountPaint = getTextPaint(spec.countFontSize, spec.countColor, false);
-
-        mLocalSetIcon = new LazyLoadedBitmap(R.drawable.frame_overlay_gallery_folder);
-        mPicasaIcon = new LazyLoadedBitmap(R.drawable.frame_overlay_gallery_picasa);
-        mCameraIcon = new LazyLoadedBitmap(R.drawable.frame_overlay_gallery_camera);
     }
 
     public static int getBorderSize() {
         return BORDER_SIZE;
-    }
-
-    private Bitmap getOverlayAlbumIcon(int sourceType) {
-        switch (sourceType) {
-            case DataSourceType.TYPE_CAMERA:
-                return mCameraIcon.get();
-            case DataSourceType.TYPE_LOCAL:
-                return mLocalSetIcon.get();
-            case DataSourceType.TYPE_PICASA:
-                return mPicasaIcon.get();
-        }
-        return null;
     }
 
     private static TextPaint getTextPaint(int textSize, int color, boolean isBold) {
@@ -149,10 +129,10 @@ public class AlbumLabelMaker {
 
             String title = mTitle;
             String count = mCount;
-            Bitmap icon = getOverlayAlbumIcon(mSourceType);
 
             Bitmap bitmap;
             int labelWidth;
+            int countWidth = (int) mCountPaint.measureText(count);
 
             synchronized (this) {
                 labelWidth = mLabelWidth;
@@ -178,7 +158,7 @@ public class AlbumLabelMaker {
                 // draw title
                 if (jc.isCancelled()) return null;
                 int strLength = (int) mTitlePaint.measureText(title);
-                int x = labelWidth - (s.leftMargin + s.iconSize) - strLength;
+                int x = labelWidth - s.leftMargin - strLength;
                 // TODO: is the offset relevant in new reskin?
                 // int y = s.titleOffset;
                 int y = (s.labelBackgroundHeight - s.titleFontSize) / 2;
@@ -187,24 +167,14 @@ public class AlbumLabelMaker {
 
                 // draw count
                 if (jc.isCancelled()) return null;
-                x = s.leftMargin + 10;// plus 10 to get a much bigger margin
+                x = s.leftMargin + countWidth;
                 y = (s.labelBackgroundHeight - s.countFontSize) / 2;
                 drawText(canvas, x, y, count,
                         labelWidth - x, mCountPaint);
-                // draw the icon
-                if (icon != null) {
-                    if (jc.isCancelled()) return null;
-                    float scale = (float) s.iconSize / icon.getWidth();
-                    canvas.translate(labelWidth - s.leftMargin - s.iconSize,
-                            (s.labelBackgroundHeight -
-                            Math.round(scale * icon.getHeight())) / 2f);
-                    canvas.scale(scale, scale);
-                    canvas.drawBitmap(icon, 0, 0, null);
-                }
             } else { // LTR
                 // draw title
                 if (jc.isCancelled()) return null;
-                int x = s.leftMargin + s.iconSize;
+                int x = s.leftMargin;
                 // TODO: is the offset relevant in new reskin?
                 // int y = s.titleOffset;
                 int y = (s.labelBackgroundHeight - s.titleFontSize) / 2;
@@ -213,20 +183,10 @@ public class AlbumLabelMaker {
 
                 // draw count
                 if (jc.isCancelled()) return null;
-                x = labelWidth - s.titleRightMargin;
+                x = labelWidth - s.titleRightMargin - countWidth;
                 y = (s.labelBackgroundHeight - s.countFontSize) / 2;
                 drawText(canvas, x, y, count,
                         labelWidth - x, mCountPaint);
-
-                // draw the icon
-                if (icon != null) {
-                    if (jc.isCancelled()) return null;
-                    float scale = (float) s.iconSize / icon.getWidth();
-                    canvas.translate(s.leftMargin, (s.labelBackgroundHeight -
-                            Math.round(scale * icon.getHeight())) / 2f);
-                    canvas.scale(scale, scale);
-                    canvas.drawBitmap(icon, 0, 0, null);
-                }
             }
 
             return bitmap;

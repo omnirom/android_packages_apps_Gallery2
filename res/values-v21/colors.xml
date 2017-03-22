@@ -15,9 +15,11 @@
 -->
 <resources>
     <!-- configuration for album set page -->
-    <color name="albumset_background">#ff171717</color>
+    <!-- material_grey_900 -->
+    <color name="albumset_background">#ff212121</color>
     <color name="albumset_placeholder">#252525</color>
-    <color name="albumset_label_background">#EE252525</color>
+    <!-- material_grey_800 -->
+    <color name="albumset_label_background">#ff424242</color>
     <color name="albumset_label_title">#FBFBFB</color>
     <color name="albumset_label_count">#A9ABAD</color>
 
@@ -53,4 +55,5 @@
     <color name="textColor">#ffffff</color>
     <color name="photo_overlay">#66000000</color>
     <color name="details_background">@color/photo_overlay</color>
+
 </resources>
