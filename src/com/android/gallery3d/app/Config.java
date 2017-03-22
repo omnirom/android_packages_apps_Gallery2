@@ -83,8 +83,6 @@ final class Config {
                     R.dimen.albumset_left_margin);
             labelSpec.titleRightMargin = r.getDimensionPixelSize(
                     R.dimen.albumset_title_right_margin);
-            labelSpec.iconSize = r.getDimensionPixelSize(
-                    R.dimen.albumset_icon_size);
             labelSpec.backgroundColor = r.getColor(
                     R.color.albumset_label_background);
             labelSpec.titleColor = r.getColor(R.color.albumset_label_title);

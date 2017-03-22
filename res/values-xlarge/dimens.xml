@@ -41,10 +41,5 @@
     <dimen name="appwidget_height">240dp</dimen>
     <dimen name="stack_photo_width">220dp</dimen>
     <dimen name="stack_photo_height">165dp</dimen>
-    <!-- configuration for album set page -->
-    <dimen name="albumset_title_font_size">14sp</dimen>
-    <dimen name="albumset_count_font_size">11sp</dimen>
-    <dimen name="albumset_title_right_margin">23dp</dimen>
-    <dimen name="albumset_icon_size">27dp</dimen>
 </resources>
 
