@@ -35,4 +35,8 @@
     <string name="wallpaper_type_both">Home screen and lock screen</string>
     <string name="wallpaper_type_system">Home screen</string>
     <string name="wallpaper_type_lock">Lock screen</string>
+    <string name="scrolling_wall_dialog_text">Do you want to crop the wallpaper to the display size\u003f</string>
+    <string name="scrolling_wall_dialog_title">Crop wallpaper</string>
+    <string name="scrolling_wall_yes">No</string>
+    <string name="scrolling_wall_no">Yes</string>
 </resources>
