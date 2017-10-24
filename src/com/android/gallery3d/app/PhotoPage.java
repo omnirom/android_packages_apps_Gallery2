@@ -561,15 +561,6 @@ public abstract class PhotoPage extends ActivityState implements
                  Intent shareIntent = createShareIntent(mCurrentPhoto);
                  mActivity.startActivity(Intent.createChooser(shareIntent, null));
                  return;
-            case R.id.photopage_bottom_control_delete:
-                 String confirmMsg = mActivity.getResources().getQuantityString(
-                        R.plurals.delete_selection, 1);
-                 Path path = mCurrentPhoto.getPath();
-                 mSelectionManager.deSelectAll();
-                 mSelectionManager.toggle(path);
-                 mMenuExecutor.onMenuClicked(R.id.action_delete, confirmMsg,
-                        mConfirmDialogListener);
-                 return;
             case R.id.photopage_bottom_control_info:
                 if (mShowDetails) {
                     hideDetails();
@@ -584,6 +575,15 @@ public abstract class PhotoPage extends ActivityState implements
                     GalleryUtils.showOnMap(mActivity, latlng[0], latlng[1]);
                 }
                 return;
+            case R.id.photopage_bottom_control_delete:
+                 String confirmMsg = mActivity.getResources().getQuantityString(
+                        R.plurals.delete_selection, 1);
+                 Path path = mCurrentPhoto.getPath();
+                 mSelectionManager.deSelectAll();
+                 mSelectionManager.toggle(path);
+                 mMenuExecutor.onMenuClicked(R.id.action_delete, confirmMsg,
+                        mConfirmDialogListener);
+                 return;
             default:
                 return;
         }

@@ -37,6 +37,15 @@
         android:src="@drawable/ic_menu_info" />
 
     <ImageButton
+        android:id="@+id/photopage_bottom_control_map"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_menu_map" />
+
+    <ImageButton
         android:id="@+id/photopage_bottom_control_delete"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -45,12 +54,4 @@
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_menu_trash" />
 
-    <ImageButton
-        android:id="@+id/photopage_bottom_control_map"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_menu_map" />
 </LinearLayout>
