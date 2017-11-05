@@ -29,7 +29,7 @@ public class ViewGifImage extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(mDM);
         if (getIntent().getAction() != null
                 && getIntent().getAction().equals(VIEW_GIF_ACTION)) {
-            Uri gifUri = getIntent().getData();
+            Uri gifUri = Uri.parse(getIntent().getStringExtra("uri"));
             showGifPicture(gifUri);
         }
     }
