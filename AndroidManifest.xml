@@ -380,37 +380,5 @@
                 <action android:name="com.android.gallery3d.STORAGE_CHANGE" />
             </intent-filter>
         </receiver>
-
-        <activity android:name="org.codeaurora.gallery3d.video.SettingsActivity"
-                android:configChanges="keyboardHidden|orientation|screenSize"
-                android:theme="@style/Theme.Settings"
-                android:label="@string/streaming_settings" >
-            <intent-filter>
-                <action android:name="org.codeaurora.settings.streaming" />
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <receiver android:name="org.codeaurora.gallery3d.video.DmReceiver" >
-            <intent-filter>
-                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
-                <action android:name="streaming.action.WRITE_SETTINGS" />
-            </intent-filter>
-        </receiver>
-
-        <activity android:name="org.codeaurora.gallery3d.video.BookmarkActivity"
-                android:configChanges="keyboardHidden|orientation|screenSize"
-                android:icon="@drawable/ic_menu_display_bookmark"
-                android:label="@string/bookmark_list" >
-            <intent-filter>
-                <action android:name="org.codeaurora.bookmark.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name="org.codeaurora.gallery3d.video.VideoSettingsActivity"
-                android:theme="@style/Theme.Settings"
-                android:label="@string/movie_view_label"
-                android:configChanges="orientation|keyboardHidden|screenSize|mnc|mcc">
-        </activity>
     </application>
 </manifest>

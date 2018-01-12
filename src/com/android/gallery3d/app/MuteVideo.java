@@ -16,8 +16,6 @@
 
 package com.android.gallery3d.app;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -42,13 +40,6 @@ public class MuteVideo {
     private SaveVideoFileInfo mDstFileInfo = null;
     private Activity mActivity = null;
     private final Handler mHandler = new Handler();
-    private String mMimeType;
-    ArrayList<String> mUnsupportedMuteFileTypes = new ArrayList<String>();
-    private final String FILE_TYPE_DIVX = "video/divx";
-    private final String FILE_TYPE_AVI = "video/avi";
-    private final String FILE_TYPE_WMV = "video/x-ms-wmv";
-    private final String FILE_TYPE_ASF = "video/x-ms-asf";
-    private final String FILE_TYPE_WEBM = "video/webm";
 
     final String TIME_STAMP_NAME = "'MUTE'_yyyyMMdd_HHmmss";
 
@@ -56,13 +47,6 @@ public class MuteVideo {
         mUri = uri;
         mFilePath = filePath;
         mActivity = activity;
-        if (mUnsupportedMuteFileTypes != null) {
-            mUnsupportedMuteFileTypes.add(FILE_TYPE_DIVX);
-            mUnsupportedMuteFileTypes.add(FILE_TYPE_AVI);
-            mUnsupportedMuteFileTypes.add(FILE_TYPE_WMV);
-            mUnsupportedMuteFileTypes.add(FILE_TYPE_ASF);
-            mUnsupportedMuteFileTypes.add(FILE_TYPE_WEBM);
-        }
     }
 
     public void muteInBackground() {
@@ -70,51 +54,18 @@ public class MuteVideo {
                 mActivity.getContentResolver(), mUri,
                 mActivity.getString(R.string.folder_download));
 
-        mMimeType = mActivity.getContentResolver().getType(mUri);
-        if(!isValidFileForMute(mMimeType)) {
-            Toast.makeText(mActivity.getApplicationContext(),
-                           mActivity.getString(R.string.mute_nosupport),
-                           Toast.LENGTH_SHORT)
-                           .show();
-            return;
-        }
-
         showProgressDialog();
         new Thread(new Runnable() {
                 @Override
             public void run() {
-                boolean hasError = false;
                 try {
                     VideoUtils.startMute(mFilePath, mDstFileInfo);
                     SaveVideoFileUtils.insertContent(
                             mDstFileInfo, mActivity.getContentResolver(), mUri);
                 } catch (IOException e) {
-                    hasError = true;
-                    e.printStackTrace();
-                } catch (IllegalStateException e) {
-                    hasError = true;
-                    e.printStackTrace();
+                    Toast.makeText(mActivity, mActivity.getString(R.string.video_mute_err),
+                            Toast.LENGTH_SHORT).show();
                 }
-                //If the exception happens,just notify the UI and avoid the crash.
-                if (hasError){
-                    mHandler.post(new Runnable(){
-                        @Override
-                        public void run(){
-                            // delete dst file if failed
-                            mDstFileInfo.mFile.delete();
-                            Toast.makeText(mActivity.getApplicationContext(),
-                                mActivity.getString(R.string.video_mute_err),
-                                Toast.LENGTH_SHORT)
-                                .show();
-                            if (mMuteProgress != null) {
-                                mMuteProgress.dismiss();
-                                mMuteProgress = null;
-                            }
-                        }
-                    });
-                    return;
-                }
-
                 // After muting is done, trigger the UI changed.
                 mHandler.post(new Runnable() {
                         @Override
@@ -149,17 +100,5 @@ public class MuteVideo {
         mMuteProgress.setCancelable(false);
         mMuteProgress.setCanceledOnTouchOutside(false);
         mMuteProgress.show();
-    }
-    private boolean isValidFileForMute(String mimeType) {
-        if (mimeType != null) {
-            for (String fileType : mUnsupportedMuteFileTypes) {
-               if (mimeType.equals(fileType)) {
-                   return false;
-               }
-            }
-            return true;
-        } else {
-            return false;
-        }
     }
 }

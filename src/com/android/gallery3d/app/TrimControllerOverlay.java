@@ -108,14 +108,4 @@ public class TrimControllerOverlay extends CommonControllerOverlay  {
         }
         return true;
     }
-
-    @Override
-    public void setViewEnabled(boolean isEnabled) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void setPlayPauseReplayResume() {
-        // TODO Auto-generated method stub
-    }
 }

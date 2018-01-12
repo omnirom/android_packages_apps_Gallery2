@@ -34,21 +34,4 @@
             settings:unitsLeft=""
             settings:unitsRight="@string/unit_sec"/>
     </PreferenceCategory>
-    <!--<PreferenceCategory android:title="@string/video_settings" >
-        <PreferenceScreen
-            android:key="video_one"
-            android:title="@string/video_one_title" >
-            <intent
-                android:targetPackage="com.android.gallery3d"
-                android:targetClass="org.codeaurora.gallery3d.video.SettingsActivity" />         
-        </PreferenceScreen>
-
-        <PreferenceScreen
-            android:key="video_two"
-            android:title="@string/video_two_title" >
-            <intent
-                android:targetPackage="com.android.gallery3d"
-                android:targetClass="org.codeaurora.gallery3d.video.VideoSettingsActivity" />         
-        </PreferenceScreen>
-    </PreferenceCategory>-->
 </PreferenceScreen>
