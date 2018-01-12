@@ -259,9 +259,11 @@ public class TrimVideo extends Activity implements
                         if (mProgress != null) {
                             mProgress.dismiss();
                             mProgress = null;
-                            // Show the result only when the activity not stopped.
+                            // Show the result only when the activity not stopped.                            
+                            Uri uri = android.support.v4.content.FileProvider.getUriForFile(getApplicationContext(),
+                                    "com.android.gallery3d", mDstFileInfo.mFile);
                             Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-                            intent.setDataAndType(Uri.fromFile(mDstFileInfo.mFile), "video/*");
+                            intent.setDataAndType(uri, "video/*");
                             intent.putExtra(MediaStore.EXTRA_FINISH_ON_COMPLETION, false);
                             startActivity(intent);
                             finish();
