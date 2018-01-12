@@ -19,5 +19,4 @@
     <bool name="loop">true</bool>
     <bool name="stereo">true</bool>
     <bool name="streaming">true</bool>
-    <bool name="speaker">true</bool>
 </resources>

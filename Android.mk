@@ -20,11 +20,12 @@ LOCAL_AAPT_FLAGS := --auto-add-overlay
 
 LOCAL_PACKAGE_NAME := Gallery2
 
-LOCAL_CERTIFICATE := platform
+LOCAL_CERTIFICATE := shared
 
 LOCAL_OVERRIDES_PACKAGES := Gallery Gallery3D GalleryNew3D
 
-#LOCAL_SDK_VERSION := current
+LOCAL_SDK_VERSION := current
+LOCAL_MIN_SDK_VERSION := 24
 
 LOCAL_JNI_SHARED_LIBRARIES := libjni_eglfence libjni_filtershow_filters librsjni libjni_jpegstream
 
