@@ -91,7 +91,7 @@
                     style="?android:textAppearanceLarge"
                     android:id="@+id/exifLabel"
                     android:textStyle="bold"
-                    android:textColor="#fff"
+                    android:textColor="#80ffffff"
                     android:layout_marginTop="16dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -104,6 +104,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_gravity="start"
+                    android:textColor="#80ffffff"
                     />
         </LinearLayout>
     </ScrollView>
