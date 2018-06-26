@@ -26,7 +26,7 @@
         <item name="android:popupTheme">@style/PopupThemePrimary</item>
         <item name="android:actionModeBackground">@drawable/actionmode_background</item>
     </style>
-    <style name="DialogTheme" parent="@android:style/Theme.Material.Dialog">
+    <style name="DialogTheme" parent="@android:style/Theme.DeviceDefault.Light.Dialog">
         <item name="android:colorAccent">@color/accent</item>
     </style>
     <style name="Theme.Gallery" parent="Theme.GalleryBase">
