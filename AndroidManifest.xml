@@ -34,10 +34,10 @@
     <permission android:name="com.android.gallery3d.permission.STORAGE_CHANGE"
             android:protectionLevel="signatureOrSystem" />
 
-    <permission android:name="com.android.gallery3d.filtershow.permission.READ"
+    <permission android:name="com.android.gallery3d.omni.filtershow.permission.READ"
                 android:protectionLevel="signature" />
     
-    <permission android:name="com.android.gallery3d.filtershow.permission.WRITE"
+    <permission android:name="com.android.gallery3d.omni.filtershow.permission.WRITE"
                 android:protectionLevel="signature" />
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -249,8 +249,8 @@
             android:name="com.android.gallery3d.filtershow.provider.SharedImageProvider"
             android:authorities="com.android.gallery3d.filtershow.provider.SharedImageProvider"
             android:grantUriPermissions="true"
-            android:readPermission="com.android.gallery3d.filtershow.permission.READ"
-            android:writePermission="com.android.gallery3d.filtershow.permission.WRITE" />
+            android:readPermission="com.android.gallery3d.omni.filtershow.permission.READ"
+            android:writePermission="com.android.gallery3d.omni.filtershow.permission.WRITE" />
 
         <service
                 android:name=".filtershow.pipeline.ProcessingService"
