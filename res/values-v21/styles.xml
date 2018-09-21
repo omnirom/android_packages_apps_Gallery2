@@ -19,7 +19,6 @@
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primary_dark</item>
         <item name="android:colorAccent">@color/accent</item>
-        <item name="listPreferredItemHeightSmall">?android:attr/listPreferredItemHeightSmall</item>
         <item name="switchStyle">@android:style/Widget.CompoundButton</item>
         <item name="android:dialogTheme">@style/DialogTheme</item>
         <item name="android:alertDialogTheme">@style/DialogTheme</item>
@@ -53,18 +52,21 @@
         <item name="android:colorBackground">@color/primary</item>
     </style>
     <style name="ActionBarTitle" parent="android:style/TextAppearance.Material.Widget.ActionBar.Title">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
-    <style name="ActionBarTwoLinePrimary" parent="@android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+    <style name="ActionBarTwoLinePrimary" parent="@android:style/TextAppearance.Material.Widget.PopupMenu">
         <item name="android:colorBackground">@color/primary</item>
         <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">18sp</item>
     </style>
-    <style name="ActionBarTwoLineSecondary" parent="@android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+    <style name="ActionBarTwoLineSecondary" parent="@android:style/TextAppearance.Material.Widget.PopupMenu">
         <item name="android:colorBackground">@color/primary</item>
         <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">18sp</item>
     </style>
     <style name="ActionBarMenuItem" parent="@style/ActionBarTitle">
         <item name="android:colorBackground">@color/primary</item>
         <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">18sp</item>
     </style>
 </resources>

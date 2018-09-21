@@ -19,9 +19,9 @@
     <color name="albumset_background">#ff212121</color>
     <color name="albumset_placeholder">#252525</color>
     <!-- material_grey_800 -->
-    <color name="albumset_label_background">#ff424242</color>
-    <color name="albumset_label_title">#FBFBFB</color>
-    <color name="albumset_label_count">#A9ABAD</color>
+    <color name="albumset_label_background">@color/primary_light</color>
+    <color name="albumset_label_title">#000</color>
+    <color name="albumset_label_count">#000</color>
 
     <!-- configuration for album page -->
     <color name="album_background">#ff171717</color>
@@ -49,8 +49,9 @@
     <color name="floating_action_button_touch_tint">#F44336</color>
     <color name="floating_action_button_icon_color">#ffffff</color>
 
-    <color name="primary">#03a9f4</color>
-    <color name="primary_dark">#038ecf</color>
+    <color name="primary">#2196F3</color>
+    <color name="primary_dark">#1976D2</color>
+    <color name="primary_light">#BBDEFB</color>
     <color name="accent">#ffc107</color>
     <color name="textColor">#ffffff</color>
     <color name="photo_overlay">#66000000</color>

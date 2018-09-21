@@ -30,19 +30,21 @@ import com.android.gallery3d.glrenderer.Texture;
 
 public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
 
-    private final ResourceTexture mVideoOverlay;
     private final ResourceTexture mVideoPlayIcon;
     private final ResourceTexture mPanoramaIcon;
     private final ResourceTexture mFramePressed;
-    private final ResourceTexture mSelectedOverlay;
     private FadeOutTexture mFramePressedUp;
+    private GLPaint mFramePaint;
+    private final ResourceTexture mSelectionIcon;
 
     protected AbstractSlotRenderer(Context context) {
-        mVideoOverlay = new ResourceTexture(context, R.drawable.ic_video_thumb);
         mVideoPlayIcon = new ResourceTexture(context, R.drawable.ic_gallery_play);
         mPanoramaIcon = new ResourceTexture(context, R.drawable.ic_360pano_holo_light);
         mFramePressed = new ResourceTexture(context, R.drawable.grid_pressed_overlay);
-        mSelectedOverlay  = new ResourceTexture(context, R.drawable.grid_selected_overlay);
+        mFramePaint = new GLPaint();
+        mFramePaint.setColor(context.getResources().getColor(R.color.primary_light));
+        mFramePaint.setLineWidth(context.getResources().getDimensionPixelSize(R.dimen.selected_frame_width));
+        mSelectionIcon = new ResourceTexture(context, R.drawable.multiselect);
     }
 
     protected void drawContent(GLCanvas canvas,
@@ -69,22 +71,11 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
     }
 
     protected void drawVideoOverlay(GLCanvas canvas, int width, int height) {
-        // Scale the video overlay to the height of the thumbnail and put it
-        // on the left side.
-        ResourceTexture v = mVideoOverlay;
-        float scale = (float) height / v.getHeight();
-        int w = Math.round(scale * v.getWidth());
-        int h = Math.round(scale * v.getHeight());
-        v.draw(canvas, 0, 0, w, h);
-
-        int s = Math.min(width, height) / 6;
-        mVideoPlayIcon.draw(canvas, (width - s) / 2, (height - s) / 2, s, s);
+        mVideoPlayIcon.draw(canvas, width - 15 - mVideoPlayIcon.getWidth(), 15);
     }
 
     protected void drawPanoramaIcon(GLCanvas canvas, int width, int height) {
-        int iconSize = Math.min(width, height) / 6;
-        mPanoramaIcon.draw(canvas, (width - iconSize) / 2, (height - iconSize) / 2,
-                iconSize, iconSize);
+        mPanoramaIcon.draw(canvas, width - 15 - mPanoramaIcon.getWidth(), 15);
     }
 
     protected boolean isPressedUpFrameFinished() {
@@ -109,8 +100,13 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
         mFramePressed.draw(canvas, 0, 0, width, height);
     }
 
+    private void drawSelectedFrame(GLCanvas canvas, int width, int height) {
+        canvas.drawRect(0, 0, width, height, mFramePaint);
+    }
+
     protected void drawSelectedOverlay(GLCanvas canvas, int width, int height) {
-        mSelectedOverlay.draw(canvas, 0, 0, width, height);
+        mSelectionIcon.draw(canvas, 15, 15);
+        drawSelectedFrame(canvas, width, height);
     }
 
     protected static void drawFrame(GLCanvas canvas, Rect padding, Texture frame,

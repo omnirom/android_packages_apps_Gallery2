@@ -16,7 +16,6 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <style name="Theme.GalleryBase" parent="android:Theme.Holo">
-        <item name="listPreferredItemHeightSmall">48dp</item>
         <item name="switchStyle">@android:style/Widget.CompoundButton</item>
     </style>
     <style name="Theme.Gallery.Dialog" parent="android:Theme.Holo.Dialog"/>
@@ -81,13 +80,6 @@
     <style name="Animation_OnScreenHint">
         <item name="android:windowEnterAnimation">@anim/on_screen_hint_enter</item>
         <item name="android:windowExitAnimation">@anim/on_screen_hint_exit</item>
-    </style>
-    <style name="ReviewPlayIcon">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_centerInParent">true</item>
-        <item name="android:visibility">gone</item>
-        <item name="android:src">@drawable/ic_gallery_play_big</item>
     </style>
     <style name="PopupTitleSeparator">
         <item name="android:layout_width">match_parent</item>
