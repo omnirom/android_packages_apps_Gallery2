@@ -488,9 +488,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         mActionModeHandler.pause();
         mAlbumDataAdapter.pause();
         mAlbumView.pause();
-        if (!mGetContent) {
-            mActivity.getGalleryActionBar().disableAlbumModeMenu(true);
-        }
 
         if (mSyncTask != null) {
             mSyncTask.cancel();

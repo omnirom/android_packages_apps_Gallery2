@@ -17,6 +17,7 @@
                 android:layout_gravity="center"
                 android:visibility="gone"/>
         <include layout="@layout/photopage_bottom_controls"/>
+        <include layout="@layout/albumsetpage_bottom_controls"/>
         <FrameLayout android:id="@+id/details_footer"
                 android:visibility="gone"
                 android:layout_width="match_parent"
