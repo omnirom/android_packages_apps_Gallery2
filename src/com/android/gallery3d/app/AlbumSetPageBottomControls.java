@@ -26,14 +26,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-
 import com.android.gallery3d.R;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class PhotoPageBottomControls implements OnClickListener {
+public class AlbumSetPageBottomControls implements OnClickListener {
     public interface Delegate {
         public void onBottomControlClicked(int control);
     }
@@ -46,11 +46,11 @@ public class PhotoPageBottomControls implements OnClickListener {
     private Animation mContainerAnimOut = new AlphaAnimation(1f, 0f);
     private static final int CONTAINER_ANIM_DURATION_MS = 350;
 
-    public PhotoPageBottomControls(Delegate delegate, Context context, ViewGroup layout) {
+    public AlbumSetPageBottomControls(Delegate delegate, Context context, ViewGroup layout) {
         mDelegate = delegate;
         mContext = context;
 
-        mContainer = (ViewGroup) layout.findViewById(R.id.photopage_bottom_controls);
+        mContainer = (ViewGroup) layout.findViewById(R.id.albumsetpage_bottom_controls);
         for (int i = 0; i < mContainer.getChildCount(); i++) {
             View child = mContainer.getChildAt(i);
             child.setOnClickListener(this);
@@ -87,15 +87,20 @@ public class PhotoPageBottomControls implements OnClickListener {
         mDelegate.onBottomControlClicked(view.getId());
     }
 
-    public void enableItem(int id, boolean enabled) {
+    public void selectItemWithId(int id) {
         for (int i = 0; i < mContainer.getChildCount(); i++) {
             View child = mContainer.getChildAt(i);
+            ImageButton b = (ImageButton) child;
             if (child.getId() == id) {
-                child.setEnabled(enabled);
-                child.setVisibility(enabled ? View.VISIBLE : View.GONE);
+                b.getDrawable().mutate().setTint(
+                        mContext.getResources().getColor(R.color.button_selected));
+            } else {
+                b.getDrawable().mutate().setTint(
+                        mContext.getResources().getColor(R.color.button_unselected));
             }
         }
     }
+
     public void setGradientBackground(boolean gradient) {
         if (mContainer.getBackground() != null) {
             Drawable[] arrayDrawable = new Drawable[2];

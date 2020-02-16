@@ -1469,6 +1469,8 @@ public abstract class PhotoPage extends ActivityState implements
         mIsActive = true;
         setContentPane(mRootPane);
 
+        mActivity.setBottomControlMargin(false);
+
         mModel.resume();
         mPhotoView.resume();
         mActionBar.setDisplayOptions(

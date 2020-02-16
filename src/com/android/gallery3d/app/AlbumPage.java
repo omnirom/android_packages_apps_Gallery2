@@ -390,12 +390,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         String newPath = FilterUtils.newClusterPath(basePath, clusterType);
         Bundle data = new Bundle(getData());
         data.putString(AlbumSetPage.KEY_MEDIA_PATH, newPath);
-        if (mShowClusterMenu) {
-            Context context = mActivity.getAndroidContext();
-            data.putString(AlbumSetPage.KEY_SET_TITLE, mMediaSet.getName());
-            data.putString(AlbumSetPage.KEY_SET_SUBTITLE,
-                    GalleryActionBar.getClusterByTypeString(context, clusterType));
-        }
 
         // mAlbumView.savePositions(PositionRepository.getInstance(mActivity));
         mActivity.getStateManager().startStateForResult(
@@ -453,6 +447,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
 
         setContentPane(mRootPane);
         mActivity.getGLRootView().applySystemInsets();
+        mActivity.setBottomControlMargin(false);
 
         boolean enableHomeButton = (mActivity.getStateManager().getStateCount() > 1) |
                 mParentMediaSetString != null;
@@ -488,9 +483,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         mActionModeHandler.pause();
         mAlbumDataAdapter.pause();
         mAlbumView.pause();
-        if (!mGetContent) {
-            mActivity.getGalleryActionBar().disableAlbumModeMenu(true);
-        }
 
         if (mSyncTask != null) {
             mSyncTask.cancel();

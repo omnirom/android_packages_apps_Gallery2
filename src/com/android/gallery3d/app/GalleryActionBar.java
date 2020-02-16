@@ -102,10 +102,6 @@ public class GalleryActionBar implements OnNavigationListener {
                 R.string.locations, R.string.location, R.string.group_by_location),
         new ActionItem(FilterUtils.CLUSTER_BY_TIME, true, false, R.string.times,
                 R.string.time, R.string.group_by_time),
-        //new ActionItem(FilterUtils.CLUSTER_BY_FACE, true, false, R.string.people,
-        //        R.string.group_by_faces),
-        //new ActionItem(FilterUtils.CLUSTER_BY_TAG, true, false, R.string.tags,
-        //        R.string.group_by_tags)
         new ActionItem(FilterUtils.CLUSTER_BY_TYPE, true, false, R.string.type,
                 R.string.types, R.string.group_by_type),
     };
@@ -196,6 +192,7 @@ public class GalleryActionBar implements OnNavigationListener {
         mActivity = activity;
         mInflater = ((Activity) mActivity).getLayoutInflater();
         mCurrentIndex = 0;
+        disableClusterMenu(true);
     }
 
     private void createDialogData() {
@@ -233,10 +230,6 @@ public class GalleryActionBar implements OnNavigationListener {
         }
     }
 
-    /*public int getClusterTypeAction() {
-        return sClusterItems[mCurrentIndex].action;
-    }*/
-
     public void enableClusterMenu(int action, ClusterRunner runner) {
         if (mActionBar != null) {
             // Don't set cluster runner until action bar is ready.
@@ -264,34 +257,6 @@ public class GalleryActionBar implements OnNavigationListener {
         if (mActionBar != null && mAlbumModeListener != null) {
             //OnAlbumModeSelectedListener listener = mAlbumModeListener;
             //enableAlbumModeMenu(mLastAlbumModeSelected, listener);
-        }
-    }
-
-    public void enableAlbumModeMenu(int selected, OnAlbumModeSelectedListener listener) {
-        if (mActionBar != null) {
-            if (mAlbumModeAdapter == null) {
-                // Initialize the album mode options if they haven't been already
-                Resources res = mActivity.getResources();
-                mAlbumModes = new CharSequence[] {
-                        res.getString(R.string.switch_photo_filmstrip),
-                        res.getString(R.string.switch_photo_grid)};
-                mAlbumModeAdapter = new AlbumModeAdapter();
-            }
-            mAlbumModeListener = null;
-            mLastAlbumModeSelected = selected;
-            mActionBar.setListNavigationCallbacks(mAlbumModeAdapter, this);
-            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            mActionBar.setSelectedNavigationItem(selected);
-            mAlbumModeListener = listener;
-        }
-    }
-
-    public void disableAlbumModeMenu(boolean hideMenu) {
-        if (mActionBar != null) {
-            mAlbumModeListener = null;
-            if (hideMenu) {
-                mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            }
         }
     }
 
