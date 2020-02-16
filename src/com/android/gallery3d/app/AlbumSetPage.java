@@ -66,7 +66,8 @@ import java.util.ArrayList;
 
 public class AlbumSetPage extends ActivityState implements
         SelectionManager.SelectionListener, GalleryActionBar.ClusterRunner,
-        EyePosition.EyePositionListener, MediaSet.SyncListener {
+        EyePosition.EyePositionListener, MediaSet.SyncListener,
+        AlbumSetPageBottomControls.Delegate {
     @SuppressWarnings("unused")
     private static final String TAG = "AlbumSetPage";
 
@@ -91,7 +92,6 @@ public class AlbumSetPage extends ActivityState implements
     private MediaSet mMediaSet;
     private String mTitle;
     private String mSubtitle;
-    private boolean mShowClusterMenu;
     private GalleryActionBar mActionBar;
     private int mSelectedAction;
 
@@ -116,6 +116,7 @@ public class AlbumSetPage extends ActivityState implements
     private boolean mInitialSynced = false;
 
     private boolean mShowedEmptyToastForSelf = false;
+    private AlbumSetPageBottomControls mBottomControls;
 
     @Override
     protected int getBackgroundColorId() {
@@ -349,12 +350,15 @@ public class AlbumSetPage extends ActivityState implements
         Context context = mActivity.getAndroidContext();
         mGetContent = data.getBoolean(GalleryActivity.KEY_GET_CONTENT, false);
         mGetAlbum = data.getBoolean(GalleryActivity.KEY_GET_ALBUM, false);
-        mTitle = data.getString(AlbumSetPage.KEY_SET_TITLE);
+        mTitle = data.getString(AlbumSetPage.KEY_SET_TITLE,
+                mActivity.getResources().getString(R.string.app_name));
         mSubtitle = data.getString(AlbumSetPage.KEY_SET_SUBTITLE);
         mEyePosition = new EyePosition(context, this);
         mActionBar = mActivity.getGalleryActionBar();
         mSelectedAction = data.getInt(AlbumSetPage.KEY_SELECTED_CLUSTER_TYPE,
                 FilterUtils.CLUSTER_BY_ALBUM);
+        RelativeLayout galleryRoot = (RelativeLayout) mActivity.findViewById(R.id.gallery_root);
+        mBottomControls = new AlbumSetPageBottomControls(this, mActivity, galleryRoot);
 
         mHandler = new SynchronizedHandler(mActivity.getGLRoot()) {
             @Override
@@ -418,18 +422,13 @@ public class AlbumSetPage extends ActivityState implements
         mAlbumSetView.pause();
         mActionModeHandler.pause();
         mEyePosition.pause();
-        if (mShowClusterMenu) {
-            // Call disableClusterMenu to avoid receiving callback after paused.
-            // Don't hide menu here otherwise the list menu will disappear earlier than
-            // the action bar, which is janky and unwanted behavior.
-            mActionBar.disableClusterMenu(false);
-        }
         if (mSyncTask != null) {
             mSyncTask.cancel();
             mSyncTask = null;
             clearLoadingBit(BIT_LOADING_SYNC);
         }
         GalleryUtils.setAlbumsetZoomLevel(mActivity, mSlotView.getZoomLevel());
+        mBottomControls.hide(false);
     }
 
     @Override
@@ -442,6 +441,7 @@ public class AlbumSetPage extends ActivityState implements
 
         setContentPane(mRootPane);
         mActivity.getGLRootView().applySystemInsets();
+        mActivity.setBottomControlMargin(true);
 
         // Set the reload bit here to prevent it exit this page in clearLoadingBit().
         setLoadingBit(BIT_LOADING_RELOAD);
@@ -450,14 +450,12 @@ public class AlbumSetPage extends ActivityState implements
         mAlbumSetView.resume();
         mEyePosition.resume();
         mActionModeHandler.resume();
-        if (mShowClusterMenu) {
-            mActionBar.enableClusterMenu(mSelectedAction, this);
-        }
         if (!mInitialSynced) {
             setLoadingBit(BIT_LOADING_SYNC);
             mSyncTask = mMediaSet.requestSync(AlbumSetPage.this);
         }
-    }
+        mBottomControls.show(false);
+   }
 
     private void initializeData(Bundle data) {
         String mediaPath = data.getString(AlbumSetPage.KEY_MEDIA_PATH);
@@ -527,8 +525,6 @@ public class AlbumSetPage extends ActivityState implements
             mActionBar.setTitle(R.string.select_album);
         } else {
             inflater.inflate(R.menu.albumset, menu);
-            boolean wasShowingClusterMenu = mShowClusterMenu;
-            mShowClusterMenu = !inAlbum;
             boolean selectAlbums = !inAlbum &&
                     mSelectedAction == FilterUtils.CLUSTER_BY_ALBUM;
             MenuItem selectItem = menu.findItem(R.id.action_select);
@@ -553,13 +549,6 @@ public class AlbumSetPage extends ActivityState implements
 
             mActionBar.setTitle(mTitle);
             mActionBar.setSubtitle(mSubtitle);
-            if (mShowClusterMenu != wasShowingClusterMenu) {
-                if (mShowClusterMenu) {
-                    mActionBar.enableClusterMenu(mSelectedAction, this);
-                } else {
-                    mActionBar.disableClusterMenu(true);
-                }
-            }
         }
         return true;
     }
@@ -634,9 +623,6 @@ public class AlbumSetPage extends ActivityState implements
             }
             case SelectionManager.LEAVE_SELECTION_MODE: {
                 mActionModeHandler.finishActionMode();
-                if (mShowClusterMenu) {
-                    mActionBar.enableClusterMenu(mSelectedAction, this);
-                }
                 mRootPane.invalidate();
                 break;
             }
@@ -678,6 +664,26 @@ public class AlbumSetPage extends ActivityState implements
                 }
             }
         });
+    }
+
+    @Override
+    public void onBottomControlClicked(int control) {
+        switch(control) {
+            case R.id.albumpage_bottom_control_album:
+                doRunClusterAction(FilterUtils.CLUSTER_BY_ALBUM);
+                return;
+            case R.id.albumpage_bottom_control_location:
+                doRunClusterAction(FilterUtils.CLUSTER_BY_LOCATION);
+                return;
+            case R.id.albumpage_bottom_control_times:
+                doRunClusterAction(FilterUtils.CLUSTER_BY_TIME);
+                return;
+            case R.id.albumpage_bottom_control_type:
+                doRunClusterAction(FilterUtils.CLUSTER_BY_TYPE);
+                return;
+            default:
+                return;
+        }
     }
 
     private class MyLoadingListener implements LoadingListener {
