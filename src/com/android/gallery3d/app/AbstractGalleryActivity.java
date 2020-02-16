@@ -44,7 +44,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.common.ApiHelper;
@@ -81,6 +83,7 @@ public class AbstractGalleryActivity extends Activity implements GalleryContext 
     private IntentFilter mMountFilter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
     private Runnable mRunWithPermission;
     private Runnable mRunWithoutPermission;
+    private LinearLayout mGLRootViewContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,11 +158,26 @@ public class AbstractGalleryActivity extends Activity implements GalleryContext 
         return mGLRootView;
     }
 
+    private LinearLayout getGLRootViewContainer() {
+        return mGLRootViewContainer;
+    }
+
+    public void setBottomControlMargin(boolean enabled) {
+        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) getGLRootViewContainer().getLayoutParams();
+        if (enabled) {
+            p.setMargins(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.bottom_control_height));
+        } else {
+            p.setMargins(0, 0, 0, 0);
+        }
+        getGLRootViewContainer().setLayoutParams(p);
+    }
+
     @Override
     public void setContentView(int resId) {
         super.setContentView(resId);
         mGLRootView = (GLRootView) findViewById(R.id.gl_root_view);
         mProgress = (ProgressBar) findViewById(R.id.gallery_root_progress);
+        mGLRootViewContainer = findViewById(R.id.gl_root_view_container);
     }
 
     protected void onStorageReady() {
