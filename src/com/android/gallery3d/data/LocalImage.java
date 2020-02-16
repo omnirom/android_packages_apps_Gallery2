@@ -134,8 +134,6 @@ public class LocalImage extends LocalMediaItem {
         id = cursor.getInt(INDEX_ID);
         caption = cursor.getString(INDEX_CAPTION);
         mimeType = cursor.getString(INDEX_MIME_TYPE);
-        latitude = cursor.getDouble(INDEX_LATITUDE);
-        longitude = cursor.getDouble(INDEX_LONGITUDE);
         dateTakenInMs = cursor.getLong(INDEX_DATE_TAKEN);
         dateAddedInSec = cursor.getLong(INDEX_DATE_ADDED);
         dateModifiedInSec = cursor.getLong(INDEX_DATE_MODIFIED);
@@ -145,6 +143,10 @@ public class LocalImage extends LocalMediaItem {
         fileSize = cursor.getLong(INDEX_SIZE);
         width = cursor.getInt(INDEX_WIDTH);
         height = cursor.getInt(INDEX_HEIGHT);
+
+        if (MIME_TYPE_JPEG.equals(mimeType)) {
+            resolveLocation();
+        }
     }
 
     @Override
@@ -153,8 +155,6 @@ public class LocalImage extends LocalMediaItem {
         id = uh.update(id, cursor.getInt(INDEX_ID));
         caption = uh.update(caption, cursor.getString(INDEX_CAPTION));
         mimeType = uh.update(mimeType, cursor.getString(INDEX_MIME_TYPE));
-        latitude = uh.update(latitude, cursor.getDouble(INDEX_LATITUDE));
-        longitude = uh.update(longitude, cursor.getDouble(INDEX_LONGITUDE));
         dateTakenInMs = uh.update(
                 dateTakenInMs, cursor.getLong(INDEX_DATE_TAKEN));
         dateAddedInSec = uh.update(
@@ -167,6 +167,10 @@ public class LocalImage extends LocalMediaItem {
         fileSize = uh.update(fileSize, cursor.getLong(INDEX_SIZE));
         width = uh.update(width, cursor.getInt(INDEX_WIDTH));
         height = uh.update(height, cursor.getInt(INDEX_HEIGHT));
+        
+        if (MIME_TYPE_JPEG.equals(mimeType)) {
+            resolveLocation();
+        }
         return uh.isUpdated();
     }
 
@@ -200,9 +204,9 @@ public class LocalImage extends LocalMediaItem {
                     exif.readExif(mLocalFilePath);
                     thumbData = exif.getThumbnail();
                 } catch (FileNotFoundException e) {
-                    Log.w(TAG, "failed to find file to read thumbnail: " + mLocalFilePath);
+                    //Log.w(TAG, "failed to find file to read thumbnail: " + mLocalFilePath);
                 } catch (IOException e) {
-                    Log.w(TAG, "failed to get thumbnail from: " + mLocalFilePath);
+                    //Log.w(TAG, "failed to get thumbnail from: " + mLocalFilePath);
                 }
                 if (thumbData != null) {
                     Bitmap bitmap = DecodeUtils.decodeIfBigEnough(
@@ -280,7 +284,7 @@ public class LocalImage extends LocalMediaItem {
         int rotation = (this.rotation + degrees) % 360;
         if (rotation < 0) rotation += 360;
 
-        if (mimeType.equalsIgnoreCase("image/jpeg")) {
+        if (MIME_TYPE_JPEG.equals(mimeType)) {
             ExifInterface exifInterface = new ExifInterface();
             ExifTag tag = exifInterface.buildTag(ExifInterface.TAG_ORIENTATION,
                     ExifInterface.getOrientationValueForRotation(rotation));
@@ -346,5 +350,18 @@ public class LocalImage extends LocalMediaItem {
     @Override
     public String getFilePath() {
         return filePath;
+    }
+
+    private void resolveLocation() {
+        try {
+            android.media.ExifInterface exif = new android.media.ExifInterface(filePath);
+            float[] location = new float[] {MediaItem.INVALID_LATLNG, MediaItem.INVALID_LATLNG};
+            exif.getLatLong(location);
+            latitude = location[0];
+            longitude = location[1];
+        } catch (IOException e) {
+            latitude = MediaItem.INVALID_LATLNG;
+            longitude = MediaItem.INVALID_LATLNG;
+        }
     }
 }

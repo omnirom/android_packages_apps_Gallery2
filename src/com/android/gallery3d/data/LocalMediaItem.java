@@ -39,8 +39,8 @@ public abstract class LocalMediaItem extends MediaItem {
     public String caption;
     public String mimeType;
     public long fileSize;
-    public double latitude = INVALID_LATLNG;
-    public double longitude = INVALID_LATLNG;
+    public float latitude = MediaItem.INVALID_LATLNG;
+    public float longitude = MediaItem.INVALID_LATLNG;
     public long dateTakenInMs;
     public long dateAddedInSec;
     public long dateModifiedInSec;

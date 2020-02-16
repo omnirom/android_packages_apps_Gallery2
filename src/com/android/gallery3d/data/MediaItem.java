@@ -49,7 +49,7 @@ public abstract class MediaItem extends MediaObject {
     private static int sThumbnailTargetSize = 640;
 
     // TODO: fix default value for latlng and change this.
-    public static final double INVALID_LATLNG = 0f;
+    public static final float INVALID_LATLNG = 0f;
 
     public abstract Job<Bitmap> requestImage(int type);
     public abstract Job<BitmapRegionDecoder> requestLargeImage();

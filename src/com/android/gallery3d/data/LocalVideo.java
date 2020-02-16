@@ -20,9 +20,11 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapRegionDecoder;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore.Video;
 import android.provider.MediaStore.Video.VideoColumns;
+import android.text.TextUtils;
 
 import com.android.gallery3d.app.GalleryApp;
 import com.android.gallery3d.common.BitmapUtils;
@@ -102,8 +104,6 @@ public class LocalVideo extends LocalMediaItem {
         id = cursor.getInt(INDEX_ID);
         caption = cursor.getString(INDEX_CAPTION);
         mimeType = cursor.getString(INDEX_MIME_TYPE);
-        latitude = cursor.getDouble(INDEX_LATITUDE);
-        longitude = cursor.getDouble(INDEX_LONGITUDE);
         dateTakenInMs = cursor.getLong(INDEX_DATE_TAKEN);
         dateAddedInSec = cursor.getLong(INDEX_DATE_ADDED);
         dateModifiedInSec = cursor.getLong(INDEX_DATE_MODIFIED);
@@ -112,6 +112,7 @@ public class LocalVideo extends LocalMediaItem {
         bucketId = cursor.getInt(INDEX_BUCKET_ID);
         fileSize = cursor.getLong(INDEX_SIZE);
         parseResolution(cursor.getString(INDEX_RESOLUTION));
+        resolveLocation();
     }
 
     private void parseResolution(String resolution) {
@@ -134,8 +135,6 @@ public class LocalVideo extends LocalMediaItem {
         id = uh.update(id, cursor.getInt(INDEX_ID));
         caption = uh.update(caption, cursor.getString(INDEX_CAPTION));
         mimeType = uh.update(mimeType, cursor.getString(INDEX_MIME_TYPE));
-        latitude = uh.update(latitude, cursor.getDouble(INDEX_LATITUDE));
-        longitude = uh.update(longitude, cursor.getDouble(INDEX_LONGITUDE));
         dateTakenInMs = uh.update(
                 dateTakenInMs, cursor.getLong(INDEX_DATE_TAKEN));
         dateAddedInSec = uh.update(
@@ -147,6 +146,7 @@ public class LocalVideo extends LocalMediaItem {
                 durationInSec, cursor.getInt(INDEX_DURATION) / 1000);
         bucketId = uh.update(bucketId, cursor.getInt(INDEX_BUCKET_ID));
         fileSize = uh.update(fileSize, cursor.getLong(INDEX_SIZE));
+        resolveLocation();
         return uh.isUpdated();
     }
 
@@ -182,7 +182,12 @@ public class LocalVideo extends LocalMediaItem {
 
     @Override
     public int getSupportedOperations() {
-        return SUPPORT_DELETE | SUPPORT_SHARE | SUPPORT_PLAY | SUPPORT_INFO | SUPPORT_TRIM | SUPPORT_MUTE;
+        int operation = SUPPORT_DELETE | SUPPORT_SHARE | SUPPORT_PLAY |
+                SUPPORT_INFO | SUPPORT_TRIM | SUPPORT_MUTE;
+        if (GalleryUtils.isValidLocation(latitude, longitude)) {
+            operation |= SUPPORT_SHOW_ON_MAP;
+        }
+        return operation;
     }
 
     @Override
@@ -238,5 +243,25 @@ public class LocalVideo extends LocalMediaItem {
     @Override
     public String getFilePath() {
         return filePath;
+    }
+
+    private void resolveLocation() {
+        MediaMetadataRetriever meta = new MediaMetadataRetriever();
+        meta.setDataSource(filePath);
+        //+47.8207+013.0166/
+        String location = meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
+        if (!TextUtils.isEmpty(location)) {
+            try {
+                int index = location.lastIndexOf('-');
+                if (index == -1) {
+                    index = location.lastIndexOf('+');
+                }
+                latitude = Float.parseFloat(location.substring(1, index));
+                longitude = Float.parseFloat(location.substring(index + 1, location.length() - 1));
+            } catch (NumberFormatException e) {
+                latitude = MediaItem.INVALID_LATLNG;
+                longitude = MediaItem.INVALID_LATLNG;
+            }
+        }
     }
 }
