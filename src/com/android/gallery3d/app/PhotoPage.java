@@ -965,12 +965,6 @@ public abstract class PhotoPage extends ActivityState implements
                     mActivity.getDataManager().getTopSetPath(
                             DataManager.INCLUDE_ALL));
 
-            // We only show cluster menu in the first AlbumPage in stack
-            // TODO: Enable this when running from the camera app
-            boolean inAlbum = mActivity.getStateManager().hasStateClass(AlbumPage.class);
-            data.putBoolean(AlbumPage.KEY_SHOW_CLUSTER_MENU, !inAlbum
-                    && mAppBridge == null);
-
             data.putBoolean(PhotoPage.KEY_APP_BRIDGE, mAppBridge != null);
 
             // Account for live preview being first item

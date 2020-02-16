@@ -23,6 +23,7 @@ import com.android.gallery3d.util.GalleryUtils;
 import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
+import java.text.SimpleDateFormat;
 
 //
 // LocalMediaItem is an abstract class captures those common fields
@@ -48,13 +49,15 @@ public abstract class LocalMediaItem extends MediaItem {
     public int width;
     public int height;
 
+    private static final SimpleDateFormat mDateFormatFilter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
     public LocalMediaItem(Path path, long version) {
         super(path, version);
     }
 
     @Override
     public long getDateInMs() {
-        return dateTakenInMs;
+        return dateModifiedInSec * 1000;
     }
 
     @Override

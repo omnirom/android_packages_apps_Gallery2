@@ -229,10 +229,12 @@ public class AlbumSetSlidingWindow implements AlbumSetDataLoader.DataListener {
 
     private void freeSlotContent(int slotIndex) {
         AlbumSetEntry entry = mData[slotIndex % mData.length];
-        if (entry.coverLoader != null) entry.coverLoader.recycle();
-        if (entry.labelLoader != null) entry.labelLoader.recycle();
-        if (entry.labelTexture != null) entry.labelTexture.recycle();
-        if (entry.bitmapTexture != null) entry.bitmapTexture.recycle();
+        if (entry != null) {
+            if (entry.coverLoader != null) entry.coverLoader.recycle();
+            if (entry.labelLoader != null) entry.labelLoader.recycle();
+            if (entry.labelTexture != null) entry.labelTexture.recycle();
+            if (entry.bitmapTexture != null) entry.bitmapTexture.recycle();
+        }
         mData[slotIndex % mData.length] = null;
     }
 

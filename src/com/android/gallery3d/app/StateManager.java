@@ -195,7 +195,7 @@ public class StateManager {
                 Log.d(TAG, "The state is already destroyed");
                 return;
             } else {
-                throw new IllegalArgumentException("The stateview to be finished"
+                Log.d(TAG, "The stateview to be finished"
                         + " is not at the top of the stack: " + state + ", "
                         + mStack.peek().activityState);
             }
@@ -226,7 +226,7 @@ public class StateManager {
             Class<? extends ActivityState> klass, Bundle data) {
         Log.v(TAG, "switchState " + oldState + ", " + klass);
         if (oldState != mStack.peek().activityState) {
-            throw new IllegalArgumentException("The stateview to be finished"
+            Log.d(TAG, "The stateview to be finished"
                     + " is not at the top of the stack: " + oldState + ", "
                     + mStack.peek().activityState);
         }
