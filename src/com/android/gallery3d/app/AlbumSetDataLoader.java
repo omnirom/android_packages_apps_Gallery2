@@ -107,8 +107,10 @@ public class AlbumSetDataLoader {
     }
 
     public void pause() {
-        mReloadTask.terminate();
-        mReloadTask = null;
+        if (mReloadTask != null) {
+            mReloadTask.terminate();
+            mReloadTask = null;
+        }
         mSource.removeContentListener(mSourceListener);
     }
 

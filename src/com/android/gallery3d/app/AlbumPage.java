@@ -70,8 +70,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     public static final String KEY_PARENT_MEDIA_PATH = "parent-media-path";
     public static final String KEY_SET_CENTER = "set-center";
     public static final String KEY_AUTO_SELECT_ALL = "auto-select-all";
-    public static final String KEY_SHOW_CLUSTER_MENU = "cluster-menu";
-    public static final String KEY_EMPTY_ALBUM = "empty-album";
     public static final String KEY_RESUME_ANIMATION = "resume_animation";
 
     private static final int REQUEST_SLIDESHOW = 1;
@@ -99,7 +97,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     protected SelectionManager mSelectionManager;
 
     private boolean mGetContent;
-    private boolean mShowClusterMenu;
 
     private ActionModeHandler mActionModeHandler;
     private int mFocusIndex = 0;
@@ -403,7 +400,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         initializeViews();
         initializeData(data);
         mGetContent = data.getBoolean(GalleryActivity.KEY_GET_CONTENT, false);
-        mShowClusterMenu = data.getBoolean(KEY_SHOW_CLUSTER_MENU, false);
         mActionBar = mActivity.getGalleryActionBar();
         Context context = mActivity.getAndroidContext();
 
@@ -565,7 +561,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         } else {
             inflator.inflate(R.menu.album, menu);
             FilterUtils.setupMenuItems(actionBar, mMediaSetPath, true);
-            menu.findItem(R.id.action_group_by).setVisible(mShowClusterMenu);
+            menu.findItem(R.id.action_group_by).setVisible(true);
         }
         actionBar.setSubtitle(null);
         return true;
@@ -760,8 +756,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         if (mLoadingBits == 0 && mIsActive) {
             if (mAlbumDataAdapter.size() == 0) {
                 mSlotView.invalidate();
-                Toast.makeText(mActivity, R.string.empty_album,
-                        Toast.LENGTH_SHORT).show();
             }
         }
     }

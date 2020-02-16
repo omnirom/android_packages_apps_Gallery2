@@ -111,7 +111,6 @@ public class AlbumSetPage extends ActivityState implements
     private int mLoadingBits = 0;
     private boolean mInitialSynced = false;
 
-    private boolean mShowedEmptyToastForSelf = false;
     private AlbumSetPageBottomControls mBottomControls;
 
     @Override
@@ -204,39 +203,14 @@ public class AlbumSetPage extends ActivityState implements
         return (list != null && !list.isEmpty());
     }
 
-    WeakReference<Toast> mEmptyAlbumToast = null;
-
-    private void showEmptyAlbumToast(int toastLength) {
-        Toast toast;
-        if (mEmptyAlbumToast != null) {
-            toast = mEmptyAlbumToast.get();
-            if (toast != null) {
-                toast.show();
-                return;
-            }
-        }
-        toast = Toast.makeText(mActivity, R.string.empty_album, toastLength);
-        mEmptyAlbumToast = new WeakReference<Toast>(toast);
-        toast.show();
-    }
-
-    private void hideEmptyAlbumToast() {
-        if (mEmptyAlbumToast != null) {
-            Toast toast = mEmptyAlbumToast.get();
-            if (toast != null) toast.cancel();
-        }
-    }
-
     private void pickAlbum(int slotIndex) {
         if (!mIsActive) return;
 
         MediaSet targetSet = mAlbumSetDataAdapter.getMediaSet(slotIndex);
         if (targetSet == null) return; // Content is dirty, we shall reload soon
         if (targetSet.getTotalMediaItemCount() == 0) {
-            showEmptyAlbumToast(Toast.LENGTH_SHORT);
             return;
         }
-        hideEmptyAlbumToast();
 
         String mediaPath = targetSet.getPath().toString();
 
@@ -279,9 +253,6 @@ public class AlbumSetPage extends ActivityState implements
             }
             data.putString(AlbumPage.KEY_MEDIA_PATH, mediaPath);
 
-            // We only show cluster menu in the first AlbumPage in stack
-            boolean inAlbum = mActivity.getStateManager().hasStateClass(AlbumPage.class);
-            data.putBoolean(AlbumPage.KEY_SHOW_CLUSTER_MENU, !inAlbum);
             mActivity.getStateManager().startStateForResult(
                     AlbumPage.class, REQUEST_DO_ANIMATION, data);
         }
@@ -384,23 +355,13 @@ public class AlbumSetPage extends ActivityState implements
                 // instance
                 if (mActivity.getStateManager().getStateCount() > 1) {
                     Intent result = new Intent();
-                    result.putExtra(AlbumPage.KEY_EMPTY_ALBUM, true);
                     setStateResult(Activity.RESULT_OK, result);
                     mActivity.getStateManager().finishState(this);
                 } else {
-                    mShowedEmptyToastForSelf = true;
-                    showEmptyAlbumToast(Toast.LENGTH_LONG);
                     mSlotView.invalidate();
                 }
                 return;
             }
-        }
-        // Hide the empty album toast if we are in the root instance of
-        // AlbumSetPage and the album is no longer empty (for instance,
-        // after a sync is completed and web albums have been synced)
-        if (mShowedEmptyToastForSelf) {
-            mShowedEmptyToastForSelf = false;
-            hideEmptyAlbumToast();
         }
     }
 
@@ -584,9 +545,6 @@ public class AlbumSetPage extends ActivityState implements
 
     @Override
     protected void onStateResult(int requestCode, int resultCode, Intent data) {
-        if (data != null && data.getBooleanExtra(AlbumPage.KEY_EMPTY_ALBUM, false)) {
-            showEmptyAlbumToast(Toast.LENGTH_SHORT);
-        }
         switch (requestCode) {
             case REQUEST_DO_ANIMATION: {
                 mSlotView.startRisingAnimation();
@@ -660,8 +618,6 @@ public class AlbumSetPage extends ActivityState implements
 
     @Override
     public void onBottomControlClicked(int control) {
-        Log.d("maxwen", "onBottomControlClicked " + control);
-
         switch(control) {
             case R.id.albumpage_bottom_control_album:
                 doCluster(FilterUtils.CLUSTER_BY_ALBUM);
