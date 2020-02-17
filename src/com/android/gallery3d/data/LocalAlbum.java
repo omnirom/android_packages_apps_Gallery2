@@ -97,6 +97,21 @@ public class LocalAlbum extends MediaSet {
     public boolean isCameraRoll() {
         return mBucketId == MediaSetUtils.getCameraBucketId();
     }
+    
+    @Override
+    public boolean isDownloadAlbum() {
+        return mBucketId == MediaSetUtils.DOWNLOAD_BUCKET_ID;
+    }
+
+    @Override
+    public boolean isSnapshotAlbum() {
+        return mBucketId == MediaSetUtils.SNAPSHOT_BUCKET_ID;
+    }
+
+    @Override
+    public boolean isMoviesAlbum() {
+        return mBucketId == MediaSetUtils.MOVIES_BUCKET_ID;
+    }
 
     @Override
     public Uri getContentUri() {

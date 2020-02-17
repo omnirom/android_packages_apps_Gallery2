@@ -69,6 +69,33 @@ public class LocalMergeAlbum extends MediaSet implements ContentListener {
         return true;
     }
 
+    @Override
+    public boolean isDownloadAlbum() {
+        if (mSources.length == 0) return false;
+        for(MediaSet set : mSources) {
+            if (!set.isDownloadAlbum()) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isSnapshotAlbum() {
+        if (mSources.length == 0) return false;
+        for(MediaSet set : mSources) {
+            if (!set.isSnapshotAlbum()) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isMoviesAlbum() {
+        if (mSources.length == 0) return false;
+        for(MediaSet set : mSources) {
+            if (!set.isMoviesAlbum()) return false;
+        }
+        return true;
+    }
+
     private void updateData() {
         ArrayList<MediaSet> matches = new ArrayList<MediaSet>();
         int supported = mSources.length == 0 ? 0 : MediaItem.SUPPORT_ALL;

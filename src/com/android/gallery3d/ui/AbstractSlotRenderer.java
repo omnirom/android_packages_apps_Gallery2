@@ -36,11 +36,17 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
     private FadeOutTexture mFramePressedUp;
     private GLPaint mFramePaint;
     private final ResourceTexture mSelectionIcon;
+    private final ResourceTexture mCameraOverlay;
+    private final ResourceTexture mSnapshotOverlay;
+    private final ResourceTexture mDownloadOverlay;
 
     protected AbstractSlotRenderer(Context context) {
         mVideoPlayIcon = new ResourceTexture(context, R.drawable.ic_gallery_play);
         mPanoramaIcon = new ResourceTexture(context, R.drawable.ic_360pano_holo_light);
         mFramePressed = new ResourceTexture(context, R.drawable.grid_pressed_overlay);
+        mCameraOverlay = new ResourceTexture(context, R.drawable.ic_camera_album_overlay);
+        mSnapshotOverlay = new ResourceTexture(context, R.drawable.ic_snapshot_album_overlay);
+        mDownloadOverlay = new ResourceTexture(context, R.drawable.ic_download_album_overlay);
         mFramePaint = new GLPaint();
         mFramePaint.setColor(context.getResources().getColor(R.color.primary_light));
         mFramePaint.setLineWidth(context.getResources().getDimensionPixelSize(R.dimen.selected_frame_width));
@@ -76,6 +82,18 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
 
     protected void drawPanoramaIcon(GLCanvas canvas, int width, int height) {
         mPanoramaIcon.draw(canvas, width - 15 - mPanoramaIcon.getWidth(), 15);
+    }
+
+    protected void drawCameraOverlay(GLCanvas canvas, int width, int height) {
+        mCameraOverlay.draw(canvas, width - 15 - mCameraOverlay.getWidth(), 15);
+    }
+
+    protected void drawSnapshotOverlay(GLCanvas canvas, int width, int height) {
+        mSnapshotOverlay.draw(canvas, width - 15 - mSnapshotOverlay.getWidth(), 15);
+    }
+
+    protected void drawDownloadOverlay(GLCanvas canvas, int width, int height) {
+        mDownloadOverlay.draw(canvas, width - 15 - mDownloadOverlay.getWidth(), 15);
     }
 
     protected boolean isPressedUpFrameFinished() {
