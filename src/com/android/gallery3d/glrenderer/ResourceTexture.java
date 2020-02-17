@@ -18,7 +18,11 @@ package com.android.gallery3d.glrenderer;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 // ResourceTexture is a texture whose Bitmap is decoded from a resource.
 // By default ResourceTexture is not opaque.
@@ -35,16 +39,29 @@ public class ResourceTexture extends UploadedTexture {
 
     @Override
     protected Bitmap onGetBitmap() {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        return BitmapFactory.decodeResource(
-                mContext.getResources(), mResId, options);
+        Drawable d = mContext.getDrawable(mResId);
+        BitmapDrawable b = getBitmapDrawable(d);
+        return b.getBitmap();
     }
 
     @Override
     protected void onFreeBitmap(Bitmap bitmap) {
-        if (!inFinalizer()) {
-            bitmap.recycle();
+        // Do nothing.
+    }
+
+    private BitmapDrawable getBitmapDrawable(Drawable image) {
+        if (image instanceof BitmapDrawable) {
+            return (BitmapDrawable) image;
         }
+        final Canvas canvas = new Canvas();
+        canvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG,
+                Paint.FILTER_BITMAP_FLAG));
+
+        Bitmap bmResult = Bitmap.createBitmap(image.getIntrinsicWidth(), image.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bmResult);
+        image.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        image.draw(canvas);
+        return new BitmapDrawable(mContext.getResources(), bmResult);
     }
 }
