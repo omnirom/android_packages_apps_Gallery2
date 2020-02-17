@@ -85,14 +85,9 @@ public class DetailsAddressResolver {
         if (address != null) {
             Context context = mContext.getAndroidContext();
             String parts[] = {
-                address.getAdminArea(),
-                address.getSubAdminArea(),
                 address.getLocality(),
-                address.getSubLocality(),
-                address.getThoroughfare(),
-                address.getSubThoroughfare(),
-                address.getPremises(),
                 address.getPostalCode(),
+                address.getAdminArea(),
                 address.getCountryName()
             };
 

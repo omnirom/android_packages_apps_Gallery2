@@ -19,6 +19,7 @@ package com.android.gallery3d.app;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -32,6 +33,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -93,6 +95,7 @@ public class AbstractGalleryActivity extends Activity implements GalleryContext 
         mPanoramaViewHelper = new PanoramaViewHelper(this);
         mPanoramaViewHelper.onCreate();
         doBindBatchService();
+        setTaskDescription(new ActivityManager.TaskDescription((String) getTitle(), null, Color.WHITE));
     }
 
     private void setStoragePath() {

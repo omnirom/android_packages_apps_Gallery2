@@ -37,6 +37,8 @@ class LocationClustering extends Clustering {
 
     // If the total distance change is less than this ratio, stop iterating.
     private static final float STOP_CHANGE_RATIO = 0.01f;
+    // treat location within that distance (n meters) as beeing the same
+    private static final int GROUP_LOCATION_DISTANCE_MAX = 500;
     private Context mContext;
     private ArrayList<ArrayList<SmallItem>> mClusters;
     private ArrayList<String> mNames;
@@ -254,6 +256,9 @@ class LocationClustering extends Clustering {
                     for (int j = 0; j < k; j++) {
                         float distance = (float) GalleryUtils.fastDistanceMeters(
                                 p.latRad, p.lngRad, center[j].latRad, center[j].lngRad);
+                        if (distance < GROUP_LOCATION_DISTANCE_MAX) {
+                            distance = GROUP_LOCATION_DISTANCE_MAX;
+                        }
                         // We may have small non-zero distance introduced by
                         // floating point calculation, so zero out small
                         // distances less than 1 meter.

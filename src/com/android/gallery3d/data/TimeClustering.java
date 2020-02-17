@@ -31,10 +31,6 @@ public class TimeClustering extends Clustering {
     @SuppressWarnings("unused")
     private static final String TAG = "TimeClustering";
 
-    // If 2 items are greater than 25 miles apart, they will be in different
-    // clusters.
-    private static final int GEOGRAPHIC_DISTANCE_CUTOFF_IN_MILES = 20;
-
     // Do not want to split based on anything under 1 min.
     private static final long MIN_CLUSTER_SPLIT_TIME_IN_MS = 60000L;
 
@@ -100,7 +96,6 @@ public class TimeClustering extends Clustering {
     public void run(MediaSet baseSet) {
         final int total = baseSet.getTotalMediaItemCount();
         final SmallItem[] buf = new SmallItem[total];
-        final double[] latLng = new double[2];
 
         baseSet.enumerateTotalMediaItems(new MediaSet.ItemConsumer() {
             @Override
@@ -109,9 +104,6 @@ public class TimeClustering extends Clustering {
                 SmallItem s = new SmallItem();
                 s.path = item.getPath();
                 s.dateInMs = item.getDateInMs();
-                item.getLatLong(latLng);
-                s.lat = latLng[0];
-                s.lng = latLng[1];
                 buf[index] = s;
             }
         });
@@ -193,7 +185,6 @@ public class TimeClustering extends Clustering {
         if (currentItem != null) {
             int numClusters = mClusters.size();
             int numCurrClusterItems = mCurrCluster.size();
-            boolean geographicallySeparateItem = false;
             boolean itemAddedToCurrentCluster = false;
 
             // Determine if this item should go in the current cluster or be the
@@ -202,16 +193,10 @@ public class TimeClustering extends Clustering {
                 mCurrCluster.addItem(currentItem);
             } else {
                 SmallItem prevItem = mCurrCluster.getLastItem();
-                if (isGeographicallySeparated(prevItem, currentItem)) {
-                    mClusters.add(mCurrCluster);
-                    geographicallySeparateItem = true;
-                } else if (numCurrClusterItems > mMaxClusterSize) {
-                    splitAndAddCurrentCluster();
-                } else if (timeDistance(prevItem, currentItem) < mClusterSplitTime) {
+                if (timeDistance(prevItem, currentItem) < mClusterSplitTime) {
                     mCurrCluster.addItem(currentItem);
                     itemAddedToCurrentCluster = true;
-                } else if (numClusters > 0 && numCurrClusterItems < mMinClusterSize
-                        && !mCurrCluster.mGeographicallySeparatedFromPrevCluster) {
+                } else if (numClusters > 0 && numCurrClusterItems < mMinClusterSize) {
                     mergeAndAddCurrentCluster();
                 } else {
                     mClusters.add(mCurrCluster);
@@ -220,9 +205,6 @@ public class TimeClustering extends Clustering {
                 // Creating a new cluster and adding the current item to it.
                 if (!itemAddedToCurrentCluster) {
                     mCurrCluster = new Cluster();
-                    if (geographicallySeparateItem) {
-                        mCurrCluster.mGeographicallySeparatedFromPrevCluster = true;
-                    }
                     mCurrCluster.addItem(currentItem);
                 }
             }
@@ -234,8 +216,7 @@ public class TimeClustering extends Clustering {
                 // The last cluster may potentially be too big or too small.
                 if (numCurrClusterItems > mMaxClusterSize) {
                     splitAndAddCurrentCluster();
-                } else if (numClusters > 0 && numCurrClusterItems < mMinClusterSize
-                        && !mCurrCluster.mGeographicallySeparatedFromPrevCluster) {
+                } else if (numClusters > 0 && numCurrClusterItems < mMinClusterSize) {
                     mergeAndAddCurrentCluster();
                 } else {
                     mClusters.add(mCurrCluster);
@@ -317,22 +298,6 @@ public class TimeClustering extends Clustering {
             mClusters.add(mCurrCluster);
         }
     }
-
-    // Returns true if a, b are sufficiently geographically separated.
-    private static boolean isGeographicallySeparated(SmallItem itemA, SmallItem itemB) {
-        if (!GalleryUtils.isValidLocation(itemA.lat, itemA.lng)
-                || !GalleryUtils.isValidLocation(itemB.lat, itemB.lng)) {
-            return false;
-        }
-
-        double distance = GalleryUtils.fastDistanceMeters(
-            Math.toRadians(itemA.lat),
-            Math.toRadians(itemA.lng),
-            Math.toRadians(itemB.lat),
-            Math.toRadians(itemB.lng));
-        return (GalleryUtils.toMile(distance) > GEOGRAPHIC_DISTANCE_CUTOFF_IN_MILES);
-    }
-
     // Returns the time interval between the two items in milliseconds.
     private static long timeDistance(SmallItem a, SmallItem b) {
         return Math.abs(a.dateInMs - b.dateInMs);
@@ -342,16 +307,12 @@ public class TimeClustering extends Clustering {
 class SmallItem {
     Path path;
     long dateInMs;
-    double lat, lng;
 }
 
 class Cluster {
     @SuppressWarnings("unused")
     private static final String TAG = "Cluster";
     private static final String MMDDYY_FORMAT = "MMddyy";
-
-    // This is for TimeClustering only.
-    public boolean mGeographicallySeparatedFromPrevCluster = false;
 
     private ArrayList<SmallItem> mItems = new ArrayList<SmallItem>();
 
