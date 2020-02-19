@@ -41,8 +41,8 @@ public class SaveVideoFileUtils {
         // saved.
         dstFileInfo.mDirectory = getSaveDirectory(contentResolver, uri);
         if ((dstFileInfo.mDirectory == null) || !dstFileInfo.mDirectory.canWrite()) {
-            dstFileInfo.mDirectory = new File(Environment.getExternalStorageDirectory(),
-                    BucketNames.DOWNLOAD);
+            dstFileInfo.mDirectory = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS);
             dstFileInfo.mFolderName = defaultFolderName;
         } else {
             dstFileInfo.mFolderName = dstFileInfo.mDirectory.getName();

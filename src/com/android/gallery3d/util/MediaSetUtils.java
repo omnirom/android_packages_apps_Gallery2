@@ -33,16 +33,16 @@ public class MediaSetUtils {
     }
 
     public static final int DOWNLOAD_BUCKET_ID = GalleryUtils.getBucketId(
-            Environment.getExternalStorageDirectory().toString() + "/"
-            + BucketNames.DOWNLOAD);
+            Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_DOWNLOADS).getAbsolutePath());
     public static final int SNAPSHOT_BUCKET_ID = GalleryUtils.getBucketId(
-            Environment.getExternalStorageDirectory().toString() +
-            "/" + BucketNames.SCREENSHOTS);
+            Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES + "/" + Environment.DIRECTORY_SCREENSHOTS).getAbsolutePath());
     public static final int MOVIES_BUCKET_ID = GalleryUtils.getBucketId(
-            Environment.getExternalStorageDirectory().toString() +
-            "/" + BucketNames.MOVIES);
+            Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_MOVIES).getAbsolutePath());
     public static int getCameraBucketId() {
-        return GalleryUtils.getBucketId(mRoot + "/" + BucketNames.CAMERA);
+        return GalleryUtils.getBucketId(mRoot + "/" + Environment.DIRECTORY_DCIM + "/Camera");
     }
 
     public static boolean isCameraSource(Path path) {

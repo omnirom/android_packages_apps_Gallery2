@@ -751,6 +751,10 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         mLoadingBits |= loadTaskBit;
     }
 
+    private boolean isReloadingBit() {
+        return (mLoadingBits &= BIT_LOADING_RELOAD) != 0;
+    }
+
     private void clearLoadingBit(int loadTaskBit) {
         mLoadingBits &= ~loadTaskBit;
         if (mLoadingBits == 0 && mIsActive) {

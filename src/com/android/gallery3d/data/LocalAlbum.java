@@ -30,7 +30,6 @@ import android.provider.MediaStore.Video.VideoColumns;
 import com.android.gallery3d.R;
 import com.android.gallery3d.app.GalleryApp;
 import com.android.gallery3d.common.Utils;
-import com.android.gallery3d.util.BucketNames;
 import com.android.gallery3d.util.GalleryUtils;
 import com.android.gallery3d.util.MediaSetUtils;
 
@@ -294,28 +293,20 @@ public class LocalAlbum extends MediaSet {
 
     public static String getLocalizedName(Resources res, int bucketId,
             String name) {
-        if (bucketId == MediaSetUtils.getCameraBucketId()) {
-            return res.getString(R.string.folder_camera);
-        } else if (bucketId == MediaSetUtils.DOWNLOAD_BUCKET_ID) {
-            return res.getString(R.string.folder_download);
-        } else if (bucketId == MediaSetUtils.SNAPSHOT_BUCKET_ID) {
-            return res.getString(R.string.folder_screenshot);
-        } else {
-            return name;
-        }
+        return name;
     }
 
     // Relative path is the absolute path minus external storage path
     public static String getRelativePath(int bucketId) {
         String relativePath = "/";
         if (bucketId == MediaSetUtils.getCameraBucketId()) {
-            relativePath += BucketNames.CAMERA;
+            relativePath += Environment.DIRECTORY_DCIM + "/Camera";
         } else if (bucketId == MediaSetUtils.DOWNLOAD_BUCKET_ID) {
-            relativePath += BucketNames.DOWNLOAD;
+            relativePath += Environment.DIRECTORY_DOWNLOADS;
         } else if (bucketId == MediaSetUtils.SNAPSHOT_BUCKET_ID) {
-            relativePath += BucketNames.SCREENSHOTS;
+            relativePath += Environment.DIRECTORY_PICTURES + "/" + Environment.DIRECTORY_SCREENSHOTS;
         } else if (bucketId == MediaSetUtils.MOVIES_BUCKET_ID) {
-            relativePath += BucketNames.MOVIES;
+            relativePath += Environment.DIRECTORY_MOVIES;
         } else {
             // If the first few cases didn't hit the matching path, do a
             // thorough search in the local directories.

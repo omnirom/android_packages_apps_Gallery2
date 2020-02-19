@@ -281,7 +281,7 @@ public class AlbumSetPage extends ActivityState implements
         mSlotView.invalidate();
     }
 
-    public void doRunClusterAction(int clusterType) {
+    private void doRunClusterAction(int clusterType) {
         String basePath = mMediaSet.getPath().toString();
         String newPath = FilterUtils.switchClusterPath(basePath, clusterType);
         Bundle data = new Bundle(getData());
@@ -292,6 +292,10 @@ public class AlbumSetPage extends ActivityState implements
 
     @Override
     public void doCluster(final int clusterType) {
+        // noop
+        if (mSelectedAction == clusterType) {
+            return;
+        }
         mSelectionManager.leaveSelectionMode();
         // if type is location - check for perms
         if (clusterType == FilterUtils.CLUSTER_BY_LOCATION) {
@@ -369,6 +373,10 @@ public class AlbumSetPage extends ActivityState implements
 
     private void setLoadingBit(int loadingBit) {
         mLoadingBits |= loadingBit;
+    }
+
+    private boolean isReloadingBit() {
+        return (mLoadingBits &= BIT_LOADING_RELOAD) != 0;
     }
 
     @Override
@@ -625,6 +633,9 @@ public class AlbumSetPage extends ActivityState implements
 
     @Override
     public void onBottomControlClicked(int control) {
+        if (isReloadingBit()) {
+            return;
+        }
         switch(control) {
             case R.id.albumpage_bottom_control_album:
                 doCluster(FilterUtils.CLUSTER_BY_ALBUM);
@@ -645,19 +656,15 @@ public class AlbumSetPage extends ActivityState implements
         switch(mSelectedAction) {
             case FilterUtils.CLUSTER_BY_ALBUM:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_album);
-                mActionBar.setTitle(R.string.albums);
                 break;
             case FilterUtils.CLUSTER_BY_LOCATION:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_location);
-                mActionBar.setTitle(R.string.locations);
                 break;
             case FilterUtils.CLUSTER_BY_TIME:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_times);
-                mActionBar.setTitle(R.string.times);
                 break;
             case FilterUtils.CLUSTER_BY_TYPE:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_type);
-                mActionBar.setTitle(R.string.type);
                 break;
         }
     }
@@ -674,7 +681,7 @@ public class AlbumSetPage extends ActivityState implements
                 mActionBar.setTitle(R.string.times);
                 break;
             case FilterUtils.CLUSTER_BY_TYPE:
-                mActionBar.setTitle(R.string.type);
+                mActionBar.setTitle(R.string.types);
                 break;
         }
     }
