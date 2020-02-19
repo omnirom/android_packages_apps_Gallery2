@@ -66,7 +66,7 @@ import java.util.ArrayList;
 
 public class AlbumSetPage extends ActivityState implements
         SelectionManager.SelectionListener, GalleryActionBar.ClusterRunner,
-        EyePosition.EyePositionListener, MediaSet.SyncListener,
+        EyePosition.EyePositionListener,
         AlbumSetPageBottomControls.Delegate {
     @SuppressWarnings("unused")
     private static final String TAG = "AlbumSetPage";
@@ -79,9 +79,6 @@ public class AlbumSetPage extends ActivityState implements
     private static final int DATA_CACHE_SIZE = 256;
     private static final int REQUEST_DO_ANIMATION = 1;
     private static final int REQUEST_SETTINGS = 2;
-
-    private static final int BIT_LOADING_RELOAD = 1;
-    private static final int BIT_LOADING_SYNC = 2;
 
     private boolean mIsActive = false;
     private SlotView mSlotView;
@@ -106,11 +103,6 @@ public class AlbumSetPage extends ActivityState implements
     private float mX;
     private float mY;
     private float mZ;
-
-    private Future<Integer> mSyncTask = null;
-
-    private int mLoadingBits = 0;
-    private boolean mInitialSynced = false;
 
     private AlbumSetPageBottomControls mBottomControls;
 
@@ -281,7 +273,7 @@ public class AlbumSetPage extends ActivityState implements
         mSlotView.invalidate();
     }
 
-    public void doRunClusterAction(int clusterType) {
+    private void doRunClusterAction(int clusterType) {
         String basePath = mMediaSet.getPath().toString();
         String newPath = FilterUtils.switchClusterPath(basePath, clusterType);
         Bundle data = new Bundle(getData());
@@ -292,6 +284,10 @@ public class AlbumSetPage extends ActivityState implements
 
     @Override
     public void doCluster(final int clusterType) {
+        // noop
+        if (mSelectedAction == clusterType) {
+            return;
+        }
         mSelectionManager.leaveSelectionMode();
         // if type is location - check for perms
         if (clusterType == FilterUtils.CLUSTER_BY_LOCATION) {
@@ -347,30 +343,6 @@ public class AlbumSetPage extends ActivityState implements
         mActionModeHandler.destroy();
     }
 
-    private void clearLoadingBit(int loadingBit) {
-        mLoadingBits &= ~loadingBit;
-        if (mLoadingBits == 0 && mIsActive) {
-            if (mAlbumSetDataAdapter.size() == 0) {
-                // If this is not the top of the gallery folder hierarchy,
-                // tell the parent AlbumSetPage instance to handle displaying
-                // the empty album toast, otherwise show it within this
-                // instance
-                if (mActivity.getStateManager().getStateCount() > 1) {
-                    Intent result = new Intent();
-                    setStateResult(Activity.RESULT_OK, result);
-                    mActivity.getStateManager().finishState(this);
-                } else {
-                    mSlotView.invalidate();
-                }
-                return;
-            }
-        }
-    }
-
-    private void setLoadingBit(int loadingBit) {
-        mLoadingBits |= loadingBit;
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -379,11 +351,6 @@ public class AlbumSetPage extends ActivityState implements
         mAlbumSetView.pause();
         mActionModeHandler.pause();
         mEyePosition.pause();
-        if (mSyncTask != null) {
-            mSyncTask.cancel();
-            mSyncTask = null;
-            clearLoadingBit(BIT_LOADING_SYNC);
-        }
         GalleryUtils.setAlbumsetZoomLevel(mActivity, mSlotView.getZoomLevel());
         mBottomControls.hide(false);
     }
@@ -400,17 +367,11 @@ public class AlbumSetPage extends ActivityState implements
         mActivity.getGLRootView().applySystemInsets();
         mActivity.setBottomControlMargin(true);
 
-        // Set the reload bit here to prevent it exit this page in clearLoadingBit().
-        setLoadingBit(BIT_LOADING_RELOAD);
         mAlbumSetDataAdapter.resume();
 
         mAlbumSetView.resume();
         mEyePosition.resume();
         mActionModeHandler.resume();
-        if (!mInitialSynced) {
-            setLoadingBit(BIT_LOADING_SYNC);
-            mSyncTask = mMediaSet.requestSync(AlbumSetPage.this);
-        }
         mBottomControls.show(false);
    }
 
@@ -598,32 +559,6 @@ public class AlbumSetPage extends ActivityState implements
     }
 
     @Override
-    public void onSyncDone(final MediaSet mediaSet, final int resultCode) {
-        if (resultCode == MediaSet.SYNC_RESULT_ERROR) {
-            Log.d(TAG, "onSyncDone: " + Utils.maskDebugInfo(mediaSet.getName()) + " result="
-                    + resultCode);
-        }
-        ((Activity) mActivity).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                GLRoot root = mActivity.getGLRoot();
-                root.lockRenderThread();
-                try {
-                    if (resultCode == MediaSet.SYNC_RESULT_SUCCESS) {
-                        mInitialSynced = true;
-                    }
-                    clearLoadingBit(BIT_LOADING_SYNC);
-                    if (resultCode == MediaSet.SYNC_RESULT_ERROR && mIsActive) {
-                        Log.w(TAG, "failed to load album set");
-                    }
-                } finally {
-                    root.unlockRenderThread();
-                }
-            }
-        });
-    }
-
-    @Override
     public void onBottomControlClicked(int control) {
         switch(control) {
             case R.id.albumpage_bottom_control_album:
@@ -645,19 +580,15 @@ public class AlbumSetPage extends ActivityState implements
         switch(mSelectedAction) {
             case FilterUtils.CLUSTER_BY_ALBUM:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_album);
-                mActionBar.setTitle(R.string.albums);
                 break;
             case FilterUtils.CLUSTER_BY_LOCATION:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_location);
-                mActionBar.setTitle(R.string.locations);
                 break;
             case FilterUtils.CLUSTER_BY_TIME:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_times);
-                mActionBar.setTitle(R.string.times);
                 break;
             case FilterUtils.CLUSTER_BY_TYPE:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_type);
-                mActionBar.setTitle(R.string.type);
                 break;
         }
     }
@@ -674,7 +605,7 @@ public class AlbumSetPage extends ActivityState implements
                 mActionBar.setTitle(R.string.times);
                 break;
             case FilterUtils.CLUSTER_BY_TYPE:
-                mActionBar.setTitle(R.string.type);
+                mActionBar.setTitle(R.string.types);
                 break;
         }
     }
@@ -683,13 +614,11 @@ public class AlbumSetPage extends ActivityState implements
         @Override
         public void onLoadingStarted() {
             mActivity.showProgress();
-            setLoadingBit(BIT_LOADING_RELOAD);
         }
 
         @Override
-        public void onLoadingFinished(boolean loadingFailed) {
+        public void onLoadingFinished() {
             mActivity.hideProgress();
-            clearLoadingBit(BIT_LOADING_RELOAD);
         }
     }
 }

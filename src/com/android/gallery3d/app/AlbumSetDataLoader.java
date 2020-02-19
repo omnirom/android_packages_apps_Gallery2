@@ -95,7 +95,7 @@ public class AlbumSetDataLoader {
                         if (mLoadingListener != null) mLoadingListener.onLoadingStarted();
                         return;
                     case MSG_LOAD_FINISH:
-                        if (mLoadingListener != null) mLoadingListener.onLoadingFinished(false);
+                        if (mLoadingListener != null) mLoadingListener.onLoadingFinished();
                         return;
                 }
             }
@@ -343,7 +343,7 @@ public class AlbumSetDataLoader {
 
         @Override
         public void run() {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+            Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
 
             boolean updateComplete = false;
             while (mActive) {
@@ -381,7 +381,6 @@ public class AlbumSetDataLoader {
                 }
                 executeAndWait(new UpdateContent(info));
             }
-            updateLoading(false);
         }
 
         public synchronized void notifyDirty() {

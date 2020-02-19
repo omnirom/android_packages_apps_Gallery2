@@ -210,7 +210,7 @@ public class PhotoDataAdapter implements PhotoPage.Model {
                     }
                     case MSG_LOAD_FINISH: {
                         if (mDataListener != null) {
-                            mDataListener.onLoadingFinished(false);
+                            mDataListener.onLoadingFinished();
                         }
                         return;
                     }

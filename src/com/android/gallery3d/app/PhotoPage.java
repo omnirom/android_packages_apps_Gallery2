@@ -500,7 +500,7 @@ public abstract class PhotoPage extends ActivityState implements
                 }
 
                 @Override
-                public void onLoadingFinished(boolean loadingFailed) {
+                public void onLoadingFinished() {
                     if (!mModel.isEmpty()) {
                         MediaItem photo = mModel.getMediaItem(0);
                         if (photo != null) updateCurrentPhoto(photo);

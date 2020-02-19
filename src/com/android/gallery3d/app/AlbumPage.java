@@ -62,7 +62,7 @@ import com.android.gallery3d.util.MediaSetUtils;
 import java.util.Locale;
 
 public class AlbumPage extends ActivityState implements GalleryActionBar.ClusterRunner,
-        SelectionManager.SelectionListener, MediaSet.SyncListener, GalleryActionBar.OnAlbumModeSelectedListener {
+        SelectionManager.SelectionListener,GalleryActionBar.OnAlbumModeSelectedListener {
     @SuppressWarnings("unused")
     private static final String TAG = "AlbumPage";
 
@@ -75,9 +75,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     private static final int REQUEST_SLIDESHOW = 1;
     public static final int REQUEST_PHOTO = 2;
     private static final int REQUEST_DO_ANIMATION = 3;
-
-    private static final int BIT_LOADING_RELOAD = 1;
-    private static final int BIT_LOADING_SYNC = 2;
 
     private static final float USER_DISTANCE_METER = 0.3f;
 
@@ -102,15 +99,10 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     private int mFocusIndex = 0;
     private MediaSet mMediaSet;
     private float mUserDistance; // in pixel
-    private Future<Integer> mSyncTask = null;
     private boolean mLaunchedFromPhotoPage;
     private boolean mInCameraApp;
     private boolean mInCameraAndWantQuitOnPause;
 
-    private int mLoadingBits = 0;
-    private boolean mInitialSynced = false;
-    private int mSyncResult;
-    private boolean mLoadingFailed;
     private RelativePosition mOpenCenter = new RelativePosition();
 
     private Handler mHandler;
@@ -452,18 +444,12 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             mActionBar.setTitle(mMediaSet.getName());
         }
 
-        // Set the reload bit here to prevent it exit this page in clearLoadingBit().
-        setLoadingBit(BIT_LOADING_RELOAD);
-        mLoadingFailed = false;
         mAlbumDataAdapter.resume();
 
         mAlbumView.resume();
         mAlbumView.setPressedIndex(-1);
         mActionModeHandler.resume();
-        if (!mInitialSynced) {
-            setLoadingBit(BIT_LOADING_SYNC);
-            mSyncTask = mMediaSet.requestSync(this);
-        }
+
         mInCameraAndWantQuitOnPause = mInCameraApp;
     }
 
@@ -480,11 +466,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         mAlbumDataAdapter.pause();
         mAlbumView.pause();
 
-        if (mSyncTask != null) {
-            mSyncTask.cancel();
-            mSyncTask = null;
-            clearLoadingBit(BIT_LOADING_SYNC);
-        }
         GalleryUtils.setAlbumZoomLevel(mActivity, mSlotView.getZoomLevel());
     }
 
@@ -711,67 +692,13 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         mActionModeHandler.updateSupportedOperation(path, selected);
     }
 
-    @Override
-    public void onSyncDone(final MediaSet mediaSet, final int resultCode) {
-        Log.d(TAG, "onSyncDone: " + Utils.maskDebugInfo(mediaSet.getName()) + " result="
-                + resultCode);
-        ((Activity) mActivity).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                GLRoot root = mActivity.getGLRoot();
-                root.lockRenderThread();
-                mSyncResult = resultCode;
-                try {
-                    if (resultCode == MediaSet.SYNC_RESULT_SUCCESS) {
-                        mInitialSynced = true;
-                    }
-                    clearLoadingBit(BIT_LOADING_SYNC);
-                    showSyncErrorIfNecessary(mLoadingFailed);
-                } finally {
-                    root.unlockRenderThread();
-                }
-            }
-        });
-    }
-
-    // Show sync error toast when all the following conditions are met:
-    // (1) both loading and sync are done,
-    // (2) sync result is error,
-    // (3) the page is still active, and
-    // (4) no photo is shown or loading fails.
-    private void showSyncErrorIfNecessary(boolean loadingFailed) {
-        if ((mLoadingBits == 0) && (mSyncResult == MediaSet.SYNC_RESULT_ERROR) && mIsActive
-                && (loadingFailed || (mAlbumDataAdapter.size() == 0))) {
-            Toast.makeText(mActivity, R.string.sync_album_error,
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void setLoadingBit(int loadTaskBit) {
-        mLoadingBits |= loadTaskBit;
-    }
-
-    private void clearLoadingBit(int loadTaskBit) {
-        mLoadingBits &= ~loadTaskBit;
-        if (mLoadingBits == 0 && mIsActive) {
-            if (mAlbumDataAdapter.size() == 0) {
-                mSlotView.invalidate();
-            }
-        }
-    }
-
     private class MyLoadingListener implements LoadingListener {
         @Override
         public void onLoadingStarted() {
-            setLoadingBit(BIT_LOADING_RELOAD);
-            mLoadingFailed = false;
         }
 
         @Override
-        public void onLoadingFinished(boolean loadingFailed) {
-            clearLoadingBit(BIT_LOADING_RELOAD);
-            mLoadingFailed = loadingFailed;
-            showSyncErrorIfNecessary(loadingFailed);
+        public void onLoadingFinished() {
         }
     }
 

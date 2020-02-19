@@ -40,7 +40,7 @@
     <string name="scrolling_wall_yes">No</string>
     <string name="scrolling_wall_no">Yes</string>
     <string name="title_activity_filter_show_new">Editor</string>
-    <string name="time_cluster_weeks_title">Group times by weeks</string>
+    <string name="time_cluster_weeks_title">Group times by week</string>
     <string name="cluster_settings">Grouping</string>
     <string name="count_string_single">item</string>
     <string name="count_string_multi">items</string>

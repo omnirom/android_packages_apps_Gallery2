@@ -98,11 +98,7 @@ public class AlbumDataLoader {
                         if (mLoadingListener != null) mLoadingListener.onLoadingStarted();
                         return;
                     case MSG_LOAD_FINISH:
-                        if (mLoadingListener != null) {
-                            boolean loadingFailed =
-                                    (mFailedVersion != MediaObject.INVALID_DATA_VERSION);
-                            mLoadingListener.onLoadingFinished(loadingFailed);
-                        }
+                        if (mLoadingListener != null) mLoadingListener.onLoadingFinished();
                         return;
                 }
             }
@@ -358,7 +354,7 @@ public class AlbumDataLoader {
 
         @Override
         public void run() {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+            Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
 
             boolean updateComplete = false;
             while (mActive) {
@@ -390,7 +386,6 @@ public class AlbumDataLoader {
                 }
                 executeAndWait(new UpdateContent(info));
             }
-            updateLoading(false);
         }
 
         public synchronized void notifyDirty() {
