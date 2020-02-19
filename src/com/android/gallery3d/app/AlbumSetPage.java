@@ -645,19 +645,15 @@ public class AlbumSetPage extends ActivityState implements
         switch(mSelectedAction) {
             case FilterUtils.CLUSTER_BY_ALBUM:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_album);
-                mActionBar.setTitle(R.string.albums);
                 break;
             case FilterUtils.CLUSTER_BY_LOCATION:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_location);
-                mActionBar.setTitle(R.string.locations);
                 break;
             case FilterUtils.CLUSTER_BY_TIME:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_times);
-                mActionBar.setTitle(R.string.times);
                 break;
             case FilterUtils.CLUSTER_BY_TYPE:
                 mBottomControls.selectItemWithId(R.id.albumpage_bottom_control_type);
-                mActionBar.setTitle(R.string.type);
                 break;
         }
     }
@@ -674,7 +670,7 @@ public class AlbumSetPage extends ActivityState implements
                 mActionBar.setTitle(R.string.times);
                 break;
             case FilterUtils.CLUSTER_BY_TYPE:
-                mActionBar.setTitle(R.string.type);
+                mActionBar.setTitle(R.string.types);
                 break;
         }
     }
