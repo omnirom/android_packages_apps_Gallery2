@@ -131,6 +131,7 @@ public class AlbumSetSlotRenderer extends AbstractSlotRenderer {
         renderRequestFlags |= renderContent(canvas, entry, width, height);
         renderRequestFlags |= renderLabel(canvas, entry, width, height);
         renderRequestFlags |= renderOverlay(canvas, index, entry, width, height);
+        renderRequestFlags |= renderSelected(canvas, index, entry, width, height);
         return renderRequestFlags;
     }
 
@@ -148,6 +149,14 @@ public class AlbumSetSlotRenderer extends AbstractSlotRenderer {
                 drawSnapshotOverlay(canvas, width, height);
             }
         }
+
+        return renderRequestFlags;
+    }
+
+    protected int renderSelected(
+            GLCanvas canvas, int index, AlbumSetEntry entry, int width, int height) {
+        int renderRequestFlags = 0;
+
         if (mPressedIndex == index) {
             if (mAnimatePressedUp) {
                 drawPressedUpFrame(canvas, width, height);
@@ -240,5 +249,29 @@ public class AlbumSetSlotRenderer extends AbstractSlotRenderer {
         if (mDataWindow != null) {
             mDataWindow.onSlotSizeChanged(width, height);
         }
+    }
+
+    @Override
+    protected void drawVideoOverlay(GLCanvas canvas, int width, int height) {
+        mVideoPlayIcon.draw(canvas, width - 15 - mVideoPlayIcon.getWidth(),
+                height - mVideoPlayIcon.getHeight() - 15);
+    }
+
+    @Override
+    protected void drawCameraOverlay(GLCanvas canvas, int width, int height) {
+        mCameraOverlay.draw(canvas, width - 15 - mCameraOverlay.getWidth(),
+                height - mCameraOverlay.getHeight() - 15);
+    }
+
+    @Override
+    protected void drawSnapshotOverlay(GLCanvas canvas, int width, int height) {
+        mSnapshotOverlay.draw(canvas, width - 15 - mSnapshotOverlay.getWidth(),
+                height - mSnapshotOverlay.getHeight() - 15);
+    }
+
+    @Override
+    protected void drawDownloadOverlay(GLCanvas canvas, int width, int height) {
+        mDownloadOverlay.draw(canvas, width - 15 - mDownloadOverlay.getWidth(),
+                height - mDownloadOverlay.getHeight() - 15);
     }
 }

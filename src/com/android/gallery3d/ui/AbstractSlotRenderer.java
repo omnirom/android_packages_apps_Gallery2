@@ -30,15 +30,15 @@ import com.android.gallery3d.glrenderer.Texture;
 
 public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
 
-    private final ResourceTexture mVideoPlayIcon;
+    protected final ResourceTexture mVideoPlayIcon;
     private final ResourceTexture mPanoramaIcon;
     private final ResourceTexture mFramePressed;
     private FadeOutTexture mFramePressedUp;
     private GLPaint mFramePaint;
     private final ResourceTexture mSelectionIcon;
-    private final ResourceTexture mCameraOverlay;
-    private final ResourceTexture mSnapshotOverlay;
-    private final ResourceTexture mDownloadOverlay;
+    protected final ResourceTexture mCameraOverlay;
+    protected final ResourceTexture mSnapshotOverlay;
+    protected final ResourceTexture mDownloadOverlay;
 
     protected AbstractSlotRenderer(Context context) {
         mVideoPlayIcon = new ResourceTexture(context, R.drawable.ic_gallery_play);
