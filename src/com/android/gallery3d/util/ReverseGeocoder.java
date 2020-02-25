@@ -23,6 +23,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
 
 import com.android.gallery3d.common.BlobCache;
 
@@ -108,35 +109,33 @@ public class ReverseGeocoder {
             return null;
         }
 
-        // Get current location, we decide the granularity of the string based
-        // on this.
-        LocationManager locationManager =
-                (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-        Location location = null;
-        List<String> providers = locationManager.getAllProviders();
-        for (int i = 0; i < providers.size(); ++i) {
-            String provider = providers.get(i);
-            location = (provider != null) ? locationManager.getLastKnownLocation(provider) : null;
-            if (location != null)
-                break;
-        }
         String currentCity = "";
         String currentAdminArea = "";
         String currentCountry = Locale.getDefault().getCountry();
-        if (location != null) {
-            Address currentAddress = lookupAddress(
-                    location.getLatitude(), location.getLongitude(), true);
-            if (currentAddress == null) {
-                currentAddress = sCurrentAddress;
-            } else {
-                sCurrentAddress = currentAddress;
+
+        // Get current location, we decide the granularity of the string based
+        // on this.
+        /*LocationManager locationManager =
+                (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+        if (Settings.Secure.getInt(mContext.getContentResolver(), Settings.Secure.LOCATION_MODE, -1)
+                != Settings.Secure.LOCATION_MODE_OFF) {
+            Location location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            if (location != null) {
+                Log.d(TAG, "Current location is " + location);
+                Address currentAddress = lookupAddress(
+                        location.getLatitude(), location.getLongitude(), true);
+                if (currentAddress == null) {
+                    currentAddress = sCurrentAddress;
+                } else {
+                    sCurrentAddress = currentAddress;
+                }
+                if (currentAddress != null && currentAddress.getCountryCode() != null) {
+                    currentCity = checkNull(currentAddress.getLocality());
+                    currentCountry = checkNull(currentAddress.getCountryCode());
+                    currentAdminArea = checkNull(currentAddress.getAdminArea());
+                }
             }
-            if (currentAddress != null && currentAddress.getCountryCode() != null) {
-                currentCity = checkNull(currentAddress.getLocality());
-                currentCountry = checkNull(currentAddress.getCountryCode());
-                currentAdminArea = checkNull(currentAddress.getAdminArea());
-            }
-        }
+        }*/
 
         String closestCommonLocation = null;
         String addr1Locality = checkNull(addr1.getLocality());
