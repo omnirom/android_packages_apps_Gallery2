@@ -260,7 +260,7 @@ public class TrimVideo extends Activity implements
                             mProgress.dismiss();
                             mProgress = null;
                             // Show the result only when the activity not stopped.                            
-                            Uri uri = android.support.v4.content.FileProvider.getUriForFile(getApplicationContext(),
+                            Uri uri = androidx.core.content.FileProvider.getUriForFile(getApplicationContext(),
                                     "com.android.gallery3d", mDstFileInfo.mFile);
                             Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
                             intent.setDataAndType(uri, "video/*");

@@ -5,8 +5,10 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_ANDROID_LIBRARIES := \
-    android-support-v4 \
-    android-support-v13
+        androidx.legacy_legacy-support-core-ui \
+        androidx.core_core \
+        androidx.legacy_legacy-support-v13 \
+        androidx.fragment_fragment
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     xmp_toolkit \

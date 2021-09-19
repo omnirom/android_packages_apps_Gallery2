@@ -17,8 +17,8 @@
      limitations under the License.
 -->
 
-<manifest android:versionCode="50003"
-        android:versionName="1.2.3"
+<manifest android:versionCode="50004"
+        android:versionName="1.2.4"
         xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.android.gallery3d">
 
@@ -352,7 +352,7 @@
             </intent-filter>
         </receiver>
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="com.android.gallery3d"
             android:exported="false"
             android:grantUriPermissions="true">

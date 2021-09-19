@@ -82,7 +82,7 @@ public class MuteVideo {
 
                             // Show the result only when the activity not
                             // stopped.
-                            Uri uri = android.support.v4.content.FileProvider.getUriForFile(mActivity, "com.android.gallery3d", mDstFileInfo.mFile);
+                            Uri uri = androidx.core.content.FileProvider.getUriForFile(mActivity, "com.android.gallery3d", mDstFileInfo.mFile);
                             Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
                             intent.setDataAndType(uri, "video/*");
                             intent.putExtra(MediaStore.EXTRA_FINISH_ON_COMPLETION, false);
