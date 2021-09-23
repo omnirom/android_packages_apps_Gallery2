@@ -253,13 +253,6 @@ public class GalleryActionBar implements OnNavigationListener {
         }
     }
 
-    public void onConfigurationChanged() {
-        if (mActionBar != null && mAlbumModeListener != null) {
-            //OnAlbumModeSelectedListener listener = mAlbumModeListener;
-            //enableAlbumModeMenu(mLastAlbumModeSelected, listener);
-        }
-    }
-
     public void showClusterDialog(final ClusterRunner clusterRunner) {
         createDialogData();
         final ArrayList<Integer> actions = mActions;

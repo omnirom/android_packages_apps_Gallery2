@@ -14,43 +14,54 @@
      limitations under the License.
 -->
 <resources>
-    <color name="holo_gray_light">#33999999</color>
     <color name="default_background">#000</color>
-    <color name="primary">#D32F2F</color>
-    <color name="primary_dark">#C62828</color>
-    <color name="accent">#E53935</color>
-    <color name="textColor">#ffffff</color>
+    <color name="bottom_bar_background">#000</color>
+    <color name="placeholder_background">#171717</color>
 
     <!-- configuration for album set page -->
-    <color name="albumset_background">#171717</color>
-    <color name="albumset_placeholder">#333</color>
-    <color name="albumset_label_background">#EE414143</color>
-    <color name="albumset_label_title">#FBFBFB</color>
-    <color name="albumset_label_count">#A9ABAD</color>
+    <!-- material_grey_900 -->
+    <color name="albumset_background">@color/default_background</color>
+    <color name="albumset_placeholder">@color/placeholder_background</color>
+    <!-- material_grey_800 -->
+    <color name="albumset_label_background">@color/placeholder_background</color>
+    <color name="albumset_label_title">#fff</color>
+    <color name="albumset_label_count">#fff</color>
 
     <!-- configuration for album page -->
-    <color name="album_background">#171717</color>
-    <color name="album_placeholder">#333</color>
+    <color name="album_background">@color/default_background</color>
+    <color name="album_placeholder">@color/placeholder_background</color>
 
     <!-- configuration for photo page -->
-    <color name="photo_background">#171717</color>
-    <color name="photo_placeholder">#333</color>
+    <color name="photo_background">@color/default_background</color>
+    <color name="photo_placeholder">@color/placeholder_background</color>
 
     <!-- configuration for manage cache page -->
-    <color name="cache_background">#171717</color>
-    <color name="cache_placeholder">#333</color>
+    <color name="cache_background">@color/default_background</color>
+    <color name="cache_placeholder">@color/placeholder_background</color>
 
-    <color name="bitmap_screennail_placeholder">#333</color>
+    <color name="bitmap_screennail_placeholder">@color/placeholder_background</color>
 
-    <color name="slideshow_background">#171717</color>
+    <color name="slideshow_background">@color/default_background</color>
 
-    <color name="button_dark_transparent_background">#6000</color>
+    <color name="button_dark_transparent_background">#1d1d1d</color>
 
     <color name="ingest_highlight_semitransparent">#88777777</color>
     <color name="ingest_date_tile_text">#777777</color>
 
-    <!-- Camera resources below -->
+    <!-- FAB -->
+    <color name="fab">@color/accent</color>
+    <color name="floating_action_button_touch_tint">#F44336</color>
+    <color name="floating_action_button_icon_color">#ffffff</color>
 
+    <color name="primary">#2196F3</color>
+    <color name="primary_dark">#1976D2</color>
+    <color name="primary_light">#BBDEFB</color>
+    <color name="accent">@color/primary</color>
+    <color name="textColor">#ffffff</color>
+    <color name="photo_overlay">#66000000</color>
+    <color name="details_background">@color/photo_overlay</color>
+
+    <!-- Camera resources below -->
     <color name="recording_time_elapsed_text">#FFFFFFFF</color>
     <color name="recording_time_remaining_text">#FFFF0033</color>
     <color name="on_viewfinder_label_background_color">#77333333</color>
@@ -68,6 +79,7 @@
     <color name="pano_progress_indication_fast">#FFFF2222</color>
     <color name="mode_selection_border">#777777</color>
     <color name="holo_blue_light">#ff777777</color>
+    <color name="holo_gray_light">#33999999</color>
     <color name="bright_foreground_disabled_holo_dark">#ff4c4c4c</color>
     <color name="bright_foreground_holo_dark">#fff3f3f3</color>
     <color name="face_detect_start">#80ffffff</color>
