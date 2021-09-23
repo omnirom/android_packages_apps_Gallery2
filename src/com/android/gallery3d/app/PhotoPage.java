@@ -818,11 +818,6 @@ public abstract class PhotoPage extends ActivityState implements
         // No bars if it's not allowed.
         if (!mActionBarAllowed) return false;
 
-        Configuration config = mActivity.getResources().getConfiguration();
-        if (config.touchscreen == Configuration.TOUCHSCREEN_NOTOUCH) {
-            return false;
-        }
-
         return true;
     }
 
