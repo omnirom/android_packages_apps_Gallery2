@@ -280,7 +280,7 @@ public class GalleryUtils {
             // the MapView to the specified location, but we need a marker
             // for further operations (routing to/from).
             // The q=(lat, lng) syntax is suggested by geo-team.
-            String uri = formatLatitudeLongitude("http://maps.google.com/maps?f=q&q=(%f,%f)",
+            String uri = formatLatitudeLongitude("https://maps.google.com/maps?f=q&q=(%f,%f)",
                     latitude, longitude);
             ComponentName compName = new ComponentName(MAPS_PACKAGE_NAME,
                     MAPS_CLASS_NAME);

@@ -1,10 +1,6 @@
 # Disable the warnings of using dynamic method call in common library.
 -dontnote com.android.gallery3d.common.*
 
-#Avoid the library class dependency error
--dontwarn android.view.inputmethod.InputMethodManager
--dontwarn android.content.res.Resources
-
 # Keep all classes extended from com.android.gallery3d.common.Entry
 # Since we annotate on the fields and use reflection to create SQL
 # according to those field.
@@ -44,14 +40,15 @@
 # Disable the warnings of using dynamic method calls in EffectsRecorder
 -dontnote com.android.camera.EffectsRecorder
 
--keep class android.support.v8.renderscript.** { *; }
-
 # Required for ActionBarSherlock
 -keep class android.support.v4.app.** { *; }
 -keep interface android.support.v4.app.** { *; }
 -keep class com.actionbarsherlock.** { *; }
 -keep interface com.actionbarsherlock.** { *; }
 -keepattributes *Annotation*
+
+# Required for JobIntentService
+-keep class androidx.core.app.CoreComponentFactory { *; }
 
 # Required for mp4parser
 -keep public class * implements com.coremedia.iso.boxes.Box
@@ -88,3 +85,5 @@
 -keep class com.android.gallery3d.jpegstream.JPEGOutputStream { *; }
 -keep class com.android.gallery3d.jpegstream.JPEGInputStream { *; }
 -keep class com.android.gallery3d.jpegstream.StreamUtils { *; }
+
+
