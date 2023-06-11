@@ -404,10 +404,10 @@ public class GalleryActionBar implements OnNavigationListener {
 
     public void setTransparentMode(boolean value) {
         if (value) {
-            mActionBar.setBackgroundDrawable(mActivity.getResources().getDrawable(R.drawable.root_top_bg));
+            mActionBar.setBackgroundDrawable(mActivity.getDrawable(R.drawable.root_top_bg));
         } else {
             mActionBar.setBackgroundDrawable(
-                    new ColorDrawable(mActivity.getResources().getColor(R.color.primary)));
+                    new ColorDrawable(mActivity.getColor(R.color.primary)));
         }
     }
 }

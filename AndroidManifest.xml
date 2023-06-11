@@ -17,8 +17,8 @@
      limitations under the License.
 -->
 
-<manifest android:versionCode="50005"
-        android:versionName="1.2.5"
+<manifest android:versionCode="50006"
+        android:versionName="1.2.6"
         xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.android.gallery3d">
 
