@@ -71,6 +71,9 @@ public abstract class MediaItem extends MediaObject {
         latLong[1] = INVALID_LATLNG;
     }
 
+    public void resolveLocation() {
+    }
+    
     public String[] getTags() {
         return null;
     }

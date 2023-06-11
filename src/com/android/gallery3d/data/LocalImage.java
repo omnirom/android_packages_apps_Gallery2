@@ -345,7 +345,7 @@ public class LocalImage extends LocalMediaItem {
     }
 
     @Override
-    protected void resolveLocation() {
+    public void resolveLocation() {
         if (MIME_TYPE_JPEG.equals(mimeType)) {
             try {
                 android.media.ExifInterface exif = new android.media.ExifInterface(filePath);

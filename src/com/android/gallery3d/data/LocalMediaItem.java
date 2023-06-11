@@ -77,9 +77,6 @@ public abstract class LocalMediaItem extends MediaItem {
         latLong[1] = longitude;
     }
 
-    protected void resolveLocation() {
-    }
-
     abstract protected boolean updateFromCursor(Cursor cursor);
 
     public int getBucketId() {

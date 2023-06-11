@@ -244,7 +244,7 @@ public class LocalVideo extends LocalMediaItem {
     }
 
     @Override
-    protected void resolveLocation() {
+    public void resolveLocation() {
         MediaMetadataRetriever meta = new MediaMetadataRetriever();
         meta.setDataSource(filePath);
         //+47.8207+013.0166/

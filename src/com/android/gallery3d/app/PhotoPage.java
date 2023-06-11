@@ -715,6 +715,8 @@ public abstract class PhotoPage extends ActivityState implements
     private void updateUIForCurrentPhoto() {
         if (mCurrentPhoto == null) return;
 
+        mCurrentPhoto.resolveLocation();
+
         // If by swiping or deletion the user ends up on an action item
         // and zoomed in, zoom out so that the context of the action is
         // more clear

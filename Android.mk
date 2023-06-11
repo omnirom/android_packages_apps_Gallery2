@@ -41,6 +41,10 @@ LOCAL_PROGUARD_ENABLED := disabled
 
 LOCAL_JAVA_LIBRARIES := org.apache.http.legacy
 
+LOCAL_OPTIONAL_USES_LIBRARIES := \
+    com.google.android.media.effects \
+    org.apache.http.legacy
+
 include $(BUILD_PACKAGE)
 
 ifeq ($(strip $(LOCAL_PACKAGE_OVERRIDES)),)
