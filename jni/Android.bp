@@ -15,6 +15,7 @@ cc_defaults {
     header_libs: ["jni_headers"],
     sdk_version: "9",
     shared_libs: ["liblog"],
+    stl: "c++_static",
 }
 cc_library_shared {
     name: "libjni_eglfence",

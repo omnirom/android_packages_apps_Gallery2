@@ -25,14 +25,16 @@ android_app {
     ],
     sdk_version: "current",
     target_sdk_version: "28",
+    min_sdk_version: "28",
     jni_libs: [
         "libjni_eglfence",
         "libjni_filtershow_filters",
         "libjni_jpegstream",
     ],
     use_embedded_native_libs: true,
+    compile_multilib: "both",
     optimize: {
-        proguard_flags_files: ["proguard.flags"],
+        enabled: false,
     },
     libs: ["org.apache.http.legacy"],
     optional_uses_libs: ["com.google.android.media.effects"],
