@@ -65,7 +65,6 @@ import com.android.gallery3d.data.SnailItem;
 import com.android.gallery3d.data.SnailSource;
 import com.android.gallery3d.filtershow.FilterShowActivity;
 import com.android.gallery3d.filtershow.crop.CropActivity;
-import com.android.gallery3d.picasasource.PicasaSource;
 import com.android.gallery3d.ui.DetailsAdapterNew;
 import com.android.gallery3d.ui.GLRootView;
 import com.android.gallery3d.ui.GLView;
@@ -101,7 +100,6 @@ public abstract class PhotoPage extends ActivityState implements
 
     private static final int REQUEST_SLIDESHOW = 1;
     private static final int REQUEST_CROP = 2;
-    private static final int REQUEST_CROP_PICASA = 3;
     private static final int REQUEST_EDIT = 4;
     private static final int REQUEST_PLAY_VIDEO = 5;
     private static final int REQUEST_TRIM = 6;
@@ -999,9 +997,7 @@ public abstract class PhotoPage extends ActivityState implements
                 intent.setClass(activity, CropActivity.class);
                 intent.setDataAndType(manager.getContentUri(path), current.getMimeType())
                     .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                activity.startActivityForResult(intent, PicasaSource.isPicasaImage(current)
-                        ? REQUEST_CROP_PICASA
-                        : REQUEST_CROP);
+                activity.startActivityForResult(intent, REQUEST_CROP);
                 return true;
             }
             case R.id.action_trim: {
@@ -1294,15 +1290,6 @@ public abstract class PhotoPage extends ActivityState implements
                     setCurrentPhotoByIntent(data);
                 }
                 break;
-            case REQUEST_CROP_PICASA: {
-                if (resultCode == Activity.RESULT_OK) {
-                    Context context = mActivity.getAndroidContext();
-                    String message = context.getString(R.string.crop_saved,
-                            context.getString(R.string.folder_edited_online_photos));
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                }
-                break;
-            }
             case REQUEST_SLIDESHOW: {
                 if (data == null) break;
                 String path = data.getStringExtra(SlideshowPage.KEY_ITEM_PATH);

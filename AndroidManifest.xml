@@ -47,7 +47,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE"/>
     <uses-permission android:name="com.android.gallery3d.permission.GALLERY_PROVIDER" />
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    
     <supports-screens android:smallScreens="false"
             android:normalScreens="true" android:largeScreens="true"
             android:anyDensity="true" />
@@ -314,7 +316,6 @@
                 <data android:scheme="package"/>
             </intent-filter>
         </receiver>
-        <service android:name="com.android.gallery3d.app.PackagesMonitor$AsyncService"/>
         <service android:name="com.android.gallery3d.gadget.WidgetService"
                 android:permission="android.permission.BIND_REMOTEVIEWS"/>
         <activity android:name="com.android.gallery3d.gadget.WidgetConfigure"

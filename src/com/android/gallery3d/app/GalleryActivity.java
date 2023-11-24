@@ -38,7 +38,6 @@ import com.android.gallery3d.data.DataManager;
 import com.android.gallery3d.data.MediaItem;
 import com.android.gallery3d.data.MediaSet;
 import com.android.gallery3d.data.Path;
-import com.android.gallery3d.picasasource.PicasaSource;
 import com.android.gallery3d.util.GalleryUtils;
 
 import java.util.ArrayList;
@@ -58,7 +57,6 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
     private static final int PERMISSION_REQUEST_STORAGE = 1;
 
     private static final String TAG = "GalleryActivity";
-    private Dialog mVersionCheckDialog;
     private Bundle mSavedInstanceState;
 
     @Override
@@ -115,15 +113,10 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
     }
 
     public void startDefaultPage() {
-        PicasaSource.showSignInReminder(this);
         Bundle data = new Bundle();
         data.putString(AlbumSetPage.KEY_MEDIA_PATH,
                 getDataManager().getTopSetPath(DataManager.INCLUDE_ALL));
         getStateManager().startState(AlbumSetPage.class, data);
-        mVersionCheckDialog = PicasaSource.getVersionCheckDialog(this);
-        if (mVersionCheckDialog != null) {
-            mVersionCheckDialog.setOnCancelListener(this);
-        }
     }
 
     private void startGetContent(Intent intent) {
@@ -241,24 +234,15 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
     @Override
     protected void onResume() {
         super.onResume();
-        if (mVersionCheckDialog != null) {
-            mVersionCheckDialog.show();
-        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (mVersionCheckDialog != null) {
-            mVersionCheckDialog.dismiss();
-        }
     }
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        if (dialog == mVersionCheckDialog) {
-            mVersionCheckDialog = null;
-        }
     }
 
     @Override

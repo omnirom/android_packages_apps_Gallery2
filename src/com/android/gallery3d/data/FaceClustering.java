@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Rect;
 
 import com.android.gallery3d.R;
-import com.android.gallery3d.picasasource.PicasaSource;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -73,11 +72,7 @@ public class FaceClustering extends Clustering {
 
         public MediaItem getCover() {
             if (mCoverItem != null) {
-                if (PicasaSource.isPicasaImage(mCoverItem)) {
-                    return PicasaSource.getFaceItem(mContext, mCoverItem, mCoverFaceIndex);
-                } else {
-                    return mCoverItem;
-                }
+                return mCoverItem;
             }
             return null;
         }

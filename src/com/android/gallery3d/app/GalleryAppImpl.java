@@ -26,7 +26,6 @@ import com.android.gallery3d.data.DataManager;
 import com.android.gallery3d.data.DownloadCache;
 import com.android.gallery3d.data.ImageCacheService;
 import com.android.gallery3d.gadget.WidgetUtils;
-import com.android.gallery3d.picasasource.PicasaSource;
 import com.android.gallery3d.util.GalleryUtils;
 import com.android.gallery3d.util.LightCycleHelper;
 import com.android.gallery3d.util.ThreadPool;
@@ -54,7 +53,6 @@ public class GalleryAppImpl extends Application implements GalleryApp {
         initializeAsyncTask();
         GalleryUtils.initialize(this);
         WidgetUtils.initialize(this);
-        PicasaSource.initialize(this);
         UsageStatistics.initialize(this);
         // create notificatioon channels
         makeNotificationChannels(this);

@@ -58,7 +58,7 @@ public class ManageCacheDrawer extends AlbumSetSlotRenderer {
     }
 
     private static boolean isLocal(int dataSourceType) {
-        return dataSourceType != DataSourceType.TYPE_PICASA;
+        return true;
     }
 
     @Override

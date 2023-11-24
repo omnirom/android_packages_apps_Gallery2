@@ -21,10 +21,8 @@ import com.android.gallery3d.util.MediaSetUtils;
 public final class DataSourceType {
     public static final int TYPE_NOT_CATEGORIZED = 0;
     public static final int TYPE_LOCAL = 1;
-    public static final int TYPE_PICASA = 2;
     public static final int TYPE_CAMERA = 3;
 
-    private static final Path PICASA_ROOT = Path.fromString("/picasa");
     private static final Path LOCAL_ROOT = Path.fromString("/local");
 
     public static int identifySourceType(MediaSet set) {
@@ -37,7 +35,6 @@ public final class DataSourceType {
 
         Path prefix = path.getPrefixPath();
 
-        if (prefix == PICASA_ROOT) return TYPE_PICASA;
         if (prefix == LOCAL_ROOT) return TYPE_LOCAL;
 
         return TYPE_NOT_CATEGORIZED;
