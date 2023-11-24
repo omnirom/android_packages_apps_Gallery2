@@ -34,7 +34,7 @@ android_app {
     use_embedded_native_libs: true,
     compile_multilib: "both",
     optimize: {
-        enabled: false,
+        proguard_flags_files: ["proguard.flags"],
     },
     libs: ["org.apache.http.legacy"],
     optional_uses_libs: ["com.google.android.media.effects"],
