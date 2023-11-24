@@ -26,7 +26,9 @@
         <item name="android:windowBackground">@color/default_background</item>
     </style>
     <style name="DialogTheme" parent="@android:style/Theme.Material.Dialog.Alert">
-        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:colorAccent">?android:attr/colorPrimary</item>
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:dialogCornerRadius">8dp</item>
     </style>
     <style name="Theme.Gallery" parent="Theme.GalleryBase">
         <item name="android:windowContentOverlay">@null</item>
