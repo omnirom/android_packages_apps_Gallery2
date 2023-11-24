@@ -147,7 +147,9 @@ public class SaveVideoFileUtils {
         if (duration != null) {
             durationMs = Integer.parseInt(duration);
         }
-        retriever.release();
+        try {
+            retriever.release();
+        } catch(Exception e){}
         return durationMs;
     }
 

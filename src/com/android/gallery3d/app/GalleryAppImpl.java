@@ -17,6 +17,8 @@
 package com.android.gallery3d.app;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -30,12 +32,15 @@ import com.android.gallery3d.util.LightCycleHelper;
 import com.android.gallery3d.util.ThreadPool;
 import com.android.gallery3d.util.UsageStatistics;
 
+import com.android.gallery3d.R;
+
 import java.io.File;
 
 public class GalleryAppImpl extends Application implements GalleryApp {
 
     private static final String DOWNLOAD_FOLDER = "download";
     private static final long DOWNLOAD_CAPACITY = 64 * 1024 * 1024; // 64M
+    public static final String DEFAULT_CHANNEL_ID = "default";
 
     private ImageCacheService mImageCacheService;
     private Object mLock = new Object();
@@ -51,6 +56,8 @@ public class GalleryAppImpl extends Application implements GalleryApp {
         WidgetUtils.initialize(this);
         PicasaSource.initialize(this);
         UsageStatistics.initialize(this);
+        // create notificatioon channels
+        makeNotificationChannels(this);
     }
 
     @Override
@@ -110,5 +117,15 @@ public class GalleryAppImpl extends Application implements GalleryApp {
             Class.forName(AsyncTask.class.getName());
         } catch (ClassNotFoundException e) {
         }
+    }
+
+    private void makeNotificationChannels(Context context) {
+        final NotificationManager nm = context.getSystemService(NotificationManager.class);
+        final NotificationChannel channelDefault =
+                new NotificationChannel(
+                        DEFAULT_CHANNEL_ID,
+                        context.getString(R.string.notification_channel_defaulth),
+                        NotificationManager.IMPORTANCE_DEFAULT);
+        nm.createNotificationChannel(channelDefault);
     }
 }

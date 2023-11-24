@@ -1,0 +1,63 @@
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+android_app {
+    name: "Gallery2",
+    static_libs: [
+        "androidx.fragment_fragment",
+        "androidx.legacy_legacy-support-core-ui",
+        "androidx.core_core",
+        "androidx.legacy_legacy-support-v13",
+        "xmp_toolkit",
+        "mp4parser",
+    ],
+    srcs: [
+        "src/**/*.java",
+        "src_pd/**/*.java",
+        ":Gallery2-rscript{Gallery2-rscript.srcjar}",
+    ],
+    resource_dirs: ["res"],
+    product_specific: true,
+    overrides: [
+        "Gallery",
+        "Gallery3D",
+        "GalleryNew3D",
+    ],
+    sdk_version: "current",
+    target_sdk_version: "28",
+    jni_libs: [
+        "libjni_eglfence",
+        "libjni_filtershow_filters",
+        "libjni_jpegstream",
+    ],
+    use_embedded_native_libs: true,
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+    },
+    libs: ["org.apache.http.legacy"],
+    optional_uses_libs: ["com.google.android.media.effects"],
+    jarjar_rules: "jarjar-rules.txt",
+}
+
+genrule {
+    name: "Gallery2-rscript",
+    srcs: [
+        "src/**/*.rscript",
+        ":rs_script_api",
+        ":rs_clang_headers",
+    ],
+    tools: [
+        "llvm-rs-cc",
+        "soong_zip",
+    ],
+    out: [
+        "Gallery2-rscript.srcjar",
+    ],
+    cmd: "for f in $(locations src/**/*.rscript); do " +
+        "  $(location llvm-rs-cc) -Wno-error=deprecated-declarations " +
+        "  -o $(genDir)/res/raw -p $(genDir)/src " +
+        "  -I $$(dirname $$(echo $(locations :rs_script_api) | awk '{ print $$1 }')) " +
+        "  -I $$(dirname $$(echo $(locations :rs_clang_headers) | awk '{ print $$1 }')) $${f}; " +
+        "done && " +
+        "$(location soong_zip) -srcjar -o $(location Gallery2-rscript.srcjar) -C $(genDir)/src -D $(genDir)/src",
+}

@@ -28,9 +28,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.nfc.NfcAdapter;
-import android.nfc.NfcAdapter.CreateBeamUrisCallback;
-import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -190,7 +187,6 @@ public abstract class PhotoPage extends ActivityState implements
     private Path mDeletePath;
     private boolean mDeleteIsFocus;  // whether the deleted item was in focus
 
-    private Uri[] mNfcPushUris = new Uri[1];
 
     private int mLastSystemUiVis = 0;
     private boolean mIsSinglePhotoMode;
@@ -335,7 +331,6 @@ public abstract class PhotoPage extends ActivityState implements
                             Intent shareIntent = createShareIntent(mCurrentPhoto);
 
                             mActionBar.setShareIntents(panoramaIntent, shareIntent);
-                            setNfcBeamPushUri(contentUri);
                         }
                         break;
                     }
@@ -354,7 +349,6 @@ public abstract class PhotoPage extends ActivityState implements
         mSetPathString = data.getString(KEY_MEDIA_SET_PATH);
         mReadOnlyView = data.getBoolean(KEY_READONLY);
         mOriginalSetPathString = mSetPathString;
-        setupNfcBeamPush();
         String itemPathString = data.getString(KEY_MEDIA_ITEM_PATH);
         Path itemPath = itemPathString != null ?
                 Path.fromString(data.getString(KEY_MEDIA_ITEM_PATH)) :
@@ -589,25 +583,6 @@ public abstract class PhotoPage extends ActivityState implements
         }
     }
 
-    @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
-    private void setupNfcBeamPush() {
-        if (!ApiHelper.HAS_SET_BEAM_PUSH_URIS) return;
-
-        NfcAdapter adapter = NfcAdapter.getDefaultAdapter(mActivity);
-        if (adapter != null) {
-            adapter.setBeamPushUris(null, mActivity);
-            adapter.setBeamPushUrisCallback(new CreateBeamUrisCallback() {
-                @Override
-                public Uri[] createBeamUris(NfcEvent event) {
-                    return mNfcPushUris;
-                }
-            }, mActivity);
-        }
-    }
-
-    private void setNfcBeamPushUri(Uri uri) {
-        mNfcPushUris[0] = uri;
-    }
 
     private static Intent createShareIntent(MediaObject mediaObject) {
         int type = mediaObject.getMediaType();

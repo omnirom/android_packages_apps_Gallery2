@@ -239,7 +239,7 @@ public class ProcessingService extends Service {
         mNotifyMgr.cancelAll();
 
         mBuilder =
-                new Notification.Builder(this)
+                new Notification.Builder(this, com.android.gallery3d.app.GalleryAppImpl.DEFAULT_CHANNEL_ID)
                         .setSmallIcon(R.drawable.filtershow_button_fx)
                         .setContentTitle(getString(R.string.filtershow_notification_label))
                         .setContentText(getString(R.string.filtershow_notification_message));
