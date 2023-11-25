@@ -1502,14 +1502,8 @@ public abstract class PhotoPage extends ActivityState implements
 
     private void updateSinglePhotoState() {
         mIsSinglePhotoMode = mCurrentPhoto != null && !mPhotoView.getFilmMode();
-
-        if (mIsSinglePhotoMode) {
-            mActivity.setSystemBarsTranlucent(true);
-        } else {
-            mActivity.setSystemBarsTranlucent(false);
-        }
-
         showBottomControl(false);
+        mActivity.setSystemBarsTranlucent(mIsSinglePhotoMode);
         mActionBar.setTransparentMode(mIsSinglePhotoMode);
     }
 
