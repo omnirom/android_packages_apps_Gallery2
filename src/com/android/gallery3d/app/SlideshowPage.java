@@ -182,6 +182,7 @@ public class SlideshowPage extends ActivityState {
     public void onResume() {
         super.onResume();
         mActivity.hideSystemBars();
+        mActivity.setBottomControlMargin(false);
         mIsActive = true;
         mModel.resume();
 
