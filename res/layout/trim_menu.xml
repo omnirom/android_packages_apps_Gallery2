@@ -25,8 +25,7 @@
         android:layout_height="match_parent"
         android:textSize="14sp"
         android:gravity="left|center_vertical"
-        android:drawableStart="@drawable/menu_save_photo"
+        android:drawableStart="@drawable/ic_menu_save"
         android:drawablePadding="8dp"
-        android:textColor="@color/textColor"
         android:background="?android:attr/selectableItemBackground" />
 </FrameLayout>

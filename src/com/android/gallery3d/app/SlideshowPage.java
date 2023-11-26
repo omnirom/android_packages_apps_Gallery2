@@ -169,7 +169,7 @@ public class SlideshowPage extends ActivityState {
     @Override
     public void onPause() {
         super.onPause();
-        mActivity.showSystemBars();
+        mActivity.showSystemBars(false);
         mIsActive = false;
         mModel.pause();
         mSlideshowView.release();

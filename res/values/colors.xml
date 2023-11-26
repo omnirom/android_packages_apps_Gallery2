@@ -53,11 +53,9 @@
     <color name="floating_action_button_touch_tint">#F44336</color>
     <color name="floating_action_button_icon_color">#ffffff</color>
 
-    <color name="primary">#2196F3</color>
-    <color name="primary_dark">#1976D2</color>
-    <color name="primary_light">#BBDEFB</color>
-    <color name="accent">@color/primary</color>
-    <color name="textColor">#ffffff</color>
+    <color name="primary">@color/default_background</color>
+    <color name="accent_light">#BBDEFB</color>
+    <color name="accent">#2196F3</color>
     <color name="photo_overlay">#66000000</color>
     <color name="details_background">@color/photo_overlay</color>
 
@@ -93,4 +91,5 @@
     <color name="disabled_knob">#575757</color>
 
     <color name="ic_launcher_background">#03a9f4</color>
+     <color name="darker_transparent">#C1000000</color>
 </resources>

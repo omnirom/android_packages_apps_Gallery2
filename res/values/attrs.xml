@@ -46,4 +46,10 @@
         <attr name="background" format="integer" />
         <attr name="foreground" format="integer" />
     </declare-styleable>
+    <declare-styleable name="SeekBarPreference">
+        <attr name="min" format="integer" />
+        <attr name="interval" format="integer" />
+        <attr name="unitsLeft" format="reference" />
+        <attr name="unitsRight" format="reference" />
+    </declare-styleable>
 </resources>

@@ -17,6 +17,7 @@
 package com.android.gallery3d.app;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -92,11 +93,9 @@ public class AlbumSetPageBottomControls implements OnClickListener {
             View child = mContainer.getChildAt(i);
             ImageButton b = (ImageButton) child;
             if (child.getId() == id) {
-                b.getDrawable().mutate().setTint(
-                        mContext.getResources().getColor(R.color.button_selected));
+                b.getDrawable().mutate().setTint(getAttrColor(android.R.attr.colorAccent));
             } else {
-                b.getDrawable().mutate().setTint(
-                        mContext.getResources().getColor(R.color.button_unselected));
+                b.getDrawable().mutate().setTint(getAttrColor(android.R.attr.colorControlNormal));
             }
         }
     }
@@ -123,5 +122,12 @@ public class AlbumSetPageBottomControls implements OnClickListener {
                         new ColorDrawable(mContext.getResources().getColor(R.color.photo_overlay)));
             }
         }
+    }
+    
+    private int getAttrColor(Integer attr) {
+        TypedArray ta = mContext.obtainStyledAttributes(new int[]{attr});
+        int color = ta.getColor(0, 0);
+        ta.recycle();
+        return color;
     }
 }

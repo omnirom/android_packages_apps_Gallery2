@@ -17,7 +17,6 @@
 package com.android.gallery3d.app;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
@@ -39,6 +38,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.gallery3d.R;
 import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.common.Utils;
@@ -50,7 +52,7 @@ import com.android.gallery3d.common.Utils;
  * to set the action bar logo so the playback process looks more seamlessly integrated with
  * the original activity.
  */
-public class MovieActivity extends Activity {
+public class MovieActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     private static final String TAG = "MovieActivity";
     public static final String KEY_LOGO_BITMAP = "logo-bitmap";
@@ -119,14 +121,14 @@ public class MovieActivity extends Activity {
     private void setActionBarLogoFromIntent(Intent intent) {
         Bitmap logo = intent.getParcelableExtra(KEY_LOGO_BITMAP);
         if (logo != null) {
-            getActionBar().setLogo(
+            getSupportActionBar().setLogo(
                     new BitmapDrawable(getResources(), logo));
         }
     }
 
     private void initializeActionBar(Intent intent) {
         mUri = intent.getData();
-        final ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar == null) {
             return;
         }

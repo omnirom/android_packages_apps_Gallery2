@@ -15,24 +15,26 @@
 -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <style name="Theme.GalleryBase" parent="@android:style/Theme.Material">
+    <style name="Theme.GalleryBase" parent="@style/Theme.Material3.DayNight">
         <item name="android:colorPrimary">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/primary</item>
         <item name="android:colorAccent">@color/accent</item>
-        <item name="android:dialogTheme">@style/DialogTheme</item>
-        <item name="android:alertDialogTheme">@style/DialogTheme</item>
-        <item name="android:popupTheme">@style/PopupThemePrimary</item>
-        <item name="android:actionModeBackground">@drawable/actionmode_background</item>
-        <item name="android:windowBackground">@color/default_background</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
+        <item name="dialogTheme">@style/DialogTheme</item>
+        <item name="alertDialogTheme">@style/DialogTheme</item>
+        <item name="android:navigationBarColor">?android:attr/colorBackground</item>
+        <item name="android:statusBarColor">?android:attr/colorBackground</item>
     </style>
-    <style name="DialogTheme" parent="@android:style/Theme.Material.Dialog.Alert">
-        <item name="android:colorAccent">?android:attr/colorPrimary</item>
-        <item name="android:colorPrimary">@color/primary</item>
-        <item name="android:dialogCornerRadius">8dp</item>
+    <style name="DialogTheme" parent="@style/Theme.Material3.DayNight.Dialog.Alert">
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorPrimary">@color/accent</item>
+        <item name="dialogCornerRadius">8dp</item>
     </style>
     <style name="Theme.Gallery" parent="Theme.GalleryBase">
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:actionBarStyle">@style/Material.ActionBar</item>
+        <item name="actionModeStyle">@style/Material.ActionModeSyle</item>
+        <item name="toolbarStyle">@style/Material.Toolbar</item>
+        <item name="actionBarStyle">@style/Material.Toolbar</item>
     </style>
     <style name="Theme.Crop" parent="Theme.Gallery">
     </style>
@@ -41,50 +43,39 @@
     <style name="Theme.Settings" parent="Theme.Gallery">
     </style>
     <style name="Theme.Gallery.Dialog" parent="DialogTheme"/>
+    
+    <style name="Material.ActionModeSyle" parent="@style/Widget.Material3.ActionMode">
+        <item name="background">?android:attr/colorBackground</item>
+    </style>
+    
+    <style name="Material.Toolbar" parent="@style/Widget.Material3.Toolbar">
+        <item name="background">?android:attr/colorBackground</item>
+        <item name="popupTheme">@style/Material.PopupTheme</item>
+    </style>
 
-    <style name="Material.ActionBar" parent="@android:style/Widget.Material.ActionBar">
-        <item name="android:background">@color/primary</item>
-        <item name="android:backgroundStacked">@null</item>
-        <item name="android:titleTextStyle">@style/ActionBarTitle</item>
+    <style name="Material.PopupTheme" parent="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="background">?android:attr/colorBackground</item>
     </style>
-    <style name="PopupThemePrimary" parent="@android:style/Widget.Material">
-        <item name="android:colorBackground">@color/primary</item>
-    </style>
-    <style name="ActionBarTitle" parent="android:style/TextAppearance.Material.Widget.ActionBar.Title">
+
+    <style name="ActionBarTitle" parent="@style/TextAppearance.Material3.ActionBar.Title">
         <item name="android:textSize">18sp</item>
     </style>
-    <style name="ActionBarTwoLinePrimary" parent="@android:style/TextAppearance.Material.Widget.PopupMenu">
-        <item name="android:colorBackground">@color/primary</item>
-        <item name="android:textColor">@color/textColor</item>
+    <style name="ActionBarTwoLinePrimary" parent="@style/TextAppearance.Material3.ActionBar.Subtitle">
         <item name="android:textSize">18sp</item>
     </style>
-    <style name="ActionBarTwoLineSecondary" parent="@android:style/TextAppearance.Material.Widget.PopupMenu">
-        <item name="android:colorBackground">@color/primary</item>
-        <item name="android:textColor">@color/textColor</item>
-        <item name="android:textSize">18sp</item>
+    <style name="ActionBarTwoLineSecondary" parent="@style/TextAppearance.Material3.ActionBar.Subtitle">
+        <item name="android:textSize">14sp</item>
     </style>
     <style name="ActionBarMenuItem" parent="@style/ActionBarTitle">
-        <item name="android:colorBackground">@color/primary</item>
-        <item name="android:textColor">@color/textColor</item>
         <item name="android:textSize">18sp</item>
+        <item name="android:background">?android:attr/colorBackground</item>
     </style>
 
     <style name="MediaButton.Play" parent="@android:style/MediaButton.Play">
         <item name="android:background">@null</item>
         <item name="android:src">@drawable/icn_media_play</item>
     </style>
-    <style name="Theme.ProxyLauncher" parent="@android:Theme.Translucent.NoTitleBar">
-    </style>
-    <color name="darker_transparent">#C1000000</color>
 
-    <!-- Camera resources below -->
-
-    <style name="Theme.Camera" parent="Theme.CameraBase">
-        <item name="android:windowBackground">@android:color/black</item>
-        <item name="android:colorBackground">@android:color/black</item>
-        <item name="android:colorBackgroundCacheHint">@android:color/black</item>
-    </style>
-    <style name="Theme.CameraBase" parent="android:Theme.Black.NoTitleBar.Fullscreen"/>
     <style name="OnScreenHintTextAppearance">
         <item name="android:textColor">@android:color/primary_text_dark</item>
         <item name="android:textColorHighlight">#FFFF9200</item>
@@ -306,5 +297,9 @@
         <item name="android:textColor">@color/gray</item>
         <item name="android:drawablePadding">8dp</item>
         <item name="android:background">@drawable/bg_pressed</item>
+    </style>
+    <style name="preference_icon_frame">
+        <item name="android:layout_marginStart">-4dp</item>
+        <item name="android:minWidth">60dp</item>
     </style>
 </resources>

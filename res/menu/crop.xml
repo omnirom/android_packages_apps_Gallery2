@@ -13,13 +13,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/cancel"
             android:title="@android:string/cancel"
-            android:showAsAction="always|withText">
+            app:showAsAction="always|withText">
     </item>
     <item android:id="@+id/save"
             android:title="@string/crop_save_text"
-            android:showAsAction="always|withText">
+            app:showAsAction="always|withText">
     </item>
 </menu>

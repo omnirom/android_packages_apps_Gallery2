@@ -17,7 +17,6 @@
 package com.android.gallery3d.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,6 +28,8 @@ import android.os.Message;
 import androidx.print.PrintHelper;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.app.AbstractGalleryActivity;

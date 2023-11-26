@@ -68,7 +68,6 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
         }
 
         setContentView(R.layout.main);
-        showSystemUI();
 
         mSavedInstanceState = savedInstanceState;
 

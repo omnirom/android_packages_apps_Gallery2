@@ -16,7 +16,6 @@
 
 package com.android.gallery3d.app;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -33,6 +32,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.gallery3d.R;
 import com.android.gallery3d.util.SaveVideoFileInfo;
 import com.android.gallery3d.util.SaveVideoFileUtils;
@@ -40,7 +42,7 @@ import com.android.gallery3d.util.SaveVideoFileUtils;
 import java.io.File;
 import java.io.IOException;
 
-public class TrimVideo extends Activity implements
+public class TrimVideo extends AppCompatActivity implements
         MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener,
         ControllerOverlay.Listener {
@@ -75,7 +77,7 @@ public class TrimVideo extends Activity implements
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         int displayOptions = ActionBar.DISPLAY_SHOW_HOME;
         actionBar.setDisplayOptions(0, displayOptions);
         displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM;

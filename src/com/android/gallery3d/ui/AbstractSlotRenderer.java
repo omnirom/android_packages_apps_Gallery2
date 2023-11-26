@@ -48,7 +48,7 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
         mSnapshotOverlay = new ResourceTexture(context, R.drawable.ic_snapshot_album_overlay);
         mDownloadOverlay = new ResourceTexture(context, R.drawable.ic_download_album_overlay);
         mFramePaint = new GLPaint();
-        mFramePaint.setColor(context.getResources().getColor(R.color.primary_light));
+        mFramePaint.setColor(context.getResources().getColor(R.color.accent_light));
         mFramePaint.setLineWidth(context.getResources().getDimensionPixelSize(R.dimen.selected_frame_width));
         mSelectionIcon = new ResourceTexture(context, R.drawable.multiselect);
     }

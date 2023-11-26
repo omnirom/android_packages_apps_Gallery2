@@ -16,11 +16,7 @@
 
 package com.android.gallery3d.ui;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Pair;

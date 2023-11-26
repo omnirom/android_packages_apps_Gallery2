@@ -19,7 +19,10 @@ package com.android.photos;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class AlbumActivity extends Activity implements MultiChoiceManager.Provider {
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class AlbumActivity extends AppCompatActivity implements MultiChoiceManager.Provider {
 
     public static final String KEY_ALBUM_URI = AlbumFragment.KEY_ALBUM_URI;
     public static final String KEY_ALBUM_TITLE = AlbumFragment.KEY_ALBUM_TITLE;
@@ -38,7 +41,7 @@ public class AlbumActivity extends Activity implements MultiChoiceManager.Provid
             getFragmentManager().beginTransaction().add(android.R.id.content,
                     albumFragment).commit();
         }
-        getActionBar().setTitle(intentExtras.getString(KEY_ALBUM_TITLE));
+        getSupportActionBar().setTitle(intentExtras.getString(KEY_ALBUM_TITLE));
     }
 
     @Override

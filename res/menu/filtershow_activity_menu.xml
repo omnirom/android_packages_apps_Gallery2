@@ -1,50 +1,51 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/saveButton"
-        android:icon="@drawable/menu_save_photo"
-        android:showAsAction="always"
+        android:icon="@drawable/ic_menu_save"
+        app:showAsAction="always"
         android:title="@string/save_and_exit"/>
     <item
         android:id="@+id/menu_share"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:visible="false"
         android:title="@string/share"/>
     <item
         android:id="@+id/undoButton"
         android:icon="@drawable/ic_menu_undo"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:title="@string/filtershow_undo"/>
     <item
         android:id="@+id/redoButton"
         android:icon="@drawable/ic_menu_redo"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:title="@string/filtershow_redo"/>
     <item
         android:id="@+id/resetHistoryButton"
         android:title="@string/reset"/>
     <item
         android:id="@+id/showInfoPanel"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:visible="true"
         android:title="@string/filtershow_show_info_panel" />
     <item
         android:id="@+id/showImageStateButton"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:visible="true"
         android:title="@string/show_imagestate_panel" />
     <item
         android:id="@+id/manageUserPresets"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:visible="false"
         android:title="@string/filtershow_manage_preset" />
     <item
         android:id="@+id/exportFlattenButton"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:visible="true"
         android:title="@string/export_image" />
     <item
         android:id="@+id/printButton"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:visible="true"
         android:title="@string/print_image"/>
 </menu>

@@ -770,7 +770,7 @@ public abstract class PhotoPage extends ActivityState implements
     private void showBars() {
         if (mShowBars) return;
         mShowBars = true;
-        mActivity.showSystemBars();
+        mActivity.showSystemBars(false);
         showBottomControl(true);
     }
 
@@ -1503,8 +1503,9 @@ public abstract class PhotoPage extends ActivityState implements
     private void updateSinglePhotoState() {
         mIsSinglePhotoMode = mCurrentPhoto != null && !mPhotoView.getFilmMode();
         showBottomControl(false);
-        mActivity.setSystemBarsTranlucent(mIsSinglePhotoMode);
-        mActionBar.setTransparentMode(mIsSinglePhotoMode);
+        //mActivity.setSystemBarsTranlucent(mIsSinglePhotoMode);
+        //mActionBar.setTransparentMode(mIsSinglePhotoMode);
+        mActivity.showSystemBars(false);
     }
 
     private void showBottomControl(boolean withAnim) {

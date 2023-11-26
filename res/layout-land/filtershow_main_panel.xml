@@ -43,7 +43,7 @@
 
         <LinearLayout android:layout_width="wrap_content"
                       android:layout_height="match_parent"
-                      android:background="@color/background_main_toolbar">
+                      android:background="?android:attr/colorBackground">
 
             <ImageButton
                     android:id="@+id/fxButton"

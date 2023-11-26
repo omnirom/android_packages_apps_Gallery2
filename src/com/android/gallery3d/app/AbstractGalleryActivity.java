@@ -20,7 +20,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -39,7 +38,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import androidx.print.PrintHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +46,12 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
+import androidx.print.PrintHelper;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.common.ApiHelper;
@@ -65,7 +69,7 @@ import com.android.photos.data.GalleryBitmapPool;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-public class AbstractGalleryActivity extends Activity implements GalleryContext {
+public class AbstractGalleryActivity extends AppCompatActivity implements GalleryContext {
     private static final String TAG = "AbstractGalleryActivity";
 
     private GLRootView mGLRootView;
@@ -391,24 +395,31 @@ public class AbstractGalleryActivity extends Activity implements GalleryContext 
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
         getWindow().setAttributes(lp);
         
+        WindowInsetsControllerCompat insetController = new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
+        insetController.hide(WindowInsetsCompat.Type.systemBars());
+
         getWindow().getDecorView().setSystemUiVisibility(
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_IMMERSIVE);
+            | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
-    public void showSystemBars() {
-        showSystemUI();
-    }
-
-    public void showSystemUI() {
+    public void showSystemBars(boolean forceDark) {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.layoutInDisplayCutoutMode =
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT;
         getWindow().setAttributes(lp);
+        
+        WindowInsetsControllerCompat insetController = new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
+        if (forceDark) {
+            insetController.setAppearanceLightStatusBars(false);
+            insetController.setAppearanceLightNavigationBars(false);
+        } else {
+            insetController.setAppearanceLightStatusBars(!getResources().getConfiguration().isNightModeActive());
+            insetController.setAppearanceLightNavigationBars(!getResources().getConfiguration().isNightModeActive());
+        }
+        insetController.show(WindowInsetsCompat.Type.systemBars());
         
         getWindow().getDecorView().setSystemUiVisibility(
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE

@@ -13,69 +13,41 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Ideally, showAsAction for share_panorama and share should be reversed.
-         But, if share_panorama is set to never, it doesn't seem to get promoted
-         to the action bar and stays on the overflow menu. -->
-    <!--<item android:id="@+id/action_share_panorama"
-            android:icon="@drawable/ic_menu_share"
-            android:title="@string/share_panorama"
-            android:visible="false"
-            android:showAsAction="ifRoom" />
-    <item android:id="@+id/action_share"
-            android:icon="@drawable/ic_menu_share"
-            android:title="@string/share"
-            android:visible="false"
-            android:showAsAction="never" />-->
-    <!--<item android:id="@+id/action_delete"
-            android:icon="@drawable/ic_menu_trash"
-            android:title="@string/delete"
-            android:visible="false"
-            android:showAsAction="never" /> -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_layout"
             android:title="@string/layout_grid"
             android:icon="@drawable/grid_layout"
-            android:showAsAction="ifRoom"/>
+            app:showAsAction="ifRoom"/>
     <item android:id="@+id/action_slideshow"
             android:icon="@drawable/slideshow"
             android:title="@string/slideshow"
-            android:showAsAction="ifRoom" />
-    <!--<item android:id="@+id/action_edit"
-            android:title="@string/edit"
-            android:showAsAction="never"
-            android:visible="false" />-->
-   <!-- <item android:id="@+id/action_simple_edit"
-          android:title="@string/simple_edit"
-          android:showAsAction="never"
-          android:visible="false" />-->
+            app:showAsAction="ifRoom" />
     <item android:id="@+id/action_rotate_ccw"
-            android:showAsAction="never"
+            app:showAsAction="never"
             android:title="@string/rotate_left" />
     <item android:id="@+id/action_rotate_cw"
-            android:showAsAction="never"
+            app:showAsAction="never"
             android:title="@string/rotate_right" />
     <item android:id="@+id/action_crop"
             android:title="@string/crop_action"
-            android:showAsAction="never" />
+            app:showAsAction="never" />
     <item android:id="@+id/action_trim"
             android:title="@string/trim_action"
-            android:showAsAction="never" />
+            app:showAsAction="never" />
     <item android:id="@+id/action_mute"
             android:title="@string/mute_action"
-            android:showAsAction="never" />
+            app:showAsAction="never" />
     <item android:id="@+id/action_setas"
             android:title="@string/set_image"
-            android:showAsAction="never" />
-    <!--<item android:id="@+id/action_details"
-            android:title="@string/details"
-            android:showAsAction="never" />-->
+            app:showAsAction="never" />
     <item android:id="@+id/action_show_on_map"
             android:title="@string/show_on_map"
-            android:showAsAction="never" />
+            app:showAsAction="never" />
     <item android:id="@+id/print"
             android:title="@string/print_image"
-            android:showAsAction="never" />
+            app:showAsAction="never" />
     <item android:id="@+id/action_settings"
             android:title="@string/settings"
-            android:showAsAction="never" />
+            app:showAsAction="never" />
 </menu>

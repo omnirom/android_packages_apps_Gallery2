@@ -16,7 +16,6 @@
 
 package com.android.gallery3d.filtershow.crop;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
@@ -42,6 +41,9 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.gallery3d.R;
 import com.android.gallery3d.common.Utils;
 import com.android.gallery3d.filtershow.cache.ImageLoader;
@@ -57,7 +59,7 @@ import java.io.OutputStream;
 /**
  * Activity for cropping an image.
  */
-public class CropActivity extends Activity {
+public class CropActivity extends AppCompatActivity {
     private static final String LOGTAG = "CropActivity";
     public static final String CROP_ACTION = "com.android.camera.action.CROP";
     private CropExtras mCropExtras = null;
@@ -102,7 +104,7 @@ public class CropActivity extends Activity {
         setContentView(R.layout.crop_activity);
         mCropView = (CropView) findViewById(R.id.cropView);
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
             actionBar.setCustomView(R.layout.filtershow_actionbar);

@@ -16,7 +16,6 @@
 
 package com.android.gallery3d.app;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -25,18 +24,21 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.util.Log;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.Preference.OnPreferenceChangeListener;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreference;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -45,15 +47,16 @@ import java.util.List;
 
 import com.android.gallery3d.R;
 
-public class GallerySettings extends PreferenceActivity
-        implements Preference.OnPreferenceChangeListener {
+public class GallerySettings extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.settings);
+        setContentView(R.layout.activity_settings);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setTitle(R.string.settings);
     }
 
     @Override
@@ -69,7 +72,20 @@ public class GallerySettings extends PreferenceActivity
     }
 
     @Override
-    public boolean onPreferenceChange(Preference pref, Object newValue) {
-        return true;
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, new SettingsFragment()).commit();
+    }
+
+    public static class SettingsFragment extends PreferenceFragmentCompat implements OnPreferenceChangeListener {
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            addPreferencesFromResource(R.xml.settings);
+        }
+        
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            return true;
+        }
     }
 }

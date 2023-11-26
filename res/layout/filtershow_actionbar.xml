@@ -20,7 +20,6 @@
     android:id="@+id/filtershow_done"
     android:gravity="center_vertical"
     android:textSize="14sp"
-    android:drawableStart="@drawable/menu_save_photo"
+    android:drawableStart="@drawable/ic_menu_save"
     android:drawablePadding="8dip"
-    android:textColor="@color/textColor"
     android:background="?android:attr/selectableItemBackground" />

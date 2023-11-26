@@ -10,6 +10,8 @@ android_app {
         "androidx.legacy_legacy-support-v13",
         "xmp_toolkit",
         "mp4parser",
+        "com.google.android.material_material",
+        "androidx.preference_preference",
     ],
     srcs: [
         "src/**/*.java",

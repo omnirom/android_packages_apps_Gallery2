@@ -412,7 +412,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
 
         mActionBar.setTransparentMode(false);
         mActivity.setSystemBarsTranlucent(false);
-        mActivity.showSystemBars();
+        mActivity.showSystemBars(false);
 
         mResumeEffect = mActivity.getTransitionStore().get(KEY_RESUME_ANIMATION);
         if (mResumeEffect != null) {

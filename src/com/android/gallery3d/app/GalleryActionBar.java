@@ -17,15 +17,12 @@
 package com.android.gallery3d.app;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
-import android.app.ActionBar.OnMenuVisibilityListener;
-import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,12 +33,15 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.TwoLineListItem;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+
 import com.android.gallery3d.R;
 import com.android.gallery3d.common.ApiHelper;
 
 import java.util.ArrayList;
 
-public class GalleryActionBar implements OnNavigationListener {
+public class GalleryActionBar implements ActionBar.OnNavigationListener {
     @SuppressWarnings("unused")
     private static final String TAG = "GalleryActionBar";
 
@@ -186,8 +186,7 @@ public class GalleryActionBar implements OnNavigationListener {
     }
 
     public GalleryActionBar(AbstractGalleryActivity activity) {
-        mActionBar = activity.getActionBar();
-        mActionBar.setElevation(0);
+        mActionBar = activity.getSupportActionBar();
         mContext = activity.getAndroidContext();
         mActivity = activity;
         mInflater = ((Activity) mActivity).getLayoutInflater();
@@ -272,11 +271,6 @@ public class GalleryActionBar implements OnNavigationListener {
         }).create().show();
     }
 
-    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private void setHomeButtonEnabled(boolean enabled) {
-        if (mActionBar != null) mActionBar.setHomeButtonEnabled(enabled);
-    }
-
     public void setDisplayOptions(boolean displayHomeAsUp, boolean showTitle) {
         if (mActionBar == null) return;
         int options = 0;
@@ -304,19 +298,11 @@ public class GalleryActionBar implements OnNavigationListener {
         if (mActionBar != null) mActionBar.setSubtitle(title);
     }
 
-    public void show() {
-        if (mActionBar != null) mActionBar.show();
-    }
-
-    public void hide() {
-        if (mActionBar != null) mActionBar.hide();
-    }
-
-    public void addOnMenuVisibilityListener(OnMenuVisibilityListener listener) {
+    public void addOnMenuVisibilityListener(ActionBar.OnMenuVisibilityListener listener) {
         if (mActionBar != null) mActionBar.addOnMenuVisibilityListener(listener);
     }
 
-    public void removeOnMenuVisibilityListener(OnMenuVisibilityListener listener) {
+    public void removeOnMenuVisibilityListener(ActionBar.OnMenuVisibilityListener listener) {
         if (mActionBar != null) mActionBar.removeOnMenuVisibilityListener(listener);
     }
 
@@ -407,7 +393,14 @@ public class GalleryActionBar implements OnNavigationListener {
             mActionBar.setBackgroundDrawable(mActivity.getDrawable(R.drawable.root_top_bg));
         } else {
             mActionBar.setBackgroundDrawable(
-                    new ColorDrawable(mActivity.getColor(R.color.primary)));
+                    new ColorDrawable(getAttrColor(android.R.attr.colorBackground)));
         }
+    }
+    
+    private int getAttrColor(Integer attr) {
+        TypedArray ta = mActivity.obtainStyledAttributes(new int[]{attr});
+        int color = ta.getColor(0, 0);
+        ta.recycle();
+        return color;
     }
 }

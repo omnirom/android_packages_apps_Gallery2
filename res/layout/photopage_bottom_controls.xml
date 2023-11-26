@@ -25,7 +25,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:background="?android:attr/selectableItemBackground"
-        android:src="@drawable/ic_menu_share" />
+        android:src="@drawable/ic_share" />
 
     <ImageButton
         android:id="@+id/photopage_bottom_control_info"
@@ -52,6 +52,6 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:background="?android:attr/selectableItemBackground"
-        android:src="@drawable/ic_menu_trash" />
+        android:src="@drawable/ic_trash" />
 
 </LinearLayout>

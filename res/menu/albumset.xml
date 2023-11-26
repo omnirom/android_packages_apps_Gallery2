@@ -16,26 +16,27 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_camera"
             android:icon="@drawable/camera"
             android:title="@string/switch_to_camera"
-            android:showAsAction="ifRoom" />
+            app:showAsAction="ifRoom" />
     <item android:id="@+id/action_slideshow"
             android:icon="@drawable/slideshow"
             android:title="@string/slideshow"
-            android:showAsAction="ifRoom" />
+            app:showAsAction="ifRoom" />
     <item android:id="@+id/action_select"
             android:title="@string/select_album"
-            android:showAsAction="never" />
+            app:showAsAction="never" />
     <item android:id="@+id/action_settings"
             android:title="@string/settings"
-            android:showAsAction="never" />
+            app:showAsAction="never" />
     <item android:id="@+id/action_general_help"
             android:title="@string/help"
             android:visible="false"
-            android:showAsAction="never" />
+            app:showAsAction="never" />
     <item android:id="@+id/action_more_image"
             android:title="@string/more_image"
-            android:showAsAction="never" />
+            app:showAsAction="never" />
 </menu>

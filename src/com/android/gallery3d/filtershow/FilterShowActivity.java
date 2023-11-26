@@ -16,8 +16,6 @@
 
 package com.android.gallery3d.filtershow;
 
-import android.app.ActionBar;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -63,6 +61,10 @@ import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.app.PhotoPage;
@@ -126,7 +128,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class FilterShowActivity extends FragmentActivity implements OnItemClickListener,
+public class FilterShowActivity extends AppCompatActivity implements OnItemClickListener,
         DialogInterface.OnShowListener,
         DialogInterface.OnDismissListener, PopupMenu.OnDismissListener{
 
@@ -347,7 +349,7 @@ public class FilterShowActivity extends FragmentActivity implements OnItemClickL
     private void loadXML() {
         setContentView(R.layout.filtershow_activity);
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
 
         mImageShow = (ImageShow) findViewById(R.id.imageShow);
@@ -1156,6 +1158,11 @@ public class FilterShowActivity extends FragmentActivity implements OnItemClickL
         mLoadingComplete = true;
         if (mSaveButton != null) {
             mSaveButton.setEnabled(enable);
+            
+            Drawable drawable = mSaveButton.getIcon();
+            if (drawable != null) {
+                drawable.setAlpha(enable ? 255 : 80);
+            }
         }
     }
 
