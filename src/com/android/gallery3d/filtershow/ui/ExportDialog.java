@@ -16,13 +16,13 @@
 
 package com.android.gallery3d.filtershow.ui;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.fragment.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -31,6 +31,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.filtershow.FilterShowActivity;
@@ -42,8 +45,7 @@ import com.android.gallery3d.filtershow.tools.SaveImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
-public class ExportDialog extends DialogFragment implements View.OnClickListener,
-        SeekBar.OnSeekBarChangeListener {
+public class ExportDialog extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
     SeekBar mSeekBar;
     TextView mSeekVal;
     EditText mWidthText;
@@ -68,7 +70,8 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
             updateSize();
         }
     };
-
+    private static final int OK_ID = 1;
+    
     private class Watcher implements TextWatcher {
         private EditText mEditText;
         Watcher(EditText text) {
@@ -90,11 +93,13 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mHandler = new Handler(getActivity().getMainLooper());
+    }
 
-        View view = inflater.inflate(R.layout.filtershow_export_dialog, container);
+    private View doCreateView() {
+        View view = getLayoutInflater().inflate(R.layout.filtershow_export_dialog, null);
         mSeekBar = (SeekBar) view.findViewById(R.id.qualitySeekBar);
         mSeekVal = (TextView) view.findViewById(R.id.qualityTextView);
         mSliderLabel = getString(R.string.quality) + ": ";
@@ -116,16 +121,25 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
         mExportHeight = mOriginalBounds.height();
         mWidthText.addTextChangedListener(new Watcher(mWidthText));
         mHeightText.addTextChangedListener(new Watcher(mHeightText));
-
-        view.findViewById(R.id.cancel).setOnClickListener(this);
-        view.findViewById(R.id.done).setOnClickListener(this);
-        getDialog().setTitle(R.string.export_flattened);
-
-        updateCompressionFactor();
-        updateSize();
         return view;
     }
+ 
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View view = doCreateView();
+        updateCompressionFactor();
+        updateSize();
+        
+        return new AlertDialog.Builder(getActivity())
+                .setView(view)
+                .setTitle(R.string.export_image)
+                .setPositiveButton(android.R.string.ok,
+                        (dialogInterface, i) -> this.onClickId(OK_ID))
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+     }
 
+ 
     @Override
     public void onStopTrackingTouch(SeekBar arg0) {
         // Do nothing
@@ -148,13 +162,9 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
         mHandler.postDelayed(mUpdateRunnable, mUpdateDelay);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.cancel:
-                dismiss();
-                break;
-            case R.id.done:
+    public void onClickId(int id) {
+        switch (id) {
+            case OK_ID:
                 FilterShowActivity activity = (FilterShowActivity) getActivity();
                 Uri sourceUri = MasterImage.getImage().getUri();
                 File dest = SaveImage.getNewFile(activity,  activity.getSelectedImageUri());
@@ -163,7 +173,6 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
                         .getImage().getPreset(), dest, activity.getSelectedImageUri(), sourceUri,
                         true, mSeekBar.getProgress(), scaleFactor, false);
                 activity.startService(processIntent);
-                dismiss();
                 break;
         }
     }

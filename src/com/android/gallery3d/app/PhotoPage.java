@@ -1340,7 +1340,7 @@ public abstract class PhotoPage extends ActivityState implements
         if (enabled) {
             mActionBar.setTitle(mMediaSet.getName());
         } else {
-            mActionBar.setTitle("");
+            mActionBar.setTitle(mActivity.getResources().getString(R.string.photo_page_title));
         }
         if (enabled) {
             UsageStatistics.onContentViewChanged(
@@ -1421,7 +1421,7 @@ public abstract class PhotoPage extends ActivityState implements
         if (mPhotoView.getFilmMode() && mMediaSet != null) {
             mActionBar.setTitle(mMediaSet.getName());
         } else {
-            mActionBar.setTitle("");
+            mActionBar.setTitle(mActivity.getResources().getString(R.string.photo_page_title));
         }
 
         boolean haveImageEditor = GalleryUtils.isEditorAvailable(mActivity, "image/*");

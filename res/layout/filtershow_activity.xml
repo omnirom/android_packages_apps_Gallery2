@@ -78,7 +78,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|bottom"
-                custom:max_width="650dip"
                 android:orientation="vertical" >
 
             <FrameLayout android:id="@+id/main_panel_container"

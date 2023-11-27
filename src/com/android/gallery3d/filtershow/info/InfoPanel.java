@@ -16,11 +16,11 @@
 
 package com.android.gallery3d.filtershow.info;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +30,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+
 import com.android.gallery3d.R;
 import com.android.gallery3d.exif.ExifInterface;
 import com.android.gallery3d.exif.ExifTag;
@@ -59,14 +63,8 @@ public class InfoPanel extends DialogFragment {
         return exifString;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (getDialog() != null) {
-            getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        }
-
-        mMainView = (LinearLayout) inflater.inflate(
+    private View doCreateView() {
+        mMainView = (LinearLayout) getLayoutInflater().inflate(
                 R.layout.filtershow_info_panel, null, false);
 
         mImageThumbnail = (ImageView) mMainView.findViewById(R.id.imageThumbnail);
@@ -137,4 +135,14 @@ public class InfoPanel extends DialogFragment {
         }
         return mMainView;
     }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View view = doCreateView();
+        
+        return new AlertDialog.Builder(getActivity())
+                .setView(view)
+                .setPositiveButton(android.R.string.ok, null)
+                .create();
+     }
 }

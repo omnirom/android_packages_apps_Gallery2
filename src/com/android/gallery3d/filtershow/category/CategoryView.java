@@ -65,7 +65,7 @@ public class CategoryView extends IconView
         mSelectPaint.setColor(mSelectionColor);
         mBorderPaint = new Paint(mSelectPaint);
         mBorderPaint.setColor(Color.BLACK);
-        mBorderStroke = mSelectionStroke / 3;
+        mBorderStroke = res.getDimensionPixelSize(R.dimen.selected_border_width);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class CategoryView extends IconView
         if (mAdapter.isSelected(this)) {
             SelectionRenderer.drawSelection(canvas, 0, 0,
                     getWidth(), getHeight(),
-                    mSelectionStroke, mSelectPaint, mBorderStroke, mBorderPaint);
+                    mSelectionStroke, mSelectPaint/*, mBorderStroke, mBorderPaint*/);
         }
     }
 

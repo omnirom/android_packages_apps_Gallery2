@@ -16,12 +16,13 @@
 
 package com.android.gallery3d.filtershow.colorpicker;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -30,52 +31,53 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ToggleButton;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.android.gallery3d.R;
 import com.android.gallery3d.filtershow.FilterShowActivity;
 import com.android.photos.views.GalleryThumbnailView;
 
-public class ColorPickerDialog extends Dialog   {
+import java.util.Arrays;
+
+public class ColorPickerDialog  {
     ToggleButton mSelectedButton;
     ColorHueView mColorHueView;
     ColorSVRectView mColorSVRectView;
     ColorOpacityView mColorOpacityView;
     ColorCompareView mColorCompareView;
-
+    ColorListener mListener;
+    Context mContext;
+    private static final int OK_ID = 1;
+    
     float[] mHSVO = new float[4]; // hue=0..360, sat & val opacity = 0...1
+    float[] mOrigHSVO;
+    float[] mOrigColorHSVO;
 
-    public ColorPickerDialog(Context context, final ColorListener cl) {
-        super(context);
-        DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager wm =  (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(metrics);
-        int height = metrics.heightPixels*8/10;
-        int width = metrics.widthPixels*8/10;
-        getWindow().setLayout(width, height);
-        setContentView(R.layout.filtershow_color_picker);
-        mColorHueView = (ColorHueView) findViewById(R.id.ColorHueView);
-        mColorSVRectView = (ColorSVRectView) findViewById(R.id.colorRectView);
-        mColorOpacityView = (ColorOpacityView) findViewById(R.id.colorOpacityView);
-        mColorCompareView = (ColorCompareView) findViewById(R.id.btnSelect);
+    public static AlertDialog newInstance(Context context, ColorListener cl, float[] c) {
+        ColorPickerDialog frag = new ColorPickerDialog(context, cl, c);
+        return frag.doCreateDialog();
+    }
+    
+    public ColorPickerDialog(Context context, ColorListener cl, float[] c) {
+        mContext = context;
+        mListener = cl;
+        mOrigHSVO = Arrays.copyOf(c, 4);
+        mOrigColorHSVO = Arrays.copyOf(c, 4);
+    }
+
+    private View doCreateView() {
+        LayoutInflater inflater =
+                (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.filtershow_color_picker, null);
+
+        mColorHueView = (ColorHueView) view.findViewById(R.id.ColorHueView);
+        mColorSVRectView = (ColorSVRectView) view.findViewById(R.id.colorRectView);
+        mColorOpacityView = (ColorOpacityView) view.findViewById(R.id.colorOpacityView);
+        mColorCompareView = (ColorCompareView) view.findViewById(R.id.btnSelect);
 
         float[] hsvo = new float[] {
                 123, .9f, 1, 1 };
 
-        Button apply = (Button) findViewById(R.id.applyColorPick);
-        Button cancel = (Button) findViewById(R.id.cancelColorPick);
-
-        apply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cl.setColor(mHSVO);
-                ColorPickerDialog.this.dismiss();
-            }
-        });
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ColorPickerDialog.this.dismiss();
-            }
-        });
         ColorListener [] c = {mColorCompareView,mColorSVRectView,mColorOpacityView,mColorHueView};
         for (int i = 0; i < c.length; i++) {
             c[i].setColor(hsvo);
@@ -103,33 +105,10 @@ public class ColorPickerDialog extends Dialog   {
         for (int i = 0; i < c.length; i++) {
             c[i].addColorListener(colorListener);
         }
-        setOnShowListener((FilterShowActivity) context);
-        setOnDismissListener((FilterShowActivity) context);
-        setTitle(R.string.draw_color);
-    }
-
-    void toggleClick(ToggleButton v, int[] buttons, boolean isChecked) {
-        int id = v.getId();
-        if (!isChecked) {
-            mSelectedButton = null;
-            return;
-        }
-        for (int i = 0; i < buttons.length; i++) {
-            if (id != buttons[i]) {
-                ToggleButton b = (ToggleButton) findViewById(buttons[i]);
-                b.setChecked(false);
-            }
-        }
-        mSelectedButton = v;
-
-        float[] hsv = (float[]) v.getTag();
-
-        ColorHueView csv = (ColorHueView) findViewById(R.id.ColorHueView);
-        ColorSVRectView cwv = (ColorSVRectView) findViewById(R.id.colorRectView);
-        ColorOpacityView cvv = (ColorOpacityView) findViewById(R.id.colorOpacityView);
-        cwv.setColor(hsv);
-        cvv.setColor(hsv);
-        csv.setColor(hsv);
+        
+        setColor(mOrigHSVO);
+        setOrigColor(mOrigColorHSVO);
+        return view;
     }
 
     public void setOrigColor(float[] hsvo) {
@@ -157,5 +136,24 @@ public class ColorPickerDialog extends Dialog   {
         button.setTextColor(Color.HSVToColor(fg));
         button.setTag(hsv);
     }
-
+    
+    private AlertDialog doCreateDialog() {
+        View view = doCreateView();
+        
+        return new AlertDialog.Builder(mContext)
+                .setTitle(mContext.getString(R.string.draw_color))
+                .setView(view)
+                .setPositiveButton(android.R.string.ok,
+                        (dialogInterface, i) -> this.onClickId(OK_ID))
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+     }
+    
+    private void onClickId(int id) {
+        switch (id) {
+            case OK_ID:
+                mListener.setColor(mHSVO);
+                break;
+        }
+    }
 }

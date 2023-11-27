@@ -3,7 +3,13 @@ package com.android.gallery3d.filtershow.controller;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +36,7 @@ public class StyleChooser implements Control {
     private int mTransparent;
     private int mSelected;
     private int mSelectedStyle;
+    private int mSelectedBorderWith;
 
     @Override
     public void setUp(ViewGroup container, Parameter parameter, Editor editor) {
@@ -47,7 +54,8 @@ public class StyleChooser implements Control {
         Resources res = context.getResources();
         mTransparent  = res.getColor(R.color.color_chooser_unslected_border);
         mSelected    = res.getColor(R.color.color_chooser_slected_border);
-        int dim = mTopView.getMeasuredHeight();
+        mSelectedBorderWith = res.getDimensionPixelSize(R.dimen.selected_border_width);
+        int dim = res.getDimensionPixelSize(R.dimen.draw_color_icon_dim);
         LayoutParams lp = new LayoutParams(dim, dim);
         for (int i = 0; i < n; i++) {
             final ImageButton button = new ImageButton(context);
@@ -58,7 +66,7 @@ public class StyleChooser implements Control {
 
             GradientDrawable sd = ((GradientDrawable) button.getBackground());
             sd.setColor(mTransparent);
-            sd.setStroke(3, (mSelectedStyle == i) ? mSelected : mTransparent);
+            sd.setStroke(mSelectedBorderWith, (mSelectedStyle == i) ? mSelected : mTransparent);
 
             final int buttonNo = i;
             button.setOnClickListener(new View.OnClickListener() {
@@ -77,10 +85,26 @@ public class StyleChooser implements Control {
                     if (bmap == null) {
                         return;
                     }
-                    button.setImageBitmap(bmap);
+                    button.setImageBitmap(tintImage(bmap, getAttrColor(context, android.R.attr.colorControlNormal)));
                 }
             });
         }
+    }
+    
+    public static Bitmap tintImage(Bitmap bitmap, int color) {
+        Paint paint = new Paint();
+        paint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+        Bitmap bitmapResult = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmapResult);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        return bitmapResult;
+    }
+
+    private int getAttrColor(Context context, Integer attr) {
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        int color = ta.getColor(0, 0);
+        ta.recycle();
+        return color;
     }
 
     @Override
@@ -108,7 +132,7 @@ public class StyleChooser implements Control {
             final ImageButton button = mIconButton.get(i);
             GradientDrawable sd = ((GradientDrawable) button.getBackground());
             sd.setColor(mTransparent);
-            sd.setStroke(3, (mSelectedStyle == i) ? mSelected : mTransparent);
+            sd.setStroke(mSelectedBorderWith, (mSelectedStyle == i) ? mSelected : mTransparent);
         }
     }
 }

@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.android.gallery3d.R;
 import com.android.gallery3d.filtershow.colorpicker.ColorListener;
 import com.android.gallery3d.filtershow.colorpicker.ColorPickerDialog;
@@ -38,7 +40,9 @@ public class ColorChooser implements Control {
     Context mContext;
     private int mTransparent;
     private int mSelected;
+    private int mSelectedBorderWith;
     private static final int OPACITY_OFFSET = 3;
+    private int mBorderWidth;
     private int[] mButtonsID = {
             R.id.draw_color_button01,
             R.id.draw_color_button02,
@@ -57,6 +61,7 @@ public class ColorChooser implements Control {
         Resources res = container.getContext().getResources();
         mTransparent  = res.getColor(R.color.color_chooser_unslected_border);
         mSelected    = res.getColor(R.color.color_chooser_slected_border);
+        mSelectedBorderWith = res.getDimensionPixelSize(R.dimen.selected_border_width);
         mEditor = editor;
         mContext = container.getContext();
         int iconDim = res.getDimensionPixelSize(R.dimen.draw_style_icon_dim);
@@ -83,7 +88,7 @@ public class ColorChooser implements Control {
             button.setTag(hsvo);
             GradientDrawable sd = ((GradientDrawable) button.getBackground());
             sd.setColor(mTransparent);
-            sd.setStroke(3, (mSelectedButton == i) ? mSelected : mTransparent);
+            sd.setStroke(mSelectedBorderWith, (mSelectedButton == i) ? mSelected : mTransparent);
 
             final int buttonNo = i;
             button.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +138,7 @@ public class ColorChooser implements Control {
         for (int i = 0; i < mButtonsID.length; i++) {
             final ImageButton button = mButton[i];
             GradientDrawable sd = ((GradientDrawable) button.getBackground());
-            sd.setStroke(3, (mSelectedButton == i) ? mSelected : mTransparent);
+            sd.setStroke(mSelectedBorderWith, (mSelectedButton == i) ? mSelected : mTransparent);
         }
     }
 
@@ -198,11 +203,9 @@ public class ColorChooser implements Control {
             public void addColorListener(ColorListener l) {
             }
         };
-        ColorPickerDialog cpd = new ColorPickerDialog(mContext, cl);
         float[] c = (float[]) mButton[mSelectedButton].getTag();
-        cpd.setColor(Arrays.copyOf(c, 4));
-        cpd.setOrigColor(Arrays.copyOf(c, 4));
-        cpd.show();
+        AlertDialog dialog = ColorPickerDialog.newInstance(mContext, cl, c);
+        dialog.show();
     }
 
     private BitmapDrawable createColorImage(int color){

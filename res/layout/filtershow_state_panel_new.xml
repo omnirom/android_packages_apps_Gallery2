@@ -5,7 +5,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/background_main_toolbar">
+              android:background="?android:attr/colorBackground">
 
     <View
             android:background="@color/toolbar_separation_line"

@@ -17,6 +17,7 @@
 package com.android.gallery3d.filtershow.info;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,6 +27,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 public class HistogramView extends View {
@@ -93,7 +95,8 @@ public class HistogramView extends View {
 
         mPaint.reset();
         mPaint.setAntiAlias(true);
-        mPaint.setARGB(100, 255, 255, 255);
+        int c = getAttrColor(android.R.attr.colorControlHighlight);
+        mPaint.setARGB(100, Color.red(c), Color.green(c), Color.blue(c));
         mPaint.setStrokeWidth((int) Math.ceil(wl));
 
         // Draw grid
@@ -105,7 +108,7 @@ public class HistogramView extends View {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(color);
         mPaint.setStrokeWidth(6);
-        mPaint.setXfermode(new PorterDuffXfermode(mode));
+        //mPaint.setXfermode(new PorterDuffXfermode(mode));
         mHistoPath.reset();
         mHistoPath.moveTo(dx, h);
         boolean firstPointEncountered = false;
@@ -128,10 +131,11 @@ public class HistogramView extends View {
         mHistoPath.lineTo(last, h);
         mHistoPath.lineTo(w, h);
         mHistoPath.close();
+        
         canvas.drawPath(mHistoPath, mPaint);
         mPaint.setStrokeWidth(2);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setARGB(255, 200, 200, 200);
+        mPaint.setARGB(255, Color.red(c), Color.green(c), Color.blue(c));
         canvas.drawPath(mHistoPath, mPaint);
     }
 
@@ -140,5 +144,12 @@ public class HistogramView extends View {
         drawHistogram(canvas, redHistogram, Color.RED, PorterDuff.Mode.SCREEN);
         drawHistogram(canvas, greenHistogram, Color.GREEN, PorterDuff.Mode.SCREEN);
         drawHistogram(canvas, blueHistogram, Color.BLUE, PorterDuff.Mode.SCREEN);
+    }
+    
+    private int getAttrColor(Integer attr) {
+        TypedArray ta = getContext().obtainStyledAttributes(new int[]{attr});
+        int color = ta.getColor(0, 0);
+        ta.recycle();
+        return color;
     }
 }

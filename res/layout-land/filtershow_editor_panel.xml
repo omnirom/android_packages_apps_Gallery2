@@ -39,7 +39,7 @@
             <SeekBar
                     android:id="@+id/primarySeekBar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/category_panel_height"
                     android:layout_gravity="center_vertical"
                     style="@style/FilterShowSlider"
                     android:visibility="gone"/>
@@ -49,8 +49,8 @@
         <LinearLayout
                 android:id="@+id/applyBar"
                 android:layout_width="match_parent"
-                android:layout_height="48dip"
-                android:background="@color/background_main_toolbar"
+                android:layout_height="@dimen/bottom_control_height"
+                android:background="?android:attr/colorBackground"
                 android:orientation="horizontal"
                 android:baselineAligned="false"
                 android:visibility="visible"
@@ -87,8 +87,7 @@
                         android:layout_gravity="center"
                         android:background="?android:attr/selectableItemBackground" 
                         android:text="@string/apply_effect"
-                        android:textSize="14dip"
-                        android:drawableEnd="@drawable/filtershow_menu_marker_rtl"/>
+                        android:textSize="14dip"/>
 
             </LinearLayout>
 

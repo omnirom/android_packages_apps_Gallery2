@@ -21,7 +21,7 @@
     android:gravity="center_horizontal"
     android:orientation="horizontal"
     android:padding="0dip"
-    android:background="@color/background_main_toolbar">
+    android:background="?android:attr/colorBackground">
 
     <ImageView
             android:id="@+id/preview"

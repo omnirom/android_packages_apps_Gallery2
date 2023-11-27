@@ -22,7 +22,6 @@
     <color name="text_toolbar">#FFFFFF</color>
     <color name="background_screen">#ff171717</color>
     <color name="background_toolbar">#282727</color>
-    <color name="background_main_toolbar">#282727</color>
     <color name="toolbar_separation_line">#333333</color>
     <color name="slider_dot_color">#646464</color>
     <color name="slider_line_color">#888888</color>

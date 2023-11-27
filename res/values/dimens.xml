@@ -186,5 +186,6 @@
     <dimen name="color_rect_width">32dp</dimen>
     <dimen name="selected_frame_width">4dp</dimen>
     <dimen name="details_height">175dp</dimen>
-    <dimen name="bottom_control_height">48dp</dimen>
+    <dimen name="bottom_control_height">64dp</dimen>
+    <dimen name="selected_border_width">2dp</dimen>
 </resources>

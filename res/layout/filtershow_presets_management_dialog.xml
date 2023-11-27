@@ -47,28 +47,4 @@
             android:singleLine="true"/>
     </LinearLayout>
 
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            style="?android:attr/buttonBarStyle">
-
-        <Button
-                android:id="@+id/cancel"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/cancel"
-                style="?android:attr/buttonBarButtonStyle" />
-
-        <Button
-                android:id="@+id/ok"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/ok"
-                style="?android:attr/buttonBarButtonStyle"/>
-
-    </LinearLayout>
-
 </LinearLayout>

@@ -102,30 +102,4 @@
 
     </LinearLayout>
 
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:gravity="end"
-            android:paddingTop="8dp"
-            style="?android:attr/buttonBarStyle">
-
-        <Button
-                android:id="@+id/cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel"
-                style="?android:attr/buttonBarButtonStyle"
-                android:background="?android:attr/selectableItemBackground" />
-
-        <Button
-                android:id="@+id/done"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dialog_ok"
-                style="?android:attr/buttonBarButtonStyle"
-                android:background="?android:attr/selectableItemBackground"/>
-
-    </LinearLayout>
-
 </LinearLayout>

@@ -68,6 +68,7 @@ public class EditorDrawTabletUI {
 
     private int[] mBasColors;
     private int mSelected;
+    private int mSelectedBorderWith;
     private int mTransparent;
     private SeekBar mdrawSizeSeekBar;
     private int[] ids = {
@@ -103,6 +104,7 @@ public class EditorDrawTabletUI {
         sIconDim = res.getDimensionPixelSize(R.dimen.draw_style_icon_dim);
         mTransparent = res.getColor(R.color.color_chooser_unslected_border);
         mSelected = res.getColor(R.color.color_chooser_slected_border);
+        mSelectedBorderWith = res.getDimensionPixelSize(R.dimen.selected_border_width);
 
         LinearLayout buttonContainer = (LinearLayout) lp.findViewById(R.id.listStyles);
 
@@ -153,7 +155,7 @@ public class EditorDrawTabletUI {
 
             GradientDrawable sd = ((GradientDrawable) button.getBackground());
             sd.setColor(mTransparent);
-            sd.setStroke(3, (mSelectedStyleButton == i) ? mSelected : mTransparent);
+            sd.setStroke(mSelectedBorderWith, (mSelectedStyleButton == i) ? mSelected : mTransparent);
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -200,7 +202,7 @@ public class EditorDrawTabletUI {
             mColorButton[i].setTag(hsvo);
             GradientDrawable sd = ((GradientDrawable) mColorButton[i].getBackground());
             sd.setColor(mTransparent);
-            sd.setStroke(3, (0 == i) ? mSelected : mTransparent);
+            sd.setStroke(mSelectedBorderWith, (0 == i) ? mSelected : mTransparent);
 
             final int buttonNo = i;
             mColorButton[i].setOnClickListener(new View.OnClickListener() {
@@ -280,7 +282,7 @@ public class EditorDrawTabletUI {
             final ImageButton button = mStyleButton[i];
 
             GradientDrawable sd = ((GradientDrawable)  button.getBackground());
-            sd.setStroke(3, (mSelectedStyleButton == i) ? mSelected : mTransparent);
+            sd.setStroke(mSelectedBorderWith, (mSelectedStyleButton == i) ? mSelected : mTransparent);
         }
     }
 
@@ -289,7 +291,7 @@ public class EditorDrawTabletUI {
             final ImageButton button = mColorButton[i];
 
             GradientDrawable sd = ((GradientDrawable) button.getBackground());
-            sd.setStroke(3, (mSelectedColorButton == i) ? mSelected : mTransparent);
+            sd.setStroke(mSelectedBorderWith, (mSelectedColorButton == i) ? mSelected : mTransparent);
         }
     }
 

@@ -64,6 +64,7 @@ public class EditorColorBorderTabletUI {
 
     private int[] mBasColors;
     private int mSelected;
+    private int mSelectedBorderWith;
     private int mTransparent;
     private SeekBar mCBSizeSeekBar;
     private SeekBar mCBCornerSizeSeekBar;
@@ -181,6 +182,7 @@ public class EditorColorBorderTabletUI {
 
         mTransparent = res.getColor(R.color.color_chooser_unslected_border);
         mSelected = res.getColor(R.color.color_chooser_slected_border);
+        mSelectedBorderWith = res.getDimensionPixelSize(R.dimen.selected_border_width);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(sIconDim, sIconDim);
         params.gravity= Gravity.CENTER;
         mColorButton = new ImageButton[ids.length];
@@ -198,7 +200,7 @@ public class EditorColorBorderTabletUI {
             mColorButton[i].setTag(hsvo);
             GradientDrawable sd = ((GradientDrawable) mColorButton[i].getBackground());
             sd.setColor(mTransparent);
-            sd.setStroke(3, (0 == i) ? mSelected : mTransparent);
+            sd.setStroke(mSelectedBorderWith, (0 == i) ? mSelected : mTransparent);
             final int buttonNo = i;
             mColorButton[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -271,7 +273,7 @@ public class EditorColorBorderTabletUI {
         for (int i = 0; i < ids.length; i++) {
             final ImageButton button = mColorButton[i];
             GradientDrawable sd = ((GradientDrawable) button.getBackground());
-            sd.setStroke(3, (mSelectedColorButton == i) ? mSelected : mTransparent);
+            sd.setStroke(mSelectedBorderWith, (mSelectedColorButton == i) ? mSelected : mTransparent);
         }
     }
 
