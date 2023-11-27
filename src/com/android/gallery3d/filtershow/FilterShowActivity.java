@@ -135,8 +135,6 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
     private String mAction = "";
     MasterImage mMasterImage = null;
 
-    private static final long LIMIT_SUPPORTS_HIGHRES = 134217728; // 128Mb
-
     public static final String TINY_PLANET_ACTION = "com.android.camera.action.TINY_PLANET";
     public static final String LAUNCH_FULLSCREEN = "launch-fullscreen";
     public static final boolean RESET_TO_LOADED = false;
@@ -968,12 +966,12 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.filtershow_activity_menu, menu);
-        MenuItem showState = menu.findItem(R.id.showImageStateButton);
+        /*MenuItem showState = menu.findItem(R.id.showImageStateButton);
         if (mShowingImageStatePanel) {
             showState.setTitle(R.string.hide_imagestate_panel);
         } else {
             showState.setTitle(R.string.show_imagestate_panel);
-        }
+        }*/
         MenuItem item = menu.findItem(R.id.menu_share);
         if (item != null) {
             item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -1042,10 +1040,10 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
                 resetHistory();
                 return true;
             }
-            case R.id.showImageStateButton: {
+            /*case R.id.showImageStateButton: {
                 toggleImageStatePanel();
                 return true;
-            }
+            }*/
             case R.id.exportFlattenButton: {
                 showExportOptionsDialog();
                 return true;
@@ -1280,12 +1278,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
         mMasterImage.setHistoryManager(historyManager);
         mMasterImage.setStateAdapter(imageStateAdapter);
         mMasterImage.setActivity(this);
-
-        if (Runtime.getRuntime().maxMemory() > LIMIT_SUPPORTS_HIGHRES) {
-            mMasterImage.setSupportsHighRes(true);
-        } else {
-            mMasterImage.setSupportsHighRes(false);
-        }
+        mMasterImage.setSupportsHighRes(true);
     }
 
     void resetHistory() {

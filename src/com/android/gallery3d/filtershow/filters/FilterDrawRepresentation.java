@@ -163,6 +163,7 @@ public class FilterDrawRepresentation extends FilterRepresentation {
         setFilterClass(ImageFilterDraw.class);
         setSerializationName("DRAW");
         setFilterType(FilterRepresentation.TYPE_VIGNETTE);
+        setSupportsPartialRendering(true);
         setTextId(R.string.imageDraw);
         setEditorId(EditorDraw.ID);
         setOverlayId(R.drawable.filtershow_button_drawing);

@@ -28,11 +28,11 @@
         app:showAsAction="never"
         android:visible="true"
         android:title="@string/filtershow_show_info_panel" />
-    <item
+    <!--<item
         android:id="@+id/showImageStateButton"
         app:showAsAction="never"
         android:visible="true"
-        android:title="@string/show_imagestate_panel" />
+        droid:title="@string/show_imagestate_panel" />-->
     <item
         android:id="@+id/manageUserPresets"
         app:showAsAction="never"
