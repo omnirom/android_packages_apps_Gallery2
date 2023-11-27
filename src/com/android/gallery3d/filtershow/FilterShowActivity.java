@@ -1056,7 +1056,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
         if (mCategoryLooksAdapter != null) {
             fillLooks();
         }
-        if (presets.size() > 0) {
+        /*if (presets.size() > 0) {
             mCategoryLooksAdapter.add(new Action(this, Action.SPACER));
         }
         mUserPresetsAdapter.clear();
@@ -1068,7 +1068,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
         }
         if (presets.size() > 0) {
             mCategoryLooksAdapter.add(new Action(this, Action.ADD_ACTION));
-        }
+        }*/
         mCategoryLooksAdapter.notifyDataSetChanged();
         mCategoryLooksAdapter.notifyDataSetInvalidated();
     }
@@ -1110,10 +1110,10 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
         for (FilterRepresentation representation : filtersRepresentations) {
             mCategoryLooksAdapter.add(new Action(this, representation, Action.FULL_VIEW));
         }
-        if (mUserPresetsManager.getRepresentations() == null
+        /*if (mUserPresetsManager.getRepresentations() == null
             || mUserPresetsManager.getRepresentations().size() == 0) {
             mCategoryLooksAdapter.add(new Action(this, Action.ADD_ACTION));
-        }
+        }*/
 
         Fragment panel = getSupportFragmentManager().findFragmentByTag(MainPanel.FRAGMENT_TAG);
         if (panel != null) {
