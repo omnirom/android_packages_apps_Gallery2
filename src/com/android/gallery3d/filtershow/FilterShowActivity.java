@@ -154,10 +154,6 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
 
     private final Vector<ImageShow> mImageViews = new Vector<ImageShow>();
 
-    private File mSharedOutputFile = null;
-
-    private boolean mSharingImage = false;
-
     private WeakReference<ProgressDialog> mSavingProgressDialog;
 
     private LoadBitmapTask mLoadBitmapTask;
@@ -893,7 +889,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
         return Math.max(outMetrics.heightPixels, outMetrics.widthPixels);
     }
 
-    private void showSavingProgress(String albumName) {
+    private void showSavingProgress() {
         ProgressDialog progress;
         if (mSavingProgressDialog != null) {
             progress = mSavingProgressDialog.get();
@@ -903,12 +899,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
             }
         }
         // TODO: Allow cancellation of the saving process
-        String progressText;
-        if (albumName == null) {
-            progressText = getString(R.string.saving_image);
-        } else {
-            progressText = getString(R.string.filtershow_saving_image, albumName);
-        }
+        String progressText = getString(R.string.saving_image);
         progress = ProgressDialog.show(this, "", progressText, true, false);
         mSavingProgressDialog = new WeakReference<ProgressDialog>(progress);
     }
@@ -922,70 +913,14 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
     }
 
     public void completeSaveImage(Uri saveUri) {
-        if (mSharingImage && mSharedOutputFile != null) {
-            // Image saved, we unblock the content provider
-            Uri uri = Uri.withAppendedPath(SharedImageProvider.CONTENT_URI,
-                    Uri.encode(mSharedOutputFile.getAbsolutePath()));
-            ContentValues values = new ContentValues();
-            values.put(SharedImageProvider.PREPARE, false);
-            getContentResolver().insert(uri, values);
-        }
         setResult(RESULT_OK, new Intent().setData(saveUri));
         hideSavingProgress();
         finish();
     }
 
-    private boolean onShareTargetSelected() {
-        // First, let's tell the SharedImageProvider that it will need to wait
-        // for the image
-        Uri uri = Uri.withAppendedPath(SharedImageProvider.CONTENT_URI,
-                Uri.encode(mSharedOutputFile.getAbsolutePath()));
-        ContentValues values = new ContentValues();
-        values.put(SharedImageProvider.PREPARE, true);
-        getContentResolver().insert(uri, values);
-        mSharingImage = true;
-
-        // Process and save the image in the background.
-        showSavingProgress(null);
-        mImageShow.saveImage(this, mSharedOutputFile);
-        return true;
-    }
-
-    private Intent getDefaultShareIntent() {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setType(SharedImageProvider.MIME_TYPE);
-        mSharedOutputFile = SaveImage.getNewFile(this, MasterImage.getImage().getUri());
-        Uri uri = Uri.withAppendedPath(SharedImageProvider.CONTENT_URI,
-                Uri.encode(mSharedOutputFile.getAbsolutePath()));
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        return intent;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.filtershow_activity_menu, menu);
-        /*MenuItem showState = menu.findItem(R.id.showImageStateButton);
-        if (mShowingImageStatePanel) {
-            showState.setTitle(R.string.hide_imagestate_panel);
-        } else {
-            showState.setTitle(R.string.show_imagestate_panel);
-        }*/
-        MenuItem item = menu.findItem(R.id.menu_share);
-        if (item != null) {
-            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    final Intent shareIntent = getDefaultShareIntent();
-                    onShareTargetSelected();
-                    Intent intent = Intent.createChooser(shareIntent, null);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    FilterShowActivity.this.startActivity(intent);
-                    return true;
-                }
-            });
-        }
         mMenu = menu;
         setupMenu();
         return true;
@@ -1002,8 +937,6 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
         if (!PrintHelper.systemSupportsPrint()) {
             printItem.setVisible(false);
         }
-        MenuItem shareItem = mMenu.findItem(R.id.menu_share);
-        //shareItem.setVisible(true);
         mMasterImage.getHistory().setMenuItems(undoItem, redoItem, resetItem);
         mSaveButton = mMenu.findItem(R.id.saveButton);
     }
@@ -1394,11 +1327,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
 
     public void saveImage() {
         if (mImageShow.hasModifications()) {
-            // Get the name of the album, to which the image will be saved
-            File saveDir = SaveImage.getFinalSaveDirectory(this, mSelectedImageUri);
-            int bucketId = GalleryUtils.getBucketId(saveDir.getPath());
-            String albumName = LocalAlbum.getLocalizedName(getResources(), bucketId, null);
-            showSavingProgress(albumName);
+            showSavingProgress();
             mImageShow.saveImage(this, null);
         } else {
             done();

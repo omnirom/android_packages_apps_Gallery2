@@ -87,7 +87,6 @@ public class SaveImage {
     private int mCurrentProcessingStep = 1;
 
     public static final int MAX_PROCESSING_STEPS = 6;
-    public static final String DEFAULT_SAVE_DIRECTORY = "EditedOnlinePhotos";
 
     // In order to support the new edit-save behavior such that user won't see
     // the edited image together with the original image, we are adding a new
@@ -144,20 +143,8 @@ public class SaveImage {
         mSelectedImageUri = selectedImageUri;
     }
 
-    public static File getFinalSaveDirectory(Context context, Uri sourceUri) {
-        File saveDirectory = SaveImage.getSaveDirectory(context, sourceUri);
-        if ((saveDirectory == null) || !saveDirectory.canWrite()) {
-            saveDirectory = new File(Environment.getExternalStorageDirectory(),
-                    SaveImage.DEFAULT_SAVE_DIRECTORY);
-        }
-        // Create the directory if it doesn't exist
-        if (!saveDirectory.exists())
-            saveDirectory.mkdirs();
-        return saveDirectory;
-    }
-
     public static File getNewFile(Context context, Uri sourceUri) {
-        File saveDirectory = getFinalSaveDirectory(context, sourceUri);
+        File saveDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         String filename = new SimpleDateFormat(TIME_STAMP_NAME).format(new Date(
                 System.currentTimeMillis()));
         if (hasPanoPrefix(context, sourceUri)) {
@@ -529,7 +516,7 @@ public class SaveImage {
     public static Uri makeAndInsertUri(Context context, Uri sourceUri) {
         long time = System.currentTimeMillis();
         String filename = new SimpleDateFormat(TIME_STAMP_NAME).format(new Date(time));
-        File saveDirectory = getFinalSaveDirectory(context, sourceUri);
+        File saveDirectory = getSaveDirectory(context, sourceUri);
         File file = new File(saveDirectory, filename  + ".JPG");
         return linkNewFileToUri(context, sourceUri, file, time, false);
     }
