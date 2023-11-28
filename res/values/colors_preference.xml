@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>    
-    <color name="omni_settings_state_on_color">@color/accent</color>
+    <color name="omni_settings_state_on_color">?android:attr/colorAccent</color>
 
     <!-- Material next thumb disable color-->
     <color name="omni_settings_thumb_disabled_color">?android:attr/textColorPrimaryInverse</color>

@@ -1,8 +1,1 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:height="28dp"
-    android:width="28dp"
-    android:tint="?attr/colorControlNormal"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-    <path android:fillColor="#ffffff" android:pathData="M18,6V17H22V6M2,17H6V6H2M7,19H17V4H7V19Z" />
-</vector>
+<!-- drawable/view_carousel_outline.xml --><vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:width="24dp" android:tint="?android:attr/colorControlNormal" android:viewportWidth="24" android:viewportHeight="24"><path android:fillColor="#000000" android:pathData="M2 6H6V17H2V6M7 19H17V4H7V19M9 6H15V17H9V6M18 6H22V17H18V6Z" /></vector>

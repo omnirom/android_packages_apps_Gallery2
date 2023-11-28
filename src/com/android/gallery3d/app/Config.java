@@ -18,6 +18,7 @@ package com.android.gallery3d.app;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.ui.AlbumSetSlotRenderer;
@@ -26,8 +27,6 @@ import com.android.gallery3d.util.GalleryUtils;
 
 final class Config {
     public static class AlbumSetPage {
-        private static AlbumSetPage sInstance;
-
         public SlotView.Spec slotViewSpec;
         public AlbumSetSlotRenderer.LabelSpec labelSpec;
         public int paddingTop;
@@ -36,14 +35,7 @@ final class Config {
         public int paddingRight;
         public int placeholderColor;
 
-        public static synchronized AlbumSetPage get(Context context) {
-            if (sInstance == null) {
-                sInstance = new AlbumSetPage(context);
-            }
-            return sInstance;
-        }
-
-        private AlbumSetPage(Context context) {
+        public AlbumSetPage(Context context) {
             Resources r = context.getResources();
 
             placeholderColor = r.getColor(R.color.albumset_placeholder);
@@ -81,16 +73,24 @@ final class Config {
                     R.dimen.albumset_left_margin);
             labelSpec.titleRightMargin = r.getDimensionPixelSize(
                     R.dimen.albumset_title_right_margin);
-            labelSpec.backgroundColor = r.getColor(
+            /*labelSpec.backgroundColor = r.getColor(
                     R.color.albumset_label_background);
             labelSpec.titleColor = r.getColor(R.color.albumset_label_title);
-            labelSpec.countColor = r.getColor(R.color.albumset_label_count);
+            labelSpec.countColor = r.getColor(R.color.albumset_label_count);*/
+            labelSpec.backgroundColor = getAttrColor(context, android.R.attr.colorBackground);
+            labelSpec.titleColor = getAttrColor(context, android.R.attr.textColorSecondary);
+            labelSpec.countColor = getAttrColor(context, android.R.attr.textColorSecondary);
+        }
+
+        private int getAttrColor(Context context, Integer attr) {
+            TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+            int color = ta.getColor(0, 0);
+            ta.recycle();
+            return color;
         }
     }
 
     public static class AlbumPage {
-        private static AlbumPage sInstance;
-
         public SlotView.Spec slotViewSpec;
         public int paddingTop;
         public int paddingBottom;
@@ -98,14 +98,7 @@ final class Config {
         public int paddingRight;
         public int placeholderColor;
 
-        public static synchronized AlbumPage get(Context context) {
-            if (sInstance == null) {
-                sInstance = new AlbumPage(context);
-            }
-            return sInstance;
-        }
-
-        private AlbumPage(Context context) {
+        public AlbumPage(Context context) {
             Resources r = context.getResources();
 
             placeholderColor = r.getColor(R.color.album_placeholder);

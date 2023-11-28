@@ -18,21 +18,21 @@
     <item android:state_selected="true">
         <bitmap
             android:src="@drawable/filtershow_scrubber_control_focused"
-            android:tint="@color/accent" />
+            android:tint="?android:attr/colorAccent" />
     </item>
     <item android:state_enabled="false">
         <bitmap
             android:src="@drawable/filtershow_scrubber_control_disabled"
-            android:tint="@color/accent" />
+            android:tint="?android:attr/colorAccent" />
     </item>
     <item android:state_pressed="true">
         <bitmap
             android:src="@drawable/filtershow_scrubber_control_pressed"
-            android:tint="@color/accent" />
+            android:tint="?android:attr/colorAccent" />
     </item>
     <item>
         <bitmap
             android:src="@drawable/filtershow_scrubber_control_normal"
-            android:tint="@color/accent" />
+            android:tint="?android:attr/colorAccent" />
     </item>
 </selector>

@@ -124,7 +124,7 @@ public class AlbumSlotRenderer extends AbstractSlotRenderer {
         }
 
         if (entry.mediaType == MediaObject.MEDIA_TYPE_VIDEO) {
-            drawVideoOverlay(canvas, width, height);
+            drawVideoIcon(canvas, width, height);
         } else if (entry.isPanorama) {
             drawPanoramaIcon(canvas, width, height);
         }

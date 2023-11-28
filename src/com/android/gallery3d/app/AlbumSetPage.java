@@ -294,6 +294,7 @@ public class AlbumSetPage extends ActivityState implements
     @Override
     public void onCreate(Bundle data, Bundle restoreState) {
         super.onCreate(data, restoreState);
+        Log.d(TAG, "onCreate");
         initializeViews();
         initializeData(data);
         Context context = mActivity.getAndroidContext();
@@ -370,10 +371,12 @@ public class AlbumSetPage extends ActivityState implements
     }
 
     private void initializeViews() {
+        Log.d(TAG, "initializeViews");
+
         mSelectionManager = new SelectionManager(mActivity, true);
         mSelectionManager.setSelectionListener(this);
 
-        mConfig = Config.AlbumSetPage.get(mActivity);
+        mConfig = new Config.AlbumSetPage(mActivity);
         mSlotView = new SlotView(mActivity, mConfig.slotViewSpec);
         mAlbumSetView = new AlbumSetSlotRenderer(
                 mActivity, mSelectionManager, mSlotView, mConfig.labelSpec,

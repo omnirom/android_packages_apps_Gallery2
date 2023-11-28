@@ -253,8 +253,8 @@ public class AlbumSetSlotRenderer extends AbstractSlotRenderer {
 
     @Override
     protected void drawVideoOverlay(GLCanvas canvas, int width, int height) {
-        mVideoPlayIcon.draw(canvas, width - 15 - mVideoPlayIcon.getWidth(),
-                height - mVideoPlayIcon.getHeight() - 15);
+        mVideoOverlay.draw(canvas, width - 15 - mVideoOverlay.getWidth(),
+                height - mVideoOverlay.getHeight() - 15);
     }
 
     @Override

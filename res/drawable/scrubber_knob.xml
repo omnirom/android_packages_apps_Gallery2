@@ -26,6 +26,6 @@
     <item>
         <bitmap
             android:src="@drawable/filtershow_scrubber_control_normal"
-            android:tint="@color/accent" />
+            android:tint="?android:attr/colorAccent" />
     </item>
 </layer-list>

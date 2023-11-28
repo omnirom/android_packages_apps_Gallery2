@@ -45,14 +45,6 @@
 
     <color name="button_dark_transparent_background">#1d1d1d</color>
 
-    <color name="ingest_highlight_semitransparent">#88777777</color>
-    <color name="ingest_date_tile_text">#777777</color>
-
-    <!-- FAB -->
-    <color name="fab">@color/accent</color>
-    <color name="floating_action_button_touch_tint">#F44336</color>
-    <color name="floating_action_button_icon_color">#ffffff</color>
-
     <color name="primary">@color/default_background</color>
     <color name="accent_light">#BBDEFB</color>
     <color name="accent">#2196F3</color>

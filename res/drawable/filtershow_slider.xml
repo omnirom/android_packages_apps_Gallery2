@@ -25,7 +25,7 @@
         <scale android:scaleWidth="100%">
             <bitmap
                 android:src="@drawable/filtershow_scrubber_primary"
-                android:tint="@color/accent" />
+                android:tint="?android:attr/colorAccent" />
         </scale>
     </item>
 </layer-list>

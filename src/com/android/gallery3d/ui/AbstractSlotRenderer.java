@@ -18,6 +18,7 @@ package com.android.gallery3d.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Rect;
 
 import com.android.gallery3d.R;
@@ -30,8 +31,9 @@ import com.android.gallery3d.glrenderer.Texture;
 
 public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
 
-    protected final ResourceTexture mVideoPlayIcon;
+    protected final ResourceTexture mVideoOverlay;
     private final ResourceTexture mPanoramaIcon;
+    private final ResourceTexture mVideoIcon;
     private final ResourceTexture mFramePressed;
     private FadeOutTexture mFramePressedUp;
     private GLPaint mFramePaint;
@@ -41,15 +43,16 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
     protected final ResourceTexture mDownloadOverlay;
 
     protected AbstractSlotRenderer(Context context) {
-        mVideoPlayIcon = new ResourceTexture(context, R.drawable.ic_gallery_play);
-        mPanoramaIcon = new ResourceTexture(context, R.drawable.ic_360pano_holo_light);
+        mVideoOverlay = new ResourceTexture(context, R.drawable.ic_video_album_overlay);
+        mVideoIcon = new ResourceTexture(context, R.drawable.ic_video_icon);
+        mPanoramaIcon = new ResourceTexture(context, R.drawable.ic_panorama_icon);
         mFramePressed = new ResourceTexture(context, R.drawable.grid_pressed_overlay);
         mCameraOverlay = new ResourceTexture(context, R.drawable.ic_camera_album_overlay);
         mSnapshotOverlay = new ResourceTexture(context, R.drawable.ic_snapshot_album_overlay);
         mDownloadOverlay = new ResourceTexture(context, R.drawable.ic_download_album_overlay);
         mFramePaint = new GLPaint();
-        mFramePaint.setColor(context.getResources().getColor(R.color.accent_light));
-        mFramePaint.setLineWidth(context.getResources().getDimensionPixelSize(R.dimen.selected_frame_width));
+        mFramePaint.setColor(getAttrColor(context, android.R.attr.colorAccent));
+        mFramePaint.setLineWidth(context.getResources().getDimensionPixelSize(R.dimen.selected_border_width));
         mSelectionIcon = new ResourceTexture(context, R.drawable.multiselect);
     }
 
@@ -77,7 +80,11 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
     }
 
     protected void drawVideoOverlay(GLCanvas canvas, int width, int height) {
-        mVideoPlayIcon.draw(canvas, width - 15 - mVideoPlayIcon.getWidth(), 15);
+        mVideoOverlay.draw(canvas, width - 15 - mVideoOverlay.getWidth(), 15);
+    }
+
+    protected void drawVideoIcon(GLCanvas canvas, int width, int height) {
+        mVideoIcon.draw(canvas, width - 15 - mVideoIcon.getWidth(), 15);
     }
 
     protected void drawPanoramaIcon(GLCanvas canvas, int width, int height) {
@@ -131,5 +138,12 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
             int x, int y, int width, int height) {
         frame.draw(canvas, x - padding.left, y - padding.top, width + padding.left + padding.right,
                  height + padding.top + padding.bottom);
+    }
+    
+    private int getAttrColor(Context context, Integer attr) {
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        int color = ta.getColor(0, 0);
+        ta.recycle();
+        return color;
     }
 }

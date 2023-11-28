@@ -67,25 +67,6 @@ public class AlbumLabelMaker {
         return paint;
     }
 
-    private class LazyLoadedBitmap {
-        private Bitmap mBitmap;
-        private int mResId;
-
-        public LazyLoadedBitmap(int resId) {
-            mResId = resId;
-        }
-
-        public synchronized Bitmap get() {
-            if (mBitmap == null) {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                mBitmap = BitmapFactory.decodeResource(
-                        mContext.getResources(), mResId, options);
-            }
-            return mBitmap;
-        }
-    }
-
     public synchronized void setLabelWidth(int width) {
         if (mLabelWidth == width) return;
         mLabelWidth = width;
