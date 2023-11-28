@@ -46,4 +46,5 @@
     <string name="count_string_multi">items</string>
     <string name="notification_channel_defaulth">Default</string>
     <string name="photo_page_title">Image</string>
+    <string name="video_page_title">Video</string>
 </resources>

@@ -119,7 +119,7 @@ import com.android.gallery3d.filtershow.tools.XmpPresets.XMresults;
 import com.android.gallery3d.filtershow.ui.ExportDialog;
 import com.android.gallery3d.filtershow.ui.FramedTextButton;
 import com.android.gallery3d.util.GalleryUtils;
-import com.android.photos.data.GalleryBitmapPool;
+import com.android.gallery3d.data.GalleryBitmapPool;
 
 import java.io.File;
 import java.io.FileDescriptor;

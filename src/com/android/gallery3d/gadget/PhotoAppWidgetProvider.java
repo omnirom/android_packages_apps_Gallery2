@@ -31,7 +31,6 @@ import android.widget.RemoteViews;
 import com.android.gallery3d.R;
 import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.gadget.WidgetDatabaseHelper.Entry;
-import com.android.gallery3d.onetimeinitializer.GalleryWidgetMigrator;
 
 public class PhotoAppWidgetProvider extends AppWidgetProvider {
 
@@ -52,12 +51,6 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context,
             AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-
-        if (ApiHelper.HAS_REMOTE_VIEWS_SERVICE) {
-            // migrate gallery widgets from pre-JB releases to JB due to bucket ID change
-            GalleryWidgetMigrator.migrateGalleryWidgets(context);
-        }
-
         WidgetDatabaseHelper helper = new WidgetDatabaseHelper(context);
         try {
             for (int id : appWidgetIds) {

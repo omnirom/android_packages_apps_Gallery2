@@ -28,7 +28,7 @@ import android.os.Build;
 import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.common.BitmapUtils;
 import com.android.gallery3d.common.Utils;
-import com.android.photos.data.GalleryBitmapPool;
+import com.android.gallery3d.data.GalleryBitmapPool;
 import com.android.gallery3d.ui.Log;
 import com.android.gallery3d.util.ThreadPool.CancelListener;
 import com.android.gallery3d.util.ThreadPool.JobContext;

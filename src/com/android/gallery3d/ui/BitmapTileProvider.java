@@ -21,7 +21,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 
 import com.android.gallery3d.common.BitmapUtils;
-import com.android.photos.data.GalleryBitmapPool;
+import com.android.gallery3d.data.GalleryBitmapPool;
 
 import java.util.ArrayList;
 

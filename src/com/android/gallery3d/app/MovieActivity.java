@@ -55,48 +55,24 @@ import com.android.gallery3d.common.Utils;
 public class MovieActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     private static final String TAG = "MovieActivity";
-    public static final String KEY_LOGO_BITMAP = "logo-bitmap";
-    public static final String KEY_TREAT_UP_AS_BACK = "treat-up-as-back";
 
     private MoviePlayer mPlayer;
-    private boolean mFinishOnCompletion;
     private Uri mUri;
-    private boolean mTreatUpAsBack;
-    private Intent mShareIntent;
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void setSystemUiVisibility(View rootView) {
-        if (ApiHelper.HAS_VIEW_SYSTEM_UI_FLAG_LAYOUT_STABLE) {
-            rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        }
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-
         setContentView(R.layout.movie_view);
         View rootView = findViewById(R.id.movie_view_root);
 
-        setSystemUiVisibility(rootView);
-
         Intent intent = getIntent();
+        mUri = intent.getData();
         initializeActionBar(intent);
-        mFinishOnCompletion = intent.getBooleanExtra(
-                MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
-        mTreatUpAsBack = intent.getBooleanExtra(KEY_TREAT_UP_AS_BACK, false);
-        mPlayer = new MoviePlayer(rootView, this, intent.getData(), savedInstanceState,
-                !mFinishOnCompletion) {
+
+        mPlayer = new MoviePlayer(rootView, this, intent.getData(), savedInstanceState) {
             @Override
             public void onCompletion() {
-                if (mFinishOnCompletion) {
-                    finish();
-                }
             }
         };
         if (intent.hasExtra(MediaStore.EXTRA_SCREEN_ORIENTATION)) {
@@ -107,71 +83,17 @@ public class MovieActivity extends AppCompatActivity {
                 setRequestedOrientation(orientation);
             }
         }
-        Window win = getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        winParams.buttonBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
-        winParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-        win.setAttributes(winParams);
-
-        // We set the background in the theme to have the launching animation.
-        // But for the performance (and battery), we remove the background here.
-        win.setBackgroundDrawable(null);
-    }
-
-    private void setActionBarLogoFromIntent(Intent intent) {
-        Bitmap logo = intent.getParcelableExtra(KEY_LOGO_BITMAP);
-        if (logo != null) {
-            getSupportActionBar().setLogo(
-                    new BitmapDrawable(getResources(), logo));
-        }
     }
 
     private void initializeActionBar(Intent intent) {
-        mUri = intent.getData();
         final ActionBar actionBar = getSupportActionBar();
-        if (actionBar == null) {
-            return;
-        }
-        setActionBarLogoFromIntent(intent);
-        actionBar.setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP,
-                ActionBar.DISPLAY_HOME_AS_UP);
-
-        String title = intent.getStringExtra(Intent.EXTRA_TITLE);
-        if (title != null) {
-            actionBar.setTitle(title);
-        } else {
-            // Displays the filename as title, reading the filename from the
-            // interface: {@link android.provider.OpenableColumns#DISPLAY_NAME}.
-            AsyncQueryHandler queryHandler =
-                    new AsyncQueryHandler(getContentResolver()) {
-                @Override
-                protected void onQueryComplete(int token, Object cookie,
-                        Cursor cursor) {
-                    try {
-                        if ((cursor != null) && cursor.moveToFirst()) {
-                            String displayName = cursor.getString(0);
-
-                            // Just show empty title if other apps don't set
-                            // DISPLAY_NAME
-                            actionBar.setTitle((displayName == null) ? "" :
-                                    displayName);
-                        }
-                    } finally {
-                        Utils.closeSilently(cursor);
-                    }
-                }
-            };
-            queryHandler.startQuery(0, null, mUri,
-                    new String[] {OpenableColumns.DISPLAY_NAME}, null, null,
-                    null);
-        }
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setTitle(getResources().getString(R.string.video_page_title));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.movie, menu);
         return true;
     }
 
@@ -186,16 +108,7 @@ public class MovieActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            if (mTreatUpAsBack) {
-                finish();
-            } else {
-                startActivity(new Intent(this, GalleryActivity.class));
-                finish();
-            }
-            return true;
-        } else if (id == R.id.action_share) {
-            startActivity(Intent.createChooser(createShareIntent(),
-                    getString(R.string.share)));
+            finish();
             return true;
         }
         return false;

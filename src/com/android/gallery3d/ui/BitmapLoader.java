@@ -18,7 +18,7 @@ package com.android.gallery3d.ui;
 
 import android.graphics.Bitmap;
 
-import com.android.photos.data.GalleryBitmapPool;
+import com.android.gallery3d.data.GalleryBitmapPool;
 import com.android.gallery3d.util.Future;
 import com.android.gallery3d.util.FutureListener;
 

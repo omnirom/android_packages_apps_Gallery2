@@ -20,11 +20,15 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -46,11 +50,9 @@ public class TrimVideo extends AppCompatActivity implements
         MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener,
         ControllerOverlay.Listener {
-
+    private static final String TAG = "TrimVideo";
     private VideoView mVideoView;
-    private TextView mSaveVideoTextView;
     private TrimControllerOverlay mController;
-    private Context mContext;
     private Uri mUri;
     private final Handler mHandler = new Handler();
     public static final String TRIM_ACTION = "com.android.camera.action.TRIM";
@@ -68,30 +70,15 @@ public class TrimVideo extends AppCompatActivity implements
     private String mSrcVideoPath = null;
     private static final String TIME_STAMP_NAME = "'TRIM'_yyyyMMdd_HHmmss";
     private SaveVideoFileInfo mDstFileInfo = null;
+    private Menu mMenu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mContext = getApplicationContext();
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-
-        ActionBar actionBar = getSupportActionBar();
-        int displayOptions = ActionBar.DISPLAY_SHOW_HOME;
-        actionBar.setDisplayOptions(0, displayOptions);
-        displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM;
-        actionBar.setDisplayOptions(displayOptions, displayOptions);
-        actionBar.setCustomView(R.layout.trim_menu);
-
-        mSaveVideoTextView = (TextView) findViewById(R.id.start_trim);
-        mSaveVideoTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                trimVideo();
-            }
-        });
-        mSaveVideoTextView.setEnabled(false);
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setTitle(getResources().getString(R.string.trim_label));
 
         Intent intent = getIntent();
         mUri = intent.getData();
@@ -101,7 +88,7 @@ public class TrimVideo extends AppCompatActivity implements
 
         mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
 
-        mController = new TrimControllerOverlay(mContext);
+        mController = new TrimControllerOverlay(this);
         ((ViewGroup) rootView).addView(mController.getView());
         mController.setListener(this);
         mController.setCanReplay(true);
@@ -147,12 +134,39 @@ public class TrimVideo extends AppCompatActivity implements
         mVideoView.stopPlayback();
         super.onDestroy();
     }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.movie_trim, menu);
+        mMenu = menu;
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        } else if (id == R.id.saveButton) {
+            trimVideo();
+            return true;
+        }
+        return false;
+    }
 
     private final Runnable mProgressChecker = new Runnable() {
         @Override
         public void run() {
-            int pos = setProgress();
-            mHandler.postDelayed(mProgressChecker, 200 - (pos % 200));
+        
+            int videoPosition = mVideoView.getCurrentPosition();
+            // no progress update until player has moived past start point
+            // sometimes videoPosition goes back from the original seekTo for some time
+            if (videoPosition >= mTrimStartTime) {
+                setProgress();
+            }
+            mHandler.postDelayed(mProgressChecker, 250);
         }
     };
 
@@ -177,12 +191,7 @@ public class TrimVideo extends AppCompatActivity implements
     // to be updated immediately.
     private int setProgress() {
         mVideoPosition = mVideoView.getCurrentPosition();
-        // If the video position is smaller than the starting point of trimming,
-        // correct it.
-        if (mVideoPosition < mTrimStartTime) {
-            mVideoView.seekTo(mTrimStartTime);
-            mVideoPosition = mTrimStartTime;
-        }
+
         // If the position is bigger than the end point of trimming, show the
         // replay button and pause.
         if (mVideoPosition >= mTrimEndTime && mTrimEndTime > 0) {
@@ -200,19 +209,21 @@ public class TrimVideo extends AppCompatActivity implements
         }
         mController.setTimes(mVideoPosition, duration, mTrimStartTime, mTrimEndTime);
         // Enable save if there's modifications
-        mSaveVideoTextView.setEnabled(isModified());
+        enableSave(isModified());
         return mVideoPosition;
     }
 
     private void playVideo() {
+        Log.d(TAG, "mTrimStartTime = " + mTrimStartTime);
         mVideoView.start();
         mController.showPlaying();
-        setProgress();
+        mHandler.post(mProgressChecker);
     }
 
     private void pauseVideo() {
         mVideoView.pause();
         mController.showPaused();
+        mHandler.removeCallbacksAndMessages(null);
     }
 
 
@@ -230,8 +241,7 @@ public class TrimVideo extends AppCompatActivity implements
 
     private void trimVideo() {
 
-        mDstFileInfo = SaveVideoFileUtils.getDstMp4FileInfo(TIME_STAMP_NAME,
-                getContentResolver(), mUri, getString(R.string.folder_download));
+        mDstFileInfo = SaveVideoFileUtils.getDstMp4FileInfo(TIME_STAMP_NAME, mUri);
         final File mSrcFile = new File(mSrcVideoPath);
 
         showProgressDialog();
@@ -261,14 +271,6 @@ public class TrimVideo extends AppCompatActivity implements
                         if (mProgress != null) {
                             mProgress.dismiss();
                             mProgress = null;
-                            // Show the result only when the activity not stopped.                            
-                            Uri uri = androidx.core.content.FileProvider.getUriForFile(getApplicationContext(),
-                                    "com.android.gallery3d", mDstFileInfo.mFile);
-                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-                            intent.setDataAndType(uri, "video/*");
-                            intent.putExtra(MediaStore.EXTRA_FINISH_ON_COMPLETION, false);
-                            startActivity(intent);
-                            finish();
                         }
                     }
                 });
@@ -337,5 +339,19 @@ public class TrimVideo extends AppCompatActivity implements
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         return false;
+    }
+
+    private void enableSave(boolean enable) {
+        if (mMenu != null) {
+            MenuItem saveMenu = mMenu.findItem(R.id.saveButton);
+            if (saveMenu != null) {
+                saveMenu.setEnabled(enable);
+            
+                Drawable drawable = saveMenu.getIcon();
+                if (drawable != null) {
+                    drawable.setAlpha(enable ? 255 : 80);
+                }
+            }
+        }
     }
 }

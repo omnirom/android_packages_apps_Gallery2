@@ -602,19 +602,6 @@ public abstract class PhotoPage extends ActivityState implements
                 android.R.anim.fade_out);
     }
 
-    private void launchTinyPlanet() {
-        // Deep link into tiny planet
-        MediaItem current = mModel.getMediaItem(0);
-        Intent intent = new Intent(FilterShowActivity.TINY_PLANET_ACTION);
-        intent.setClass(mActivity, FilterShowActivity.class);
-        intent.setDataAndType(current.getContentUri(), current.getMimeType())
-            .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.putExtra(FilterShowActivity.LAUNCH_FULLSCREEN,
-                mActivity.isFullscreen());
-        mActivity.startActivityForResult(intent, REQUEST_EDIT);
-        overrideTransitionToEditor();
-    }
-
     private void launchCamera() {
         mRecenterCameraOnResume = false;
         GalleryUtils.startCameraActivity(mActivity);
@@ -635,6 +622,14 @@ public abstract class PhotoPage extends ActivityState implements
         return false;
     }
 
+    private boolean isVideo() {
+        if (mCurrentPhoto != null) {
+            int supportedOperations = mCurrentPhoto.getSupportedOperations();
+            return (supportedOperations & MediaObject.SUPPORT_PLAY) != 0;
+        }
+        return false;
+    }
+    
     private void launchPhotoEditor() {
         MediaItem current = mModel.getMediaItem(0);
         if (current == null || (current.getSupportedOperations()
@@ -1244,9 +1239,7 @@ public abstract class PhotoPage extends ActivityState implements
     public void playVideo(Activity activity, Uri uri, String title) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW)
-                    .setDataAndType(uri, "video/*")
-                    .putExtra(Intent.EXTRA_TITLE, title)
-                    .putExtra(MovieActivity.KEY_TREAT_UP_AS_BACK, true);
+                    .setDataAndType(uri, "video/*");
             activity.startActivityForResult(intent, REQUEST_PLAY_VIDEO);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(activity, activity.getString(R.string.video_err),
@@ -1339,8 +1332,6 @@ public abstract class PhotoPage extends ActivityState implements
     public void onFilmModeChanged(boolean enabled) {
         if (enabled) {
             mActionBar.setTitle(mMediaSet.getName());
-        } else {
-            mActionBar.setTitle(mActivity.getResources().getString(R.string.photo_page_title));
         }
         if (enabled) {
             UsageStatistics.onContentViewChanged(
@@ -1415,14 +1406,6 @@ public abstract class PhotoPage extends ActivityState implements
 
         mModel.resume();
         mPhotoView.resume();
-        mActionBar.setDisplayOptions(
-                ((mSecureAlbum == null) && (mSetPathString != null)), true);
-
-        if (mPhotoView.getFilmMode() && mMediaSet != null) {
-            mActionBar.setTitle(mMediaSet.getName());
-        } else {
-            mActionBar.setTitle(mActivity.getResources().getString(R.string.photo_page_title));
-        }
 
         boolean haveImageEditor = GalleryUtils.isEditorAvailable(mActivity, "image/*");
         if (haveImageEditor != mHaveImageEditor) {
@@ -1506,6 +1489,9 @@ public abstract class PhotoPage extends ActivityState implements
         //mActivity.setSystemBarsTranlucent(mIsSinglePhotoMode);
         //mActionBar.setTransparentMode(mIsSinglePhotoMode);
         mActivity.showSystemBars(false);
+        if (mIsSinglePhotoMode) {
+            mActionBar.setTitle(mActivity.getResources().getString(isVideo() ? R.string.video_page_title : R.string.photo_page_title));
+        }
     }
 
     private void showBottomControl(boolean withAnim) {

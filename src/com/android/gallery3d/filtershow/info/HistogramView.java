@@ -95,7 +95,7 @@ public class HistogramView extends View {
 
         mPaint.reset();
         mPaint.setAntiAlias(true);
-        int c = getAttrColor(android.R.attr.colorControlHighlight);
+        int c = getAttrColor(android.R.attr.colorControlNormal);
         mPaint.setARGB(100, Color.red(c), Color.green(c), Color.blue(c));
         mPaint.setStrokeWidth((int) Math.ceil(wl));
 

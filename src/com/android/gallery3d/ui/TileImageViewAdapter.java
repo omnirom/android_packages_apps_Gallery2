@@ -26,7 +26,7 @@ import android.graphics.Rect;
 
 import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.common.Utils;
-import com.android.photos.data.GalleryBitmapPool;
+import com.android.gallery3d.data.GalleryBitmapPool;
 
 public class TileImageViewAdapter implements TileImageView.TileSource {
     private static final String TAG = "TileImageViewAdapter";

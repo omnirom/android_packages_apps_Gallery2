@@ -23,26 +23,22 @@ import com.android.gallery3d.data.LocalMergeAlbum;
 import com.android.gallery3d.data.MediaSet;
 import com.android.gallery3d.data.Path;
 
+import java.io.File;
 import java.util.Comparator;
 
 public class MediaSetUtils {
-    private static String mRoot = Environment.getExternalStorageDirectory().toString();
-
-    public static void setRoot(String root) {
-        mRoot = root;
-    }
-
     public static final int DOWNLOAD_BUCKET_ID = GalleryUtils.getBucketId(
             Environment.getExternalStoragePublicDirectory(
             Environment.DIRECTORY_DOWNLOADS).getAbsolutePath());
     public static final int SNAPSHOT_BUCKET_ID = GalleryUtils.getBucketId(
-            Environment.getExternalStoragePublicDirectory(
-            Environment.DIRECTORY_PICTURES + "/" + Environment.DIRECTORY_SCREENSHOTS).getAbsolutePath());
+            new File(Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES), Environment.DIRECTORY_SCREENSHOTS).getAbsolutePath());
     public static final int MOVIES_BUCKET_ID = GalleryUtils.getBucketId(
             Environment.getExternalStoragePublicDirectory(
             Environment.DIRECTORY_MOVIES).getAbsolutePath());
     public static int getCameraBucketId() {
-        return GalleryUtils.getBucketId(mRoot + "/" + Environment.DIRECTORY_DCIM + "/Camera");
+        return GalleryUtils.getBucketId(new File(Environment.getExternalStoragePublicDirectory(
+        Environment.DIRECTORY_DCIM), "Camera").getAbsolutePath());
     }
 
     public static boolean isCameraSource(Path path) {

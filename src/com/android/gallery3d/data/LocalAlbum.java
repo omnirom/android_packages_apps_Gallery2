@@ -307,7 +307,7 @@ public class LocalAlbum extends MediaSet {
             relativePath += Environment.DIRECTORY_PICTURES + "/" + Environment.DIRECTORY_SCREENSHOTS;
         } else if (bucketId == MediaSetUtils.MOVIES_BUCKET_ID) {
             relativePath += Environment.DIRECTORY_MOVIES;
-        } else {
+        /*} else {
             // If the first few cases didn't hit the matching path, do a
             // thorough search in the local directories.
             File extStorage = Environment.getExternalStorageDirectory();
@@ -317,7 +317,7 @@ public class LocalAlbum extends MediaSet {
                 relativePath = null;
             } else {
                 relativePath = path.substring(extStorage.getAbsolutePath().length());
-            }
+            }*/
         }
         return relativePath;
     }

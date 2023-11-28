@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2010 Google Inc.
+<!--
+     Copyright (C) 2013 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,14 +14,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/cancel"
-            android:title="@android:string/cancel"
-            app:showAsAction="always|withText">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <size
+                android:width="32dp"
+                android:height="32dp"/>
+            <solid android:color="?android:attr/colorBackground" />
+        </shape>
     </item>
-    <item android:id="@+id/save"
-            android:title="@string/crop_save_text"
-            app:showAsAction="always|withText">
+    <item>
+        <bitmap
+            android:src="@drawable/filtershow_scrubber_control_normal"
+            android:tint="@color/accent" />
     </item>
-</menu>
+</layer-list>

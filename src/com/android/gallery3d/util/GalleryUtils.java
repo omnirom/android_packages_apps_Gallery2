@@ -329,7 +329,7 @@ public class GalleryUtils {
 
     // Return the local path that matches the given bucketId. If no match is
     // found, return null
-    public static String searchDirForPath(File dir, int bucketId) {
+    /*public static String searchDirForPath(File dir, int bucketId) {
         File[] files = dir.listFiles();
         if (files != null) {
             for (File file : files) {
@@ -345,7 +345,7 @@ public class GalleryUtils {
             }
         }
         return null;
-    }
+    }*/
 
     // Returns a (localized) string for the given duration (in seconds).
     public static String formatDuration(final Context context, int duration) {
@@ -394,22 +394,6 @@ public class GalleryUtils {
                     : R.string.select_item;
         }
         return R.string.select_image;
-    }
-
-    public static boolean hasSpaceForSize(long size) {
-        String state = Environment.getExternalStorageState();
-        if (!Environment.MEDIA_MOUNTED.equals(state)) {
-            return false;
-        }
-
-        String path = Environment.getExternalStorageDirectory().getPath();
-        try {
-            StatFs stat = new StatFs(path);
-            return stat.getAvailableBlocks() * (long) stat.getBlockSize() > size;
-        } catch (Exception e) {
-            Log.i(TAG, "Fail to access external storage", e);
-        }
-        return false;
     }
 
     public static boolean isPanorama(MediaItem item) {

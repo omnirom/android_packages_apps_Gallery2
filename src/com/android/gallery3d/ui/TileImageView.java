@@ -28,7 +28,7 @@ import android.view.WindowManager;
 import com.android.gallery3d.app.GalleryContext;
 import com.android.gallery3d.common.Utils;
 import com.android.gallery3d.data.DecodeUtils;
-import com.android.photos.data.GalleryBitmapPool;
+import com.android.gallery3d.data.GalleryBitmapPool;
 import com.android.gallery3d.glrenderer.GLCanvas;
 import com.android.gallery3d.glrenderer.UploadedTexture;
 import com.android.gallery3d.util.Future;

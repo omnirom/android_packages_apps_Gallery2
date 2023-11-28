@@ -39,52 +39,6 @@ public class TrimControllerOverlay extends CommonControllerOverlay  {
         mTimeBar = new TrimTimeBar(context, this);
     }
 
-    private void hidePlayButtonIfPlaying() {
-        if (mState == State.PLAYING) {
-            mPlayPauseReplayView.setVisibility(View.INVISIBLE);
-        }
-        if (ApiHelper.HAS_OBJECT_ANIMATION) {
-            mPlayPauseReplayView.setAlpha(1f);
-        }
-    }
-
-    @Override
-    public void showPlaying() {
-        super.showPlaying();
-        if (ApiHelper.HAS_OBJECT_ANIMATION) {
-            // Add animation to hide the play button while playing.
-            ObjectAnimator anim = ObjectAnimator.ofFloat(mPlayPauseReplayView, "alpha", 1f, 0f);
-            anim.setDuration(200);
-            anim.start();
-            anim.addListener(new AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    hidePlayButtonIfPlaying();
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    hidePlayButtonIfPlaying();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                }
-            });
-        } else {
-            hidePlayButtonIfPlaying();
-        }
-    }
-
-    @Override
-    public void setTimes(int currentTime, int totalTime, int trimStartTime, int trimEndTime) {
-        mTimeBar.setTime(currentTime, totalTime, trimStartTime, trimEndTime);
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (super.onTouchEvent(event)) {

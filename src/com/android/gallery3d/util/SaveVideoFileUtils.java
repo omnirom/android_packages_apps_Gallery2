@@ -34,19 +34,10 @@ import java.util.Date;
 public class SaveVideoFileUtils {
     // This function can decide which folder to save the video file, and generate
     // the needed information for the video file including filename.
-    public static SaveVideoFileInfo getDstMp4FileInfo(String fileNameFormat,
-            ContentResolver contentResolver, Uri uri, String defaultFolderName) {
+    public static SaveVideoFileInfo getDstMp4FileInfo(String fileNameFormat, Uri uri) {
         SaveVideoFileInfo dstFileInfo = new SaveVideoFileInfo();
-        // Use the default save directory if the source directory cannot be
-        // saved.
-        dstFileInfo.mDirectory = getSaveDirectory(contentResolver, uri);
-        if ((dstFileInfo.mDirectory == null) || !dstFileInfo.mDirectory.canWrite()) {
-            dstFileInfo.mDirectory = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS);
-            dstFileInfo.mFolderName = defaultFolderName;
-        } else {
-            dstFileInfo.mFolderName = dstFileInfo.mDirectory.getName();
-        }
+        dstFileInfo.mDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
+        dstFileInfo.mFolderName = dstFileInfo.mDirectory.getName();
         dstFileInfo.mFileName = new SimpleDateFormat(fileNameFormat).format(
                 new Date(System.currentTimeMillis()));
 

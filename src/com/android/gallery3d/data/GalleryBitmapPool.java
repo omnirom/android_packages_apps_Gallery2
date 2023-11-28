@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.android.photos.data;
+package com.android.gallery3d.data;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.util.Pools.Pool;
 import android.util.Pools.SynchronizedPool;
 
-import com.android.photos.data.SparseArrayBitmapPool.Node;
+import com.android.gallery3d.data.SparseArrayBitmapPool.Node;
 
 /**
  * Pool allowing the efficient reuse of bitmaps in order to avoid long

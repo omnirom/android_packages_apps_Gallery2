@@ -18,6 +18,7 @@ package com.android.gallery3d.app;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -81,7 +82,7 @@ public abstract class CommonControllerOverlay extends FrameLayout implements
                 new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
         mBackground = new View(context);
-        mBackground.setBackgroundColor(context.getResources().getColor(R.color.darker_transparent));
+        mBackground.setBackgroundColor(getAttrColor(android.R.attr.colorBackground));
         addView(mBackground, matchParent);
 
         // Depending on the usage, the timeBar can show a single scrubber, or
@@ -127,7 +128,7 @@ public abstract class CommonControllerOverlay extends FrameLayout implements
     private TextView createOverlayTextView(Context context) {
         TextView view = new TextView(context);
         view.setGravity(Gravity.CENTER);
-        view.setTextColor(0xFFFFFFFF);
+        view.setTextColor(getAttrColor(android.R.attr.textColorPrimary));
         view.setPadding(0, 15, 0, 15);
         return view;
     }
@@ -342,5 +343,12 @@ public abstract class CommonControllerOverlay extends FrameLayout implements
     @Override
     public void onScrubbingEnd(int time, int trimStartTime, int trimEndTime) {
         mListener.onSeekEnd(time, trimStartTime, trimEndTime);
+    }
+    
+    protected int getAttrColor(Integer attr) {
+        TypedArray ta = getContext().obtainStyledAttributes(new int[]{attr});
+        int color = ta.getColor(0, 0);
+        ta.recycle();
+        return color;
     }
 }

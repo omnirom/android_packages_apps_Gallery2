@@ -35,7 +35,6 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.filtershow.FilterShowActivity;
-import com.android.photos.views.GalleryThumbnailView;
 
 import java.util.Arrays;
 

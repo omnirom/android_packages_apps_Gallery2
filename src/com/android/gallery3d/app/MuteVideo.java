@@ -50,9 +50,7 @@ public class MuteVideo {
     }
 
     public void muteInBackground() {
-        mDstFileInfo = SaveVideoFileUtils.getDstMp4FileInfo(TIME_STAMP_NAME,
-                mActivity.getContentResolver(), mUri,
-                mActivity.getString(R.string.folder_download));
+        mDstFileInfo = SaveVideoFileUtils.getDstMp4FileInfo(TIME_STAMP_NAME, mUri);
 
         showProgressDialog();
         new Thread(new Runnable() {
@@ -79,14 +77,6 @@ public class MuteVideo {
                         if (mMuteProgress != null) {
                             mMuteProgress.dismiss();
                             mMuteProgress = null;
-
-                            // Show the result only when the activity not
-                            // stopped.
-                            Uri uri = androidx.core.content.FileProvider.getUriForFile(mActivity, "com.android.gallery3d", mDstFileInfo.mFile);
-                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-                            intent.setDataAndType(uri, "video/*");
-                            intent.putExtra(MediaStore.EXTRA_FINISH_ON_COMPLETION, false);
-                            mActivity.startActivity(intent);
                         }
                     }
                 });

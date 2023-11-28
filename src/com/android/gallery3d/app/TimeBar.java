@@ -17,12 +17,15 @@
 package com.android.gallery3d.app;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -39,7 +42,6 @@ import java.util.Locale;
  * bar, and the scrubber.
  */
 public class TimeBar extends View {
-
     public interface Listener {
         void onScrubbingStart();
 
@@ -49,15 +51,17 @@ public class TimeBar extends View {
     }
 
     // Padding around the scrubber to increase its touch target
-    private static final int SCRUBBER_PADDING_IN_DP = 10;
+    private static final int SCRUBBER_PADDING_IN_DP = 0;
 
     // The total padding, top plus bottom
-    private static final int V_PADDING_IN_DP = 30;
+    private static final int V_PADDING_IN_DP = 60;
+    private static final int H_PADDING_IN_DP = 5;
 
-    private static final int TEXT_SIZE_IN_DP = 14;
-    private static final int PROGRESS_WIDTH_IN_DP = 3;
+    private static final int TEXT_SIZE_IN_DP = 16;
+    private static final int PROGRESS_WIDTH_LARGE_IN_DP = 4;
+    private static final int PROGRESS_WIDTH_SMALL_IN_DP = 1;
 
-    private static final String TAG = "Gallery3D/TimeBar";
+    private static final String TAG = "TimeBar";
     private static final boolean LOG = false;
     public static final int UNKNOWN = -1;
 
@@ -89,11 +93,12 @@ public class TimeBar extends View {
     protected final Rect mTimeBounds;
 
     protected int mVPaddingInPx;
-    private int mLastShowTime = UNKNOWN;
+    protected int mHPaddingInPx;
+    //private int mLastShowTime = UNKNOWN;
 
     private ITimeBarSecondaryProgressExt mSecondaryProgressExt = new TimeBarSecondaryProgressExtImpl();
     private ITimeBarInfoExt mInfoExt = new TimeBarInfoExtImpl();
-    private ITimeBarLayoutExt mLayoutExt = new TimeBarLayoutExtImpl();
+    protected ITimeBarLayoutExt mLayoutExt = new TimeBarLayoutExtImpl();
 
     public TimeBar(Context context, Listener listener) {
         super(context);
@@ -108,15 +113,15 @@ public class TimeBar extends View {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 
         mProgressPaint = new Paint();
-        mProgressPaint.setColor(0xFF808080);
-        mProgressPaint.setStrokeWidth(metrics.density * (PROGRESS_WIDTH_IN_DP - 1));
+        mProgressPaint.setColor(getAttrColor(android.R.attr.textColorTertiary));
+        mProgressPaint.setStrokeWidth(metrics.density * PROGRESS_WIDTH_SMALL_IN_DP);
         mPlayedPaint = new Paint();
-        mPlayedPaint.setColor(0xFFFFFFFF);
-        mPlayedPaint.setStrokeWidth(metrics.density * PROGRESS_WIDTH_IN_DP);
+        mPlayedPaint.setColor(getAttrColor(android.R.attr.colorAccent));
+        mPlayedPaint.setStrokeWidth(metrics.density * PROGRESS_WIDTH_LARGE_IN_DP);
 
         float textSizeInPx = metrics.density * TEXT_SIZE_IN_DP;
         mTimeTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mTimeTextPaint.setColor(0xFFFFFFFF);
+        mTimeTextPaint.setColor(getAttrColor(android.R.attr.colorControlNormal));
         mTimeTextPaint.setTextSize(textSizeInPx);
         mTimeTextPaint.setTextAlign(Paint.Align.CENTER);
         mTimeTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
@@ -124,10 +129,11 @@ public class TimeBar extends View {
         mTimeBounds = new Rect();
         mTimeTextPaint.getTextBounds("0:00:00", 0, 7, mTimeBounds);
 
-        mScrubber = BitmapFactory.decodeResource(getResources(), R.drawable.scrubber_knob);
+        mScrubber = getBitmapFromDrawable(context.getDrawable(R.drawable.scrubber_knob));
         mScrubberPadding = (int) (metrics.density * SCRUBBER_PADDING_IN_DP);
 
         mVPaddingInPx = (int) (metrics.density * V_PADDING_IN_DP);
+        mHPaddingInPx = (int) (metrics.density * H_PADDING_IN_DP);
         mLayoutExt.init(mScrubberPadding, mVPaddingInPx);
         mInfoExt.init(textSizeInPx);
         mSecondaryProgressExt.init();
@@ -164,16 +170,10 @@ public class TimeBar extends View {
         }
 
         if (!mScrubbing) {
-            if (View.LAYOUT_DIRECTION_RTL == TextUtils.getLayoutDirectionFromLocale(
-                    Locale.getDefault())) {
-                // The progress bar should be reversed in RTL.
-                mScrubberLeft = mPlayedBar.left - mScrubber.getWidth() / 2;
-            } else {
-                mScrubberLeft = mPlayedBar.right - mScrubber.getWidth() / 2;
-            }
+            mScrubberLeft = mPlayedBar.right - mScrubber.getWidth() / 2;
         }
         // update text bounds when layout changed or time changed
-        updateBounds();
+        //updateBounds();
         mInfoExt.updateVisibleText(this, mProgressBar, mTimeBounds);
         invalidate();
     }
@@ -222,16 +222,8 @@ public class TimeBar extends View {
     }
 
     private int getScrubberTime() {
-        if (View.LAYOUT_DIRECTION_RTL == TextUtils
-                .getLayoutDirectionFromLocale(Locale.getDefault())) {
-            // The progress bar's scrubber time should be reversed in RTL.
-            return (int) ((long) (mProgressBar.width() - (mScrubberLeft
-                    + mScrubber.getWidth() / 2 - mProgressBar.left))
+        return (int) ((long) (mScrubberLeft + mScrubber.getWidth() / 2 - mProgressBar.left)
                     * mTotalTime / mProgressBar.width());
-        } else {
-            return (int) ((long) (mScrubberLeft + mScrubber.getWidth() / 2 - mProgressBar.left)
-                    * mTotalTime / mProgressBar.width());
-        }
   }
 
     @Override
@@ -241,9 +233,9 @@ public class TimeBar extends View {
         if (!mShowTimes && !mShowScrubber) {
             mProgressBar.set(0, 0, w, h);
         } else {
-            int margin = mScrubber.getWidth();
+            int margin = mScrubber.getWidth() / 2;
             if (mShowTimes) {
-                margin += mTimeBounds.width();
+                margin += mTimeBounds.width() + mHPaddingInPx;
             }
             margin = mLayoutExt.getProgressMargin(margin);
             int progressY = (h + mScrubberPadding) / 2 + mLayoutExt.getProgressOffset(mTimeBounds);
@@ -257,7 +249,6 @@ public class TimeBar extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
         // draw progress bars
         canvas.drawLine(mProgressBar.left, mProgressBar.top, mProgressBar.right, mProgressBar.top, mProgressPaint);
         mSecondaryProgressExt.draw(canvas, mProgressBar);
@@ -268,31 +259,16 @@ public class TimeBar extends View {
             canvas.drawBitmap(mScrubber, mScrubberLeft, mScrubberTop, null);
         }
         if (mShowTimes) {
-            if (View.LAYOUT_DIRECTION_RTL == TextUtils
-                    .getLayoutDirectionFromLocale(Locale.getDefault())) {
-                // The progress bar's time should be reversed in RTL.
                 canvas.drawText(
                         stringForTime(mCurrentTime),
-                        getWidth() - getPaddingRight() - mTimeBounds.width() / 2,
-                        mTimeBounds.height() + mVPaddingInPx / 2 + mScrubberPadding + 1,
+                        mTimeBounds.width() / 2 + getPaddingLeft() + mHPaddingInPx,
+                        mProgressBar.top + mTimeBounds.height() / 2,
                         mTimeTextPaint);
                 canvas.drawText(
                         stringForTime(mTotalTime),
-                        mTimeBounds.width() / 2 + getPaddingLeft(),
-                        mTimeBounds.height() + mVPaddingInPx / 2 + mScrubberPadding + 1,
+                        getWidth() - getPaddingRight() - mTimeBounds.width() / 2 - mHPaddingInPx,
+                        mProgressBar.top + mTimeBounds.height() / 2,
                         mTimeTextPaint);
-            } else {
-                canvas.drawText(
-                        stringForTime(mCurrentTime),
-                        mTimeBounds.width() / 2 + getPaddingLeft(),
-                        mTimeBounds.height() + mVPaddingInPx / 2 + mScrubberPadding + 1,
-                        mTimeTextPaint);
-                canvas.drawText(
-                        stringForTime(mTotalTime),
-                        getWidth() - getPaddingRight() - mTimeBounds.width() / 2,
-                        mTimeBounds.height() + mVPaddingInPx / 2 + mScrubberPadding + 1,
-                        mTimeTextPaint);
-            }
         }
         mInfoExt.draw(canvas, mLayoutExt.getInfoBounds(this, mTimeBounds));
     }
@@ -358,7 +334,7 @@ public class TimeBar extends View {
         mEnableScrubbing = canSeek;
     }
 
-    private void updateBounds() {
+    /*private void updateBounds() {
         int showTime = mTotalTime > mCurrentTime ? mTotalTime : mCurrentTime;
         if (mLastShowTime == showTime) {
             // do not need to recompute the bounds.
@@ -372,7 +348,7 @@ public class TimeBar extends View {
             Log.v(TAG, "updateBounds() durationText=" + durationText + ", timeBounds="
                     + mTimeBounds);
         }
-    }
+    }*/
 
     public void setScrubbing(boolean enable) {
         if (LOG) {
@@ -407,6 +383,26 @@ public class TimeBar extends View {
         }
         mSecondaryProgressExt.setSecondaryProgress(mProgressBar, percent);
         invalidate();
+    }
+        
+    private int getAttrColor(Integer attr) {
+        TypedArray ta = getContext().obtainStyledAttributes(new int[]{attr});
+        int color = ta.getColor(0, 0);
+        ta.recycle();
+        return color;
+    }
+    
+    private Bitmap getBitmapFromDrawable(Drawable image) {
+        final Canvas canvas = new Canvas();
+        canvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG,
+                Paint.FILTER_BITMAP_FLAG));
+
+        Bitmap bmResult = Bitmap.createBitmap(image.getIntrinsicWidth(), image.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bmResult);
+        image.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        image.draw(canvas);
+        return bmResult;
     }
 }
 

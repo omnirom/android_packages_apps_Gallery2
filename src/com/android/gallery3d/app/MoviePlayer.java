@@ -36,9 +36,12 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.VideoView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.common.ApiHelper;
@@ -77,6 +80,7 @@ public class MoviePlayer implements
     private static final long RESUMEABLE_TIMEOUT = 3 * 60 * 1000; // 3 mins
 
     private Context mContext;
+    private MovieActivity mMovieActivity;
     private final VideoView mVideoView;
     private final View mRootView;
     private final Bookmarker mBookmarker;
@@ -118,8 +122,9 @@ public class MoviePlayer implements
     };
 
     public MoviePlayer(View rootView, final MovieActivity movieActivity,
-            Uri videoUri, Bundle savedInstance, boolean canReplay) {
-        mContext = movieActivity.getApplicationContext();
+            Uri videoUri, Bundle savedInstance) {
+        mMovieActivity = movieActivity;
+        mContext = movieActivity;
         mRootView = rootView;
         mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
         mBookmarker = new Bookmarker(movieActivity);
@@ -128,7 +133,7 @@ public class MoviePlayer implements
         mController = new MovieControllerOverlay(mContext);
         ((ViewGroup)rootView).addView(mController.getView());
         mController.setListener(this);
-        mController.setCanReplay(canReplay);
+        mController.setCanReplay(true);
 
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnCompletionListener(this);
@@ -178,7 +183,7 @@ public class MoviePlayer implements
 
         setOnSystemUiVisibilityChangeListener();
         // Hide system UI by default
-        showSystemUi(false);
+        hideSystemBars();
 
         mAudioBecomingNoisyReceiver = new AudioBecomingNoisyReceiver();
         mAudioBecomingNoisyReceiver.register();
@@ -223,21 +228,43 @@ public class MoviePlayer implements
             }
         });
     }
+    
+    public void hideSystemBars() {
+        WindowManager.LayoutParams lp = mMovieActivity.getWindow().getAttributes();
+        lp.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+        mMovieActivity.getWindow().setAttributes(lp);
+        
+        WindowInsetsControllerCompat insetController = new WindowInsetsControllerCompat(mMovieActivity.getWindow(), mMovieActivity.getWindow().getDecorView());
+        insetController.hide(WindowInsetsCompat.Type.systemBars());
 
-    @SuppressWarnings("deprecation")
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void showSystemUi(boolean visible) {
-        if (!ApiHelper.HAS_VIEW_SYSTEM_UI_FLAG_LAYOUT_STABLE) return;
+        mMovieActivity.getWindow().getDecorView().setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
 
-        int flag = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-        if (!visible) {
-            // We used the deprecated "STATUS_BAR_HIDDEN" for unbundling
-            flag |= View.STATUS_BAR_HIDDEN | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+    public void showSystemBars(boolean forceDark) {
+        WindowManager.LayoutParams lp = mMovieActivity.getWindow().getAttributes();
+        lp.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT;
+        mMovieActivity.getWindow().setAttributes(lp);
+        
+        WindowInsetsControllerCompat insetController = new WindowInsetsControllerCompat(mMovieActivity.getWindow(), mMovieActivity.getWindow().getDecorView());
+        if (forceDark) {
+            insetController.setAppearanceLightStatusBars(false);
+            insetController.setAppearanceLightNavigationBars(false);
+        } else {
+            insetController.setAppearanceLightStatusBars(!mMovieActivity.getResources().getConfiguration().isNightModeActive());
+            insetController.setAppearanceLightNavigationBars(!mMovieActivity.getResources().getConfiguration().isNightModeActive());
         }
-        mVideoView.setSystemUiVisibility(flag);
+        insetController.show(WindowInsetsCompat.Type.systemBars());
+        
+        mMovieActivity.getWindow().getDecorView().setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
     public void onSaveInstanceState(Bundle outState) {
@@ -397,13 +424,13 @@ public class MoviePlayer implements
     public void onShown() {
         mShowing = true;
         setProgress();
-        showSystemUi(true);
+        showSystemBars(false);
     }
 
     @Override
     public void onHidden() {
         mShowing = false;
-        showSystemUi(false);
+        hideSystemBars();
     }
 
     @Override

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.photos.data;
+package com.android.gallery3d.data;
 
 import android.graphics.Bitmap;
 import android.util.SparseArray;

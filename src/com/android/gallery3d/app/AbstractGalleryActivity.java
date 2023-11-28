@@ -64,7 +64,7 @@ import com.android.gallery3d.util.Log;
 import com.android.gallery3d.util.MediaSetUtils;
 import com.android.gallery3d.util.PanoramaViewHelper;
 import com.android.gallery3d.util.ThreadPool;
-import com.android.photos.data.GalleryBitmapPool;
+import com.android.gallery3d.data.GalleryBitmapPool;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class AbstractGalleryActivity extends AppCompatActivity implements Galler
     private BroadcastReceiver mMountReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (getExternalCacheDir() != null) onStorageReady();
+            if (getCacheDir() != null) onStorageReady();
         }
     };
     private IntentFilter mMountFilter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
@@ -91,20 +91,11 @@ public class AbstractGalleryActivity extends AppCompatActivity implements Galler
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStoragePath();
         getWindow().setBackgroundDrawable(null);
         mPanoramaViewHelper = new PanoramaViewHelper(this);
         mPanoramaViewHelper.onCreate();
         doBindBatchService();
         setTaskDescription(new ActivityManager.TaskDescription((String) getTitle(), null, Color.WHITE));
-    }
-
-    private void setStoragePath() {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(this);
-        String storagePath = prefs.getString(StorageChangeReceiver.KEY_STORAGE,
-                Environment.getExternalStorageDirectory().toString());
-        MediaSetUtils.setRoot(storagePath);
     }
 
     @Override
@@ -194,7 +185,7 @@ public class AbstractGalleryActivity extends AppCompatActivity implements Galler
     @Override
     protected void onStart() {
         super.onStart();
-        if (getExternalCacheDir() == null) {
+        if (getCacheDir() == null) {
             OnCancelListener onCancel = new OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
@@ -390,7 +381,7 @@ public class AbstractGalleryActivity extends AppCompatActivity implements Galler
     }
 
     public void hideSystemBars() {
-                WindowManager.LayoutParams lp = getWindow().getAttributes();
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.layoutInDisplayCutoutMode =
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
         getWindow().setAttributes(lp);
