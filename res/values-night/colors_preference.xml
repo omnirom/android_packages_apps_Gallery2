@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material next thumb disable color-->
+    <color name="omni_settings_thumb_disabled_color">?android:attr/textColorSecondary</color>
+
+    <!-- Material next thumb off color-->
+    <color name="omni_settings_thumb_off_color">?android:attr/textColorSecondary</color>
+
+    <!-- Material next track on color-->
+    <color name="omni_settings_track_on_color">@color/accent_light</color>
+
+    <!-- Material next track off color-->
+    <color name="omni_settings_track_off_color">?android:attr/textColorSecondaryInverse</color>
+</resources>

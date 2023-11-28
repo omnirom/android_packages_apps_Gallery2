@@ -24,28 +24,26 @@
         <item name="android:navigationBarColor">?android:attr/colorBackground</item>
         <item name="android:statusBarColor">?android:attr/colorBackground</item>
     </style>
+    
     <style name="AlertDialogTheme" parent="@style/Theme.Material3.DayNight.Dialog.Alert">
         <item name="colorAccent">@color/accent</item>
         <item name="colorPrimary">@color/accent</item>
         <item name="dialogCornerRadius">8dp</item>
     </style>
-    <style name="DialogTheme" parent="@style/Theme.Material3.DayNight.Dialog">
-        <item name="dialogCornerRadius">8dp</item>
-    </style>
+    
     <style name="Theme.Gallery" parent="Theme.GalleryBase">
         <item name="android:windowContentOverlay">@null</item>
         <item name="actionModeStyle">@style/Material.ActionModeSyle</item>
         <item name="toolbarStyle">@style/Material.Toolbar</item>
         <item name="actionBarStyle">@style/Material.Toolbar</item>
     </style>
-    <style name="Theme.Crop" parent="Theme.Gallery">
-    </style>
-    <style name="Theme.FilterShow" parent="Theme.Gallery">
-    </style>
+
     <style name="Theme.Settings" parent="Theme.Gallery">
+        <item name="preferenceTheme">@style/Omni.PreferenceTheme</item>
+        <item name="android:switchStyle">@style/Omni.SwitchStyle</item>
+        <item name="android:textAppearanceListItem">@style/Omni.PreferenceTitle</item>
     </style>
-    <style name="Theme.Gallery.Dialog" parent="DialogTheme"/>
-    
+        
     <style name="Material.ActionModeSyle" parent="@style/Widget.Material3.ActionMode">
         <item name="background">?android:attr/colorBackground</item>
     </style>
