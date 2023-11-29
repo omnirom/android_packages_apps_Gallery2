@@ -41,6 +41,7 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
     protected final ResourceTexture mCameraOverlay;
     protected final ResourceTexture mSnapshotOverlay;
     protected final ResourceTexture mDownloadOverlay;
+    protected final ResourceTexture mPicturesOverlay;
 
     protected AbstractSlotRenderer(Context context) {
         mVideoOverlay = new ResourceTexture(context, R.drawable.ic_video_album_overlay);
@@ -50,6 +51,7 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
         mCameraOverlay = new ResourceTexture(context, R.drawable.ic_camera_album_overlay);
         mSnapshotOverlay = new ResourceTexture(context, R.drawable.ic_snapshot_album_overlay);
         mDownloadOverlay = new ResourceTexture(context, R.drawable.ic_download_album_overlay);
+        mPicturesOverlay = new ResourceTexture(context, R.drawable.ic_pictures_album_overlay);
         mFramePaint = new GLPaint();
         mFramePaint.setColor(getAttrColor(context, android.R.attr.colorAccent));
         mFramePaint.setLineWidth(context.getResources().getDimensionPixelSize(R.dimen.selected_border_width));
@@ -101,6 +103,10 @@ public abstract class AbstractSlotRenderer implements SlotView.SlotRenderer {
 
     protected void drawDownloadOverlay(GLCanvas canvas, int width, int height) {
         mDownloadOverlay.draw(canvas, width - 15 - mDownloadOverlay.getWidth(), 15);
+    }
+
+    protected void drawPicturesOverlay(GLCanvas canvas, int width, int height) {
+        mPicturesOverlay.draw(canvas, width - 15 - mPicturesOverlay.getWidth(), 15);
     }
 
     protected boolean isPressedUpFrameFinished() {

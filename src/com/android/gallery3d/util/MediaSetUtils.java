@@ -36,6 +36,9 @@ public class MediaSetUtils {
     public static final int MOVIES_BUCKET_ID = GalleryUtils.getBucketId(
             Environment.getExternalStoragePublicDirectory(
             Environment.DIRECTORY_MOVIES).getAbsolutePath());
+    public static final int PICTURES_BUCKET_ID = GalleryUtils.getBucketId(
+            Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES).getAbsolutePath());
     public static int getCameraBucketId() {
         return GalleryUtils.getBucketId(new File(Environment.getExternalStoragePublicDirectory(
         Environment.DIRECTORY_DCIM), "Camera").getAbsolutePath());

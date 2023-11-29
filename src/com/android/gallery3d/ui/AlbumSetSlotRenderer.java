@@ -147,6 +147,8 @@ public class AlbumSetSlotRenderer extends AbstractSlotRenderer {
                 drawDownloadOverlay(canvas, width, height);
             } else if (entry.album.isSnapshotAlbum()) {
                 drawSnapshotOverlay(canvas, width, height);
+            } else if (entry.album.isPicturesAlbum()) {
+                drawPicturesOverlay(canvas, width, height);
             }
         }
 
@@ -273,5 +275,11 @@ public class AlbumSetSlotRenderer extends AbstractSlotRenderer {
     protected void drawDownloadOverlay(GLCanvas canvas, int width, int height) {
         mDownloadOverlay.draw(canvas, width - 15 - mDownloadOverlay.getWidth(),
                 height - mDownloadOverlay.getHeight() - 15);
+    }
+    
+    @Override
+    protected void drawPicturesOverlay(GLCanvas canvas, int width, int height) {
+        mPicturesOverlay.draw(canvas, width - 15 - mPicturesOverlay.getWidth(),
+                height - mPicturesOverlay.getHeight() - 15);
     }
 }

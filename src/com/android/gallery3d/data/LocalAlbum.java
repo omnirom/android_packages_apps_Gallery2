@@ -113,6 +113,11 @@ public class LocalAlbum extends MediaSet {
     }
 
     @Override
+    public boolean isPicturesAlbum() {
+        return mBucketId == MediaSetUtils.PICTURES_BUCKET_ID;
+    }
+    
+    @Override
     public Uri getContentUri() {
         if (mIsImage) {
             return MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
@@ -307,6 +312,8 @@ public class LocalAlbum extends MediaSet {
             relativePath += Environment.DIRECTORY_PICTURES + "/" + Environment.DIRECTORY_SCREENSHOTS;
         } else if (bucketId == MediaSetUtils.MOVIES_BUCKET_ID) {
             relativePath += Environment.DIRECTORY_MOVIES;
+        } else if (bucketId == MediaSetUtils.PICTURES_BUCKET_ID) {
+            relativePath += Environment.DIRECTORY_PICTURES;
         /*} else {
             // If the first few cases didn't hit the matching path, do a
             // thorough search in the local directories.

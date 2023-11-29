@@ -125,6 +125,10 @@ public class LocalAlbumSet extends MediaSet
             if (index != -1) {
                 circularShiftRight(entries, offset++, index);
             }
+            index = findBucket(entries, MediaSetUtils.PICTURES_BUCKET_ID);
+            if (index != -1) {
+                circularShiftRight(entries, offset++, index);
+            }
             index = findBucket(entries, MediaSetUtils.SNAPSHOT_BUCKET_ID);
             if (index != -1) {
                 circularShiftRight(entries, offset++, index);
