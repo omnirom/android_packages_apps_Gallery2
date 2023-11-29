@@ -23,9 +23,6 @@ import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -44,12 +41,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import androidx.print.PrintHelper;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -77,15 +72,6 @@ public class AbstractGalleryActivity extends AppCompatActivity implements Galler
     private GalleryActionBar mActionBar;
     private TransitionStore mTransitionStore = new TransitionStore();
     private PanoramaViewHelper mPanoramaViewHelper;
-    private ProgressBar mProgress;
-    private AlertDialog mAlertDialog = null;
-    private BroadcastReceiver mMountReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (getCacheDir() != null) onStorageReady();
-        }
-    };
-    private IntentFilter mMountFilter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
     private LinearLayout mGLRootViewContainer;
 
     @Override
@@ -170,64 +156,18 @@ public class AbstractGalleryActivity extends AppCompatActivity implements Galler
     public void setContentView(int resId) {
         super.setContentView(resId);
         mGLRootView = (GLRootView) findViewById(R.id.gl_root_view);
-        mProgress = (ProgressBar) findViewById(R.id.gallery_root_progress);
         mGLRootViewContainer = findViewById(R.id.gl_root_view_container);
-    }
-
-    protected void onStorageReady() {
-        if (mAlertDialog != null) {
-            mAlertDialog.dismiss();
-            mAlertDialog = null;
-            unregisterReceiver(mMountReceiver);
-        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (getCacheDir() == null) {
-            OnCancelListener onCancel = new OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    finish();
-                }
-            };
-            OnClickListener onClick = new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            };
-            AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                    .setTitle(R.string.no_external_storage_title)
-                    .setMessage(R.string.no_external_storage)
-                    .setNegativeButton(android.R.string.cancel, onClick)
-                    .setOnCancelListener(onCancel);
-            if (ApiHelper.HAS_SET_ICON_ATTRIBUTE) {
-                setAlertDialogIconAttribute(builder);
-            } else {
-                builder.setIcon(android.R.drawable.ic_dialog_alert);
-            }
-            mAlertDialog = builder.show();
-            registerReceiver(mMountReceiver, mMountFilter);
-        }
         mPanoramaViewHelper.onStart();
-    }
-
-    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
-    private static void setAlertDialogIconAttribute(
-            AlertDialog.Builder builder) {
-        builder.setIconAttribute(android.R.attr.alertDialogIcon);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (mAlertDialog != null) {
-            unregisterReceiver(mMountReceiver);
-            mAlertDialog.dismiss();
-            mAlertDialog = null;
-        }
         mPanoramaViewHelper.onStop();
     }
 
@@ -247,7 +187,6 @@ public class AbstractGalleryActivity extends AppCompatActivity implements Galler
     @Override
     protected void onPause() {
         super.onPause();
-        hideProgress();
         mGLRootView.onPause();
         mGLRootView.lockRenderThread();
         try {
@@ -442,13 +381,5 @@ public class AbstractGalleryActivity extends AppCompatActivity implements Galler
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         }
-    }
-
-    protected void showProgress() {
-        //mProgress.setVisibility(View.VISIBLE);
-    }
-
-    protected void hideProgress() {
-        //mProgress.setVisibility(View.GONE);
     }
 }

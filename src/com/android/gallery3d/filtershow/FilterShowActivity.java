@@ -16,7 +16,6 @@
 
 package com.android.gallery3d.filtershow;
 
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -117,6 +116,7 @@ import com.android.gallery3d.filtershow.tools.XmpPresets;
 import com.android.gallery3d.filtershow.tools.XmpPresets.XMresults;
 import com.android.gallery3d.filtershow.ui.ExportDialog;
 import com.android.gallery3d.filtershow.ui.FramedTextButton;
+import com.android.gallery3d.ui.ProgressDialog;
 import com.android.gallery3d.util.GalleryUtils;
 import com.android.gallery3d.data.GalleryBitmapPool;
 

@@ -17,7 +17,6 @@
 package com.android.gallery3d.app;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -40,6 +39,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.gallery3d.R;
+import com.android.gallery3d.ui.ProgressDialog;
 import com.android.gallery3d.util.SaveVideoFileInfo;
 import com.android.gallery3d.util.SaveVideoFileUtils;
 
@@ -262,7 +262,7 @@ public class TrimVideo extends AppCompatActivity implements
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(),
+                        Toast.makeText(TrimVideo.this,
                             getString(R.string.save_into, mDstFileInfo.mFolderName),
                             Toast.LENGTH_SHORT)
                             .show();

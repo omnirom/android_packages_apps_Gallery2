@@ -49,7 +49,6 @@ import com.android.gallery3d.data.Path;
 import com.android.gallery3d.glrenderer.FadeTexture;
 import com.android.gallery3d.glrenderer.GLCanvas;
 import com.android.gallery3d.ui.ActionModeHandler;
-import com.android.gallery3d.ui.ActionModeHandler.ActionModeListener;
 import com.android.gallery3d.ui.AlbumSetSlotRenderer;
 import com.android.gallery3d.ui.GLRoot;
 import com.android.gallery3d.ui.GLView;
@@ -405,12 +404,6 @@ public class AlbumSetPage extends ActivityState implements
         });
 
         mActionModeHandler = new ActionModeHandler(mActivity, mSelectionManager);
-        mActionModeHandler.setActionModeListener(new ActionModeListener() {
-            @Override
-            public boolean onActionItemClicked(MenuItem item) {
-                return onItemSelected(item);
-            }
-        });
         mRootPane.addComponent(mSlotView);
     }
 
@@ -600,12 +593,10 @@ public class AlbumSetPage extends ActivityState implements
     private class MyLoadingListener implements LoadingListener {
         @Override
         public void onLoadingStarted() {
-            mActivity.showProgress();
         }
 
         @Override
         public void onLoadingFinished() {
-            mActivity.hideProgress();
         }
     }
 }

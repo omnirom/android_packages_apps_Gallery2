@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.ActionMode.Callback;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.app.AbstractGalleryActivity;
@@ -37,7 +40,6 @@ import com.android.gallery3d.data.DataManager;
 import com.android.gallery3d.data.MediaObject;
 import com.android.gallery3d.data.MediaObject.PanoramaSupportCallback;
 import com.android.gallery3d.data.Path;
-import com.android.gallery3d.ui.MenuExecutor.ProgressListener;
 import com.android.gallery3d.util.Future;
 import com.android.gallery3d.util.GalleryUtils;
 import com.android.gallery3d.util.ThreadPool.Job;
@@ -57,23 +59,19 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
             | MediaObject.SUPPORT_ROTATE | MediaObject.SUPPORT_SHARE
             | MediaObject.SUPPORT_CACHE;
 
-    public interface ActionModeListener {
-        public boolean onActionItemClicked(MenuItem item);
-    }
-
     private final AbstractGalleryActivity mActivity;
-    private final MenuExecutor mMenuExecutor;
     private final SelectionManager mSelectionManager;
     private Menu mMenu;
     private MenuItem mSharePanoramaMenuItem;
     private MenuItem mShareMenuItem;
+    private MenuItem mDeleteMenuItem;
     private SelectionMenu mSelectionMenu;
-    private ActionModeListener mListener;
     private Future<?> mMenuTask;
     private final Handler mMainHandler;
     private ActionMode mActionMode;
     private Intent mShareIntent;
     private Intent mSharePanoramaIntent;
+    private ProgressDialog mDeleteProgress;
 
     private static class GetAllPanoramaSupports implements PanoramaSupportCallback {
         private int mNumInfoRequired;
@@ -93,7 +91,7 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
 
         @Override
         public void panoramaInfoAvailable(MediaObject mediaObject, boolean isPanorama,
-                boolean isPanorama360) {
+                                          boolean isPanorama360) {
             synchronized (mLock) {
                 mNumInfoRequired--;
                 mAllPanoramas = isPanorama && mAllPanoramas;
@@ -122,7 +120,6 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
             AbstractGalleryActivity activity, SelectionManager selectionManager) {
         mActivity = Utils.checkNotNull(activity);
         mSelectionManager = Utils.checkNotNull(selectionManager);
-        mMenuExecutor = new MenuExecutor(activity, selectionManager);
         mMainHandler = new Handler(activity.getMainLooper());
     }
 
@@ -145,45 +142,8 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
         mSelectionMenu.setTitle(title);
     }
 
-    public void setActionModeListener(ActionModeListener listener) {
-        mListener = listener;
-    }
-
-    private WakeLockHoldingProgressListener mDeleteProgressListener;
-
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        GLRoot root = mActivity.getGLRoot();
-        root.lockRenderThread();
-        try {
-            boolean result;
-            // Give listener a chance to process this command before it's routed to
-            // ActionModeHandler, which handles command only based on the action id.
-            // Sometimes the listener may have more background information to handle
-            // an action command.
-            if (mListener != null) {
-                result = mListener.onActionItemClicked(item);
-                if (result) {
-                    mSelectionManager.leaveSelectionMode();
-                    return result;
-                }
-            }
-            ProgressListener listener = null;
-            String confirmMsg = null;
-            int action = item.getItemId();
-            if (action == R.id.action_delete) {
-                confirmMsg = mActivity.getResources().getQuantityString(
-                        R.plurals.delete_selection, mSelectionManager.getSelectedCount());
-                if (mDeleteProgressListener == null) {
-                    mDeleteProgressListener = new WakeLockHoldingProgressListener(mActivity,
-                            "Gallery Delete Progress Listener");
-                }
-                listener = mDeleteProgressListener;
-            }
-            mMenuExecutor.onMenuClicked(item, confirmMsg, listener);
-        } finally {
-            root.unlockRenderThread();
-        }
         return true;
     }
 
@@ -194,7 +154,7 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
         try {
             if (itemId == R.id.action_select_all) {
                 updateSupportedOperation();
-                mMenuExecutor.onMenuClicked(itemId, null, false, true);
+                mSelectionManager.selectAll();
             }
             return true;
         } finally {
@@ -224,7 +184,7 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
         mode.getMenuInflater().inflate(R.menu.operation, menu);
 
         mMenu = menu;
-        mSharePanoramaMenuItem = menu.findItem(R.id.action_share_panorama);
+        mSharePanoramaMenuItem = menu.findItem(R.id.action_share_panorama_selected);
         if (mSharePanoramaMenuItem != null) {
             mSharePanoramaMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
@@ -240,7 +200,7 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
             });
         }
 
-        mShareMenuItem = menu.findItem(R.id.action_share);
+        mShareMenuItem = menu.findItem(R.id.action_share_selected);
         if (mShareMenuItem != null) {
             mShareMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
@@ -251,6 +211,52 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         mActivity.startActivity(intent);
                     }
+                    return true;
+                }
+            });
+        }
+
+        mDeleteMenuItem = menu.findItem(R.id.action_delete_selected);
+        if (mDeleteMenuItem != null) {
+            mDeleteMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    ArrayList<Path> ids = mSelectionManager.getSelected(true);
+                    String format = mActivity.getResources().getQuantityString(
+                            R.plurals.number_of_items_selected, ids.size());
+                    String confirmMsg = mActivity.getResources().getString(R.string.delete) + " " +
+                            String.format(format, ids.size()) + "?";
+                    AlertDialog delete = new AlertDialog.Builder(mActivity)
+                            .setMessage(confirmMsg)
+                            .setPositiveButton(android.R.string.ok,
+                                    (dialogInterface, i) -> {
+                                        showProgressDialog();
+                                        final DataManager manager = mActivity.getDataManager();
+
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    for (Path id : ids) {
+                                                        manager.delete(id);
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                                mMainHandler.post(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        mSelectionManager.leaveSelectionMode();
+                                                        hideProgressDialog();
+                                                    }
+                                                });
+                                            }
+                                        }).start();
+                                    })
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .create();
+                    delete.show();
                     return true;
                 }
             });
@@ -281,6 +287,7 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
 
         return selected;
     }
+
     // Menu options are determined by selection set itself.
     // We cannot expand it because MenuExecuter executes it based on
     // the selection set instead of the expanded result.
@@ -288,7 +295,7 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
     private int computeMenuOptions(ArrayList<MediaObject> selected) {
         int operation = MediaObject.SUPPORT_ALL;
         int type = 0;
-        for (MediaObject mediaObject: selected) {
+        for (MediaObject mediaObject : selected) {
             int support = mediaObject.getSupportedOperations();
             type |= mediaObject.getMediaType();
             operation &= support;
@@ -296,7 +303,7 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
 
         switch (selected.size()) {
             case 1:
-                final String mimeType = MenuExecutor.getMimeType(type);
+                final String mimeType = getMimeType(type);
                 if (!GalleryUtils.isEditorAvailable(mActivity, mimeType)) {
                     operation &= ~MediaObject.SUPPORT_EDIT;
                 }
@@ -361,7 +368,7 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
 
         final int size = uris.size();
         if (size > 0) {
-            final String mimeType = MenuExecutor.getMimeType(type);
+            final String mimeType = getMimeType(type);
             if (size > 1) {
                 intent.setAction(Intent.ACTION_SEND_MULTIPLE).setType(mimeType);
                 intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
@@ -403,8 +410,6 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
                         public void run() {
                             mMenuTask = null;
                             if (jc.isCancelled()) return;
-                            // Disable all the operations when no item is selected
-                            MenuExecutor.updateMenuOperation(mMenu, 0);
                         }
                     });
                     return null;
@@ -418,6 +423,7 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
                         numSelected < MAX_SELECTED_ITEMS_FOR_PANORAMA_SHARE_INTENT;
                 final boolean canShare =
                         numSelected < MAX_SELECTED_ITEMS_FOR_SHARE_INTENT;
+                final boolean canDelete = true;
 
                 final GetAllPanoramaSupports supportCallback = canSharePanoramas ?
                         new GetAllPanoramaSupports(selected, jc)
@@ -442,27 +448,29 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
                     public void run() {
                         mMenuTask = null;
                         if (jc.isCancelled()) return;
-                        MenuExecutor.updateMenuOperation(mMenu, operation);
-                        MenuExecutor.updateMenuForPanorama(mMenu,
-                                canSharePanoramas && supportCallback.mAllPanorama360,
-                                canSharePanoramas && supportCallback.mHasPanorama360);
                         if (mSharePanoramaMenuItem != null) {
-                            mSharePanoramaMenuItem.setEnabled(true);
+                            mSharePanoramaMenuItem.setVisible(canSharePanoramas);
+                            mSharePanoramaMenuItem.setEnabled(canSharePanoramas);
                             if (canSharePanoramas && supportCallback.mAllPanorama360) {
                                 mShareMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                                 mShareMenuItem.setTitle(
-                                    mActivity.getResources().getString(R.string.share_as_photo));
+                                        mActivity.getResources().getString(R.string.share_as_photo));
                             } else {
                                 mSharePanoramaMenuItem.setVisible(false);
                                 mShareMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                                 mShareMenuItem.setTitle(
-                                    mActivity.getResources().getString(R.string.share));
+                                        mActivity.getResources().getString(R.string.share));
                             }
                             mSharePanoramaIntent = share_panorama_intent;
                         }
                         if (mShareMenuItem != null) {
+                            mShareMenuItem.setVisible(canShare);
                             mShareMenuItem.setEnabled(canShare);
                             mShareIntent = share_intent;
+                        }
+                        if (mDeleteMenuItem != null) {
+                            mDeleteMenuItem.setEnabled(canDelete);
+                            mDeleteMenuItem.setVisible(canDelete);
                         }
                     }
                 });
@@ -476,15 +484,39 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
             mMenuTask.cancel();
             mMenuTask = null;
         }
-        mMenuExecutor.pause();
     }
 
     public void destroy() {
-        mMenuExecutor.destroy();
     }
 
     public void resume() {
         if (mSelectionManager.inSelectionMode()) updateSupportedOperation();
-        mMenuExecutor.resume();
+    }
+
+    private String getMimeType(int type) {
+        switch (type) {
+            case MediaObject.MEDIA_TYPE_IMAGE:
+                return GalleryUtils.MIME_TYPE_IMAGE;
+            case MediaObject.MEDIA_TYPE_VIDEO:
+                return GalleryUtils.MIME_TYPE_VIDEO;
+            default:
+                return GalleryUtils.MIME_TYPE_ALL;
+        }
+    }
+
+    private void showProgressDialog() {
+        mDeleteProgress = new ProgressDialog(mActivity);
+        mDeleteProgress.setTitle(mActivity.getString(R.string.delete));
+        mDeleteProgress.setMessage(mActivity.getString(R.string.please_wait));
+        mDeleteProgress.setCancelable(false);
+        mDeleteProgress.setCanceledOnTouchOutside(false);
+        mDeleteProgress.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mDeleteProgress != null) {
+            mDeleteProgress.dismiss();
+            mDeleteProgress = null;
+        }
     }
 }

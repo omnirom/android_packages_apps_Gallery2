@@ -170,6 +170,7 @@
     <dimen name="add_button_margin">16dp</dimen>
 
     <dimen name="alert_dialog_padding_material">24dp</dimen>
+    <dimen name="dialog_padding_top_material">18dp</dimen>
     <dimen name="color_rect_width">32dp</dimen>
     <dimen name="details_height">175dp</dimen>
     <dimen name="bottom_control_height">64dp</dimen>

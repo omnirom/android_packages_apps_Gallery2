@@ -45,6 +45,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.android.gallery3d.R;
 import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.data.ComboAlbum;
@@ -68,7 +70,6 @@ import com.android.gallery3d.filtershow.crop.CropActivity;
 import com.android.gallery3d.ui.DetailsAdapterNew;
 import com.android.gallery3d.ui.GLRootView;
 import com.android.gallery3d.ui.GLView;
-import com.android.gallery3d.ui.MenuExecutor;
 import com.android.gallery3d.ui.PhotoView;
 import com.android.gallery3d.ui.SelectionManager;
 import com.android.gallery3d.ui.SynchronizedHandler;
@@ -153,7 +154,6 @@ public abstract class PhotoPage extends ActivityState implements
     private boolean mHaveImageEditor;
     private PhotoPageBottomControls mBottomControls;
     private MediaItem mCurrentPhoto = null;
-    private MenuExecutor mMenuExecutor;
     private boolean mIsActive;
     private String mSetPathString;
     // This is the original mSetPathString before adding the camera preview item.
@@ -239,7 +239,6 @@ public abstract class PhotoPage extends ActivityState implements
         super.onCreate(data, restoreState);
         mActionBar = mActivity.getGalleryActionBar();
         mSelectionManager = new SelectionManager(mActivity, false);
-        mMenuExecutor = new MenuExecutor(mActivity, mSelectionManager);
 
         mPhotoView = new PhotoView(mActivity);
         mPhotoView.setListener(this);
@@ -335,7 +334,6 @@ public abstract class PhotoPage extends ActivityState implements
                     case MSG_UPDATE_PANORAMA_UI: {
                         if (mCurrentPhoto == message.obj) {
                             boolean isPanorama360 = message.arg1 != 0;
-                            updatePanoramaUI(isPanorama360);
                         }
                         break;
                     }
@@ -550,18 +548,23 @@ public abstract class PhotoPage extends ActivityState implements
                 launchPhotoEditor();
                 return;
             case R.id.photopage_bottom_control_share:
-                 Intent shareIntent = createShareIntent(mCurrentPhoto);
-                 mActivity.startActivity(Intent.createChooser(shareIntent, null));
-                 return;
+                Intent shareIntent = createShareIntent(mCurrentPhoto);
+                mActivity.startActivity(Intent.createChooser(shareIntent, null));
+                return;
             case R.id.photopage_bottom_control_delete:
-                 String confirmMsg = mActivity.getResources().getQuantityString(
+                String confirmMsg = mActivity.getResources().getQuantityString(
                         R.plurals.delete_selection, 1);
-                 Path path = mCurrentPhoto.getPath();
-                 mSelectionManager.deSelectAll();
-                 mSelectionManager.toggle(path);
-                 mMenuExecutor.onMenuClicked(R.id.action_delete, confirmMsg,
-                        mConfirmDialogListener);
-                 return;
+                Path path = mCurrentPhoto.getPath();
+                
+                // TODO undo
+                AlertDialog delete = new AlertDialog.Builder(mActivity)
+                    .setMessage(confirmMsg)
+                    .setPositiveButton(android.R.string.ok, 
+                        (dialogInterface, i) -> mActivity.getDataManager().delete(path))
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create();
+                delete.show();
+                return;
             case R.id.photopage_bottom_control_info:
                 if (mShowDetails) {
                     hideDetails();
@@ -585,7 +588,7 @@ public abstract class PhotoPage extends ActivityState implements
     private static Intent createShareIntent(MediaObject mediaObject) {
         int type = mediaObject.getMediaType();
         return new Intent(Intent.ACTION_SEND)
-                .setType(MenuExecutor.getMimeType(type))
+                .setType(getMimeType(type))
                 .putExtra(Intent.EXTRA_STREAM, mediaObject.getContentUri())
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
     }
@@ -613,15 +616,7 @@ public abstract class PhotoPage extends ActivityState implements
                         && (mCurrentPhoto.getSupportedOperations() & MediaItem.SUPPORT_EDIT) != 0
                         && mCurrentPhoto.getMediaType() == MediaObject.MEDIA_TYPE_IMAGE;
     }
-
-    private boolean canShowOnMap() {
-        if (mCurrentPhoto != null) {
-            int supportedOperations = mCurrentPhoto.getSupportedOperations();
-            return (supportedOperations & MediaObject.SUPPORT_SHOW_ON_MAP) != 0;
-        }
-        return false;
-    }
-
+    
     private boolean isVideo() {
         if (mCurrentPhoto != null) {
             int supportedOperations = mCurrentPhoto.getSupportedOperations();
@@ -735,19 +730,41 @@ public abstract class PhotoPage extends ActivityState implements
                 supportedOperations &= ~MediaObject.SUPPORT_EDIT;
             }
         }
-        MenuExecutor.updateMenuOperation(menu, supportedOperations);
+        
+        setMenuItemVisible(menu, R.id.action_layout, mPhotoView.getFilmMode());
+        setMenuItemVisible(menu, R.id.action_slideshow, false);
 
-        MenuItem item = menu.findItem(R.id.action_layout);
-        if (item != null) {
-            item.setVisible(mPhotoView.getFilmMode());
-        }
+        boolean supportDelete = (supportedOperations & MediaObject.SUPPORT_DELETE) != 0;
+        boolean supportRotate = (supportedOperations & MediaObject.SUPPORT_ROTATE) != 0;
+        boolean supportCrop = (supportedOperations & MediaObject.SUPPORT_CROP) != 0;
+        boolean supportTrim = (supportedOperations & MediaObject.SUPPORT_TRIM) != 0;
+        boolean supportMute = (supportedOperations & MediaObject.SUPPORT_MUTE) != 0;
+        boolean supportShare = (supportedOperations & MediaObject.SUPPORT_SHARE) != 0;
+        boolean supportSetAs = (supportedOperations & MediaObject.SUPPORT_SETAS) != 0;
+        boolean supportInfo = (supportedOperations & MediaObject.SUPPORT_INFO) != 0;
+        boolean supportPrint = (supportedOperations & MediaObject.SUPPORT_PRINT) != 0;
+        boolean supportShowOnMap = (supportedOperations & MediaObject.SUPPORT_SHOW_ON_MAP) != 0;
+        
         // enable/disable edit button
         if (mBottomControls != null) {
             mBottomControls.enableItem(R.id.photopage_bottom_control_edit, canEditPhoto());
-            mBottomControls.enableItem(R.id.photopage_bottom_control_map, canShowOnMap());
+            mBottomControls.enableItem(R.id.photopage_bottom_control_map, supportShowOnMap);
+            mBottomControls.enableItem(R.id.photopage_bottom_control_delete, supportDelete);
+            mBottomControls.enableItem(R.id.photopage_bottom_control_share, supportShare);
+            mBottomControls.enableItem(R.id.photopage_bottom_control_info, supportInfo);
         }
+        
+        setMenuItemVisible(menu, R.id.action_trim, supportTrim);
+        setMenuItemVisible(menu, R.id.action_mute, supportMute);
+        setMenuItemVisible(menu, R.id.action_setas, supportSetAs);
+        setMenuItemVisible(menu, R.id.print, supportPrint);
     }
 
+    private void setMenuItemVisible(Menu menu, int itemId, boolean visible) {
+        MenuItem item = menu.findItem(itemId);
+        if (item != null) item.setVisible(visible);
+    }
+    
     private boolean isCurrentItemImage() {
         if (mMediaSet == null || mCurrentPhoto == null) {
             return false;
@@ -899,26 +916,6 @@ public abstract class PhotoPage extends ActivityState implements
         return true;
     }
 
-    private MenuExecutor.ProgressListener mConfirmDialogListener =
-            new MenuExecutor.ProgressListener() {
-        @Override
-        public void onProgressUpdate(int index) {}
-
-        @Override
-        public void onProgressComplete(int result) {}
-
-        @Override
-        public void onConfirmDialogShown() {
-        }
-
-        @Override
-        public void onConfirmDialogDismissed(boolean confirmed) {
-        }
-
-        @Override
-        public void onProgressStart() {}
-    };
-
     private void switchToGrid() {
         if (mActivity.getStateManager().hasStateClass(AlbumPage.class)) {
             onUpPressed();
@@ -988,15 +985,6 @@ public abstract class PhotoPage extends ActivityState implements
                         SlideshowPage.class, REQUEST_SLIDESHOW, data);
                 return true;
             }
-            case R.id.action_crop: {
-                Activity activity = mActivity;
-                Intent intent = new Intent(CropActivity.CROP_ACTION);
-                intent.setClass(activity, CropActivity.class);
-                intent.setDataAndType(manager.getContentUri(path), current.getMimeType())
-                    .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                activity.startActivityForResult(intent, REQUEST_CROP);
-                return true;
-            }
             case R.id.action_trim: {
                 Intent intent = new Intent(mActivity, TrimVideo.class);
                 intent.setData(manager.getContentUri(path));
@@ -1011,37 +999,19 @@ public abstract class PhotoPage extends ActivityState implements
                 muteVideo.muteInBackground();
                 return true;
             }
-            /*case R.id.action_edit: {
-                launchPhotoEditor();
-                return true;
-            }
-            case R.id.action_simple_edit: {
-                launchSimpleEditor();
-                return true;
-            }
-            case R.id.action_details: {
-                if (mShowDetails) {
-                    hideDetails();
-                } else {
-                    showDetails();
-                }
-                return true;
-            }*/
             case R.id.print: {
                 mActivity.printSelectedImage(manager.getContentUri(path));
                 return true;
             }
-            /*case R.id.action_delete:
-                confirmMsg = mActivity.getResources().getQuantityString(
-                        R.plurals.delete_selection, 1);*/
-            case R.id.action_setas:
-            case R.id.action_rotate_ccw:
-            case R.id.action_rotate_cw:
-            case R.id.action_show_on_map:
-                mSelectionManager.deSelectAll();
-                mSelectionManager.toggle(path);
-                mMenuExecutor.onMenuClicked(item, confirmMsg, mConfirmDialogListener);
+            case R.id.action_setas: {
+                Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+                intent.setDataAndType(manager.getContentUri(path), current.getMimeType());
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.putExtra("mimeType", intent.getType());
+                Activity activity = mActivity;
+                activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.set_as)));
                 return true;
+            }
             case R.id.action_layout: {
                 switchToGrid();
                 return true;
@@ -1232,7 +1202,7 @@ public abstract class PhotoPage extends ActivityState implements
     @Override
     public void onCommitDeleteImage() {
         if (mDeletePath == null) return;
-        mMenuExecutor.startSingleItemAction(R.id.action_delete, mDeletePath);
+        mActivity.getDataManager().delete(mDeletePath);
         mDeletePath = null;
     }
 
@@ -1316,8 +1286,6 @@ public abstract class PhotoPage extends ActivityState implements
         }
         mPhotoView.pause();
 
-        onCommitDeleteImage();
-        mMenuExecutor.pause();
         if (mMediaSet != null) mMediaSet.clearDeletion();
         if (mBottomControls != null) {
             mBottomControls.hide(false);
@@ -1389,7 +1357,6 @@ public abstract class PhotoPage extends ActivityState implements
     @Override
     protected void onResume() {
         super.onResume();
-        mActivity.hideProgress();
 
         if (mModel == null) {
             mActivity.getStateManager().finishState(this);
@@ -1438,31 +1405,6 @@ public abstract class PhotoPage extends ActivityState implements
         }
     }
 
-    private void updatePanoramaUI(boolean isPanorama360) {
-        Menu menu = mActionBar.getMenu();
-
-        // it could be null if onCreateActionBar has not been called yet
-        if (menu == null) {
-            return;
-        }
-
-        MenuExecutor.updateMenuForPanorama(menu, isPanorama360, isPanorama360);
-
-        if (isPanorama360) {
-            MenuItem item = menu.findItem(R.id.action_share);
-            if (item != null) {
-                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-                item.setTitle(mActivity.getResources().getString(R.string.share_as_photo));
-            }
-        } else if ((mCurrentPhoto.getSupportedOperations() & MediaObject.SUPPORT_SHARE) != 0) {
-            MenuItem item = menu.findItem(R.id.action_share);
-            if (item != null) {
-                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-                item.setTitle(mActivity.getResources().getString(R.string.share));
-            }
-        }
-    }
-
     @Override
     public void onUndoBarVisibilityChanged(boolean visible) {
     }
@@ -1502,6 +1444,16 @@ public abstract class PhotoPage extends ActivityState implements
             } else {
                 mBottomControls.hide(withAnim);
             }
+        }
+    }
+    
+    private static String getMimeType(int type) {
+        switch (type) {
+            case MediaObject.MEDIA_TYPE_IMAGE :
+                return GalleryUtils.MIME_TYPE_IMAGE;
+            case MediaObject.MEDIA_TYPE_VIDEO :
+                return GalleryUtils.MIME_TYPE_VIDEO;
+            default: return GalleryUtils.MIME_TYPE_ALL;
         }
     }
 }

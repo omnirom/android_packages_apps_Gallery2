@@ -347,36 +347,6 @@ public class GalleryActionBar implements ActionBar.OnNavigationListener {
     public void createActionBarMenu(int menuRes, Menu menu) {
         mActivity.getMenuInflater().inflate(menuRes, menu);
         mActionBarMenu = menu;
-
-        MenuItem item = menu.findItem(R.id.action_share_panorama);
-        if (item != null) {
-            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (mSharePanoramaIntent != null) {
-                        Intent intent = Intent.createChooser(mSharePanoramaIntent, null);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        mContext.startActivity(intent);
-                    }
-                    return true;
-                }
-            });
-        }
-
-        item = menu.findItem(R.id.action_share);
-        if (item != null) {
-            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (mShareIntent != null) {
-                        Intent intent = Intent.createChooser(mShareIntent, null);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        mContext.startActivity(intent);
-                    }
-                    return true;
-                }
-            });
-        }
     }
 
     public Menu getMenu() {

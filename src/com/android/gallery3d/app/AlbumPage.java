@@ -46,7 +46,6 @@ import com.android.gallery3d.filtershow.crop.CropExtras;
 import com.android.gallery3d.glrenderer.FadeTexture;
 import com.android.gallery3d.glrenderer.GLCanvas;
 import com.android.gallery3d.ui.ActionModeHandler;
-import com.android.gallery3d.ui.ActionModeHandler.ActionModeListener;
 import com.android.gallery3d.ui.AlbumSlotRenderer;
 import com.android.gallery3d.ui.GLRoot;
 import com.android.gallery3d.ui.GLView;
@@ -408,7 +407,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     protected void onResume() {
         super.onResume();
         mIsActive = true;
-        mActivity.hideProgress();
 
         mActionBar.setTransparentMode(false);
         mActivity.setSystemBarsTranlucent(false);
@@ -497,12 +495,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             }
         });
         mActionModeHandler = new ActionModeHandler(mActivity, mSelectionManager);
-        mActionModeHandler.setActionModeListener(new ActionModeListener() {
-            @Override
-            public boolean onActionItemClicked(MenuItem item) {
-                return onItemSelected(item);
-            }
-        });
     }
 
     private void initializeData(Bundle data) {
@@ -587,7 +579,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             }
             case R.id.action_slideshow: {
                 if (mAlbumDataAdapter.size() == 0) {
-                    return true;
+                    // return true;
                 }
                 mInCameraAndWantQuitOnPause = false;
                 Bundle data = new Bundle();

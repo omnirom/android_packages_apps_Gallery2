@@ -17,7 +17,6 @@
 package com.android.gallery3d.app;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
@@ -26,6 +25,7 @@ import android.widget.Toast;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.data.MediaItem;
+import com.android.gallery3d.ui.ProgressDialog;
 import com.android.gallery3d.util.SaveVideoFileInfo;
 import com.android.gallery3d.util.SaveVideoFileUtils;
 
@@ -68,7 +68,7 @@ public class MuteVideo {
                 mHandler.post(new Runnable() {
                         @Override
                     public void run() {
-                        Toast.makeText(mActivity.getApplicationContext(),
+                        Toast.makeText(mActivity,
                                 mActivity.getString(R.string.save_into,
                                         mDstFileInfo.mFolderName),
                                 Toast.LENGTH_SHORT)

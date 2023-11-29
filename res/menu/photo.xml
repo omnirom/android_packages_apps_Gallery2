@@ -23,15 +23,6 @@
             android:icon="@drawable/slideshow"
             android:title="@string/slideshow"
             app:showAsAction="ifRoom" />
-    <item android:id="@+id/action_rotate_ccw"
-            app:showAsAction="never"
-            android:title="@string/rotate_left" />
-    <item android:id="@+id/action_rotate_cw"
-            app:showAsAction="never"
-            android:title="@string/rotate_right" />
-    <item android:id="@+id/action_crop"
-            android:title="@string/crop_action"
-            app:showAsAction="never" />
     <item android:id="@+id/action_trim"
             android:title="@string/trim_action"
             app:showAsAction="never" />
@@ -40,9 +31,6 @@
             app:showAsAction="never" />
     <item android:id="@+id/action_setas"
             android:title="@string/set_image"
-            app:showAsAction="never" />
-    <item android:id="@+id/action_show_on_map"
-            android:title="@string/show_on_map"
             app:showAsAction="never" />
     <item android:id="@+id/print"
             android:title="@string/print_image"
