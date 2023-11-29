@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.view.Display;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.filtershow.crop.CropActivity;
@@ -42,7 +43,7 @@ import java.lang.IllegalArgumentException;
  * Wallpaper picker for the gallery application. This just redirects to the
  * standard pick action.
  */
-public class Wallpaper extends Activity {
+public class Wallpaper extends AppCompatActivity {
     @SuppressWarnings("unused")
     private static final String TAG = "Wallpaper";
 
@@ -79,14 +80,9 @@ public class Wallpaper extends Activity {
     }
 
     @SuppressWarnings("deprecation")
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private Point getDefaultDisplaySize(Point size) {
         Display d = getWindowManager().getDefaultDisplay();
-        if (Build.VERSION.SDK_INT >= ApiHelper.VERSION_CODES.HONEYCOMB_MR2) {
-            d.getRealSize(size);
-        } else {
-            size.set(d.getWidth(), d.getHeight());
-        }
+        d.getRealSize(size);
         return size;
     }
 
@@ -114,7 +110,7 @@ public class Wallpaper extends Activity {
                 if (extras != null) {
                     fromScreenColor = extras.getBoolean(KEY_FROM_SCREENCOLOR, false);
                 }
-                final WallpaperManager wpm = WallpaperManager.getInstance(getApplicationContext());
+                final WallpaperManager wpm = WallpaperManager.getInstance(this);
                 final Point dispSize = getDefaultDisplaySize(new Point());
 
                 boolean setWallpaper = !fromScreenColor;

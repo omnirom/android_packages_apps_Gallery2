@@ -30,12 +30,15 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -72,8 +75,8 @@ public class CropActivity extends AppCompatActivity {
     private int mOriginalRotation = 0;
     private Uri mSourceUri = null;
     private CropView mCropView = null;
-    private View mSaveButton = null;
     private boolean finalIOGuard = false;
+    private Menu mMenu;
 
     private static final int SELECT_PICTURE = 1; // request code for picker
 
@@ -105,18 +108,9 @@ public class CropActivity extends AppCompatActivity {
         mCropView = (CropView) findViewById(R.id.cropView);
 
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            actionBar.setCustomView(R.layout.filtershow_actionbar);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setTitle(getResources().getString(R.string.crop));
 
-            View mSaveButton = actionBar.getCustomView();
-            mSaveButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startFinishOutput();
-                }
-            });
-        }
         if (intent.getData() != null) {
             mSourceUri = intent.getData();
             startLoadBitmap(mSourceUri);
@@ -124,10 +118,39 @@ public class CropActivity extends AppCompatActivity {
             pickImage();
         }
     }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.crop, menu);
+        mMenu = menu;
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        } else if (id == R.id.saveButton) {
+            startFinishOutput();
+            return true;
+        }
+        return false;
+    }
+    
     private void enableSave(boolean enable) {
-        if (mSaveButton != null) {
-            mSaveButton.setEnabled(enable);
+        if (mMenu != null) {
+            MenuItem saveMenu = mMenu.findItem(R.id.saveButton);
+            if (saveMenu != null) {
+                saveMenu.setEnabled(enable);
+            
+                Drawable drawable = saveMenu.getIcon();
+                if (drawable != null) {
+                    drawable.setAlpha(enable ? 255 : 80);
+                }
+            }
         }
     }
 
@@ -186,7 +209,7 @@ public class CropActivity extends AppCompatActivity {
             enableSave(false);
             final View loading = findViewById(R.id.loading);
             loading.setVisibility(View.VISIBLE);
-            mLoadBitmapTask = new LoadBitmapTask();
+            mLoadBitmapTask = new LoadBitmapTask(this);
             mLoadBitmapTask.execute(uri);
         } else {
             //cannotLoadImage();
@@ -254,9 +277,9 @@ public class CropActivity extends AppCompatActivity {
         Rect mOriginalBounds;
         int mOrientation;
 
-        public LoadBitmapTask() {
+        public LoadBitmapTask(Context context) {
             mBitmapSize = getScreenImageSize();
-            mContext = getApplicationContext();
+            mContext = context;
             mOriginalBounds = new Rect();
             mOrientation = 0;
         }
@@ -337,7 +360,7 @@ public class CropActivity extends AppCompatActivity {
 
         final View loading = findViewById(R.id.loading);
         loading.setVisibility(View.VISIBLE);
-        BitmapIOTask ioTask = new BitmapIOTask(sourceUri, destUri, format, flags, cropBounds,
+        BitmapIOTask ioTask = new BitmapIOTask(this, sourceUri, destUri, format, flags, cropBounds,
                 photoBounds, currentBitmapBounds, rotation, mOutputX, mOutputY);
         ioTask.execute(currentBitmap);
     }
@@ -368,7 +391,7 @@ public class CropActivity extends AppCompatActivity {
         Intent mResultIntent = null;
         int mRotation = 0;
 
-        public BitmapIOTask(Uri sourceUri, Uri destUri, String outputFormat, int flags,
+        public BitmapIOTask(Context context, Uri sourceUri, Uri destUri, String outputFormat, int flags,
                 RectF cropBounds, RectF photoBounds, RectF originalBitmapBounds, int rotation,
                 int outputX, int outputY) {
             mOutputFormat = outputFormat;
@@ -379,7 +402,7 @@ public class CropActivity extends AppCompatActivity {
             mCrop = cropBounds;
             mPhoto = photoBounds;
             mOrig = originalBitmapBounds;
-            mWPManager = WallpaperManager.getInstance(getApplicationContext());
+            mWPManager = WallpaperManager.getInstance(context);
             mResultIntent = new Intent();
             mRotation = (rotation < 0) ? -rotation : rotation;
             mRotation %= 360;
