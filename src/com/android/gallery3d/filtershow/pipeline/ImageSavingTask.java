@@ -16,6 +16,7 @@
 
 package com.android.gallery3d.filtershow.pipeline;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -154,7 +155,7 @@ public class ImageSavingTask extends ProcessingTask {
         }
         Bitmap bitmap = ImageLoader.loadConstrainedBitmap(sourceUri, getContext(),
                 notificationBitmapSize, null, true);
-        CachingPipeline pipeline = new CachingPipeline(FiltersManager.getManager(), "Thumb");
+        CachingPipeline pipeline = new CachingPipeline(mProcessingService, FiltersManager.getManager(), "Thumb");
         return pipeline.renderFinalImage(bitmap, preset);
     }
 

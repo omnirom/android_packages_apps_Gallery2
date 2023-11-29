@@ -398,7 +398,7 @@ public class SaveImage {
                     bitmap = Bitmap.createScaledBitmap(bitmap, w, h, true);
                 }
                 updateProgress();
-                CachingPipeline pipeline = new CachingPipeline(FiltersManager.getManager(),
+                CachingPipeline pipeline = new CachingPipeline(mContext, FiltersManager.getManager(),
                         "Saving");
 
                 bitmap = pipeline.renderFinalImage(bitmap, preset);

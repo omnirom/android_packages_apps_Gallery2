@@ -168,10 +168,10 @@ public class ProcessingService extends Service {
     public void onCreate() {
         mProcessingTaskController = new ProcessingTaskController(this);
         mImageSavingTask = new ImageSavingTask(this);
-        mUpdatePreviewTask = new UpdatePreviewTask();
-        mHighresRenderingRequestTask = new HighresRenderingRequestTask();
-        mFullresRenderingRequestTask = new FullresRenderingRequestTask();
-        mRenderingRequestTask = new RenderingRequestTask();
+        mUpdatePreviewTask = new UpdatePreviewTask(this);
+        mHighresRenderingRequestTask = new HighresRenderingRequestTask(this);
+        mFullresRenderingRequestTask = new FullresRenderingRequestTask(this);
+        mRenderingRequestTask = new RenderingRequestTask(this);
         mProcessingTaskController.add(mImageSavingTask);
         mProcessingTaskController.add(mUpdatePreviewTask);
         mProcessingTaskController.add(mHighresRenderingRequestTask);

@@ -16,6 +16,7 @@
 
 package com.android.gallery3d.filtershow.pipeline;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.android.gallery3d.filtershow.filters.FiltersManager;
@@ -27,8 +28,8 @@ public class UpdatePreviewTask extends ProcessingTask {
     private boolean mHasUnhandledPreviewRequest = false;
     private boolean mPipelineIsOn = false;
 
-    public UpdatePreviewTask() {
-        mPreviewPipeline = new CachingPipeline(
+    public UpdatePreviewTask(Context context) {
+        mPreviewPipeline = new CachingPipeline(context,
                 FiltersManager.getPreviewManager(), "Preview");
     }
 

@@ -66,7 +66,7 @@ public class RenderingRequest {
         if (type == FULL_RENDERING
                 || type == ICON_RENDERING
                 || type == STYLE_ICON_RENDERING) {
-            CachingPipeline pipeline = new CachingPipeline(
+            CachingPipeline pipeline = new CachingPipeline(context,
                     FiltersManager.getManager(), "Icon");
             bitmap = pipeline.renderGeometryIcon(source, preset);
         } else if (type != PARTIAL_RENDERING && type != HIGHRES_RENDERING

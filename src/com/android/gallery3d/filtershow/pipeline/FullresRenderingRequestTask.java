@@ -1,5 +1,6 @@
 package com.android.gallery3d.filtershow.pipeline;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import com.android.gallery3d.filtershow.filters.FiltersManager;
 
@@ -20,8 +21,8 @@ public class FullresRenderingRequestTask extends ProcessingTask {
         RenderingRequest request;
     }
 
-    public FullresRenderingRequestTask() {
-        mFullresPipeline = new CachingPipeline(
+    public FullresRenderingRequestTask(Context context) {
+        mFullresPipeline = new CachingPipeline(context,
                 FiltersManager.getHighresManager(), "Fullres");
     }
 

@@ -65,8 +65,10 @@ public class CachingPipeline implements PipelineInterface {
     private volatile float mPreviewScaleFactor = 1.0f;
     private volatile float mHighResPreviewScaleFactor = 1.0f;
     private volatile String mName = "";
+    private Context mContext;
 
-    public CachingPipeline(FiltersManager filtersManager, String name) {
+    public CachingPipeline(Context context, FiltersManager filtersManager, String name) {
+        mContext = context;
         mFiltersManager = filtersManager;
         mName = name;
     }
@@ -120,7 +122,7 @@ public class CachingPipeline implements PipelineInterface {
     }
 
     public Resources getResources() {
-        return sRS.getApplicationContext().getResources();
+        return mContext.getResources();
     }
 
     private synchronized void destroyPixelAllocations() {

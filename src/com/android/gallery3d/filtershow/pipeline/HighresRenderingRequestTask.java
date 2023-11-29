@@ -16,6 +16,7 @@
 
 package com.android.gallery3d.filtershow.pipeline;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import com.android.gallery3d.filtershow.filters.FiltersManager;
 
@@ -40,8 +41,8 @@ public class HighresRenderingRequestTask extends ProcessingTask {
         RenderingRequest request;
     }
 
-    public HighresRenderingRequestTask() {
-        mHighresPreviewPipeline = new CachingPipeline(
+    public HighresRenderingRequestTask(Context context) {
+        mHighresPreviewPipeline = new CachingPipeline(context,
                 FiltersManager.getHighresManager(), "Highres");
     }
 

@@ -16,6 +16,7 @@
 
 package com.android.gallery3d.filtershow.pipeline;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import com.android.gallery3d.filtershow.filters.FiltersManager;
 
@@ -36,8 +37,8 @@ public class RenderingRequestTask extends ProcessingTask {
         RenderingRequest request;
     }
 
-    public RenderingRequestTask() {
-        mPreviewPipeline = new CachingPipeline(
+    public RenderingRequestTask(Context context) {
+        mPreviewPipeline = new CachingPipeline(context,
                 FiltersManager.getManager(), "Normal");
     }
 
