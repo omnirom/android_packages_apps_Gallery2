@@ -262,10 +262,10 @@ public class TrimVideo extends AppCompatActivity implements
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(TrimVideo.this,
+                        /*Toast.makeText(TrimVideo.this,
                             getString(R.string.save_into, mDstFileInfo.mFolderName),
                             Toast.LENGTH_SHORT)
-                            .show();
+                            .show();*/
                         // TODO: change trimming into a service to avoid
                         // this progressDialog and add notification properly.
                         if (mProgress != null) {
@@ -279,14 +279,7 @@ public class TrimVideo extends AppCompatActivity implements
     }
 
     private void showProgressDialog() {
-        // create a background thread to trim the video.
-        // and show the progress.
-        mProgress = new ProgressDialog(this);
-        mProgress.setTitle(getString(R.string.trimming));
-        mProgress.setMessage(getString(R.string.please_wait));
-        // TODO: make this cancelable.
-        mProgress.setCancelable(false);
-        mProgress.setCanceledOnTouchOutside(false);
+        mProgress = ProgressDialog.show(this, null, getString(R.string.trimming), true, false);
         mProgress.show();
     }
 

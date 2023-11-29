@@ -515,10 +515,10 @@
     <string name="switch_photo_fullscreen">Fullscreen view</string>
 
     <!-- The tilte of a dialog showing trimming in progress. [CHAR LIMIT=20] -->
-    <string name="trimming">Trimming</string>
+    <string name="trimming">Trimming\u2026</string>
 
     <!-- The tilte of a dialog showing muting in progress. [CHAR LIMIT=20] -->
-    <string name="muting">Muting</string>
+    <string name="muting">Muting\u2026</string>
 
     <!-- The content of a dialog showing trimming in progress. [CHAR LIMIT=30] -->
     <string name="please_wait">Please wait</string>

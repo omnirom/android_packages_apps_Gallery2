@@ -155,7 +155,9 @@ import java.text.NumberFormat;
             CharSequence message, boolean indeterminate,
             boolean cancelable, OnCancelListener cancelListener) {
         ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setTitle(title);
+        if (title != null) {
+            dialog.setTitle(title);
+        }
         dialog.setMessage(message);
         dialog.setIndeterminate(indeterminate);
         dialog.setCancelable(cancelable);

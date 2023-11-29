@@ -505,11 +505,7 @@ public class ActionModeHandler implements Callback, PopupList.OnPopupItemClickLi
     }
 
     private void showProgressDialog() {
-        mDeleteProgress = new ProgressDialog(mActivity);
-        mDeleteProgress.setTitle(mActivity.getString(R.string.delete));
-        mDeleteProgress.setMessage(mActivity.getString(R.string.please_wait));
-        mDeleteProgress.setCancelable(false);
-        mDeleteProgress.setCanceledOnTouchOutside(false);
+        mDeleteProgress = ProgressDialog.show(mActivity, null, mActivity.getString(R.string.deleting), true, false);
         mDeleteProgress.show();
     }
 

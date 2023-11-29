@@ -166,9 +166,10 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
             Uri uri = intent.getData();
             String contentType = getContentType(intent);
             if (contentType == null) {
-                Toast.makeText(this,
+                // TODO error dialog?
+                /*Toast.makeText(this,
                         R.string.no_such_item, Toast.LENGTH_LONG).show();
-                finish();
+                finish();*/
                 return;
             }
             if (uri == null) {

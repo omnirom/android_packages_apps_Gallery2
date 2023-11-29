@@ -189,7 +189,7 @@ public class CropActivity extends AppCompatActivity {
             mLoadBitmapTask = new LoadBitmapTask();
             mLoadBitmapTask.execute(uri);
         } else {
-            cannotLoadImage();
+            //cannotLoadImage();
             done();
         }
     }
@@ -227,7 +227,7 @@ public class CropActivity extends AppCompatActivity {
             enableSave(true);
         } else {
             Log.w(LOGTAG, "could not load image for cropping");
-            cannotLoadImage();
+            //cannotLoadImage();
             setResult(RESULT_CANCELED, new Intent());
             done();
         }
@@ -236,11 +236,11 @@ public class CropActivity extends AppCompatActivity {
     /**
      * Display toast for image loading failure.
      */
-    private void cannotLoadImage() {
+    /*private void cannotLoadImage() {
         CharSequence text = getString(R.string.cannot_load_image);
         Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
         toast.show();
-    }
+    }*/
 
     /**
      * AsyncTask for loading a bitmap into memory.
@@ -331,9 +331,9 @@ public class CropActivity extends AppCompatActivity {
         if ((flags & FLAG_CHECK) == 0) {
             return; // no output options
         }
-        if ((flags & DO_SET_WALLPAPER) != 0) {
+        /*if ((flags & DO_SET_WALLPAPER) != 0) {
             Toast.makeText(this, R.string.setting_wallpaper, Toast.LENGTH_LONG).show();
-        }
+        }*/
 
         final View loading = findViewById(R.id.loading);
         loading.setVisibility(View.VISIBLE);

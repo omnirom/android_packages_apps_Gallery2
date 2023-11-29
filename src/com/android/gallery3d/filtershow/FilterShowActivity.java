@@ -153,7 +153,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
 
     private final Vector<ImageShow> mImageViews = new Vector<ImageShow>();
 
-    private WeakReference<ProgressDialog> mSavingProgressDialog;
+    private ProgressDialog mSavingProgressDialog;
 
     private LoadBitmapTask mLoadBitmapTask;
 
@@ -889,25 +889,15 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
     }
 
     private void showSavingProgress() {
-        ProgressDialog progress;
-        if (mSavingProgressDialog != null) {
-            progress = mSavingProgressDialog.get();
-            if (progress != null) {
-                progress.show();
-                return;
-            }
-        }
-        // TODO: Allow cancellation of the saving process
         String progressText = getString(R.string.saving_image);
-        progress = ProgressDialog.show(this, "", progressText, true, false);
-        mSavingProgressDialog = new WeakReference<ProgressDialog>(progress);
+        mSavingProgressDialog = ProgressDialog.show(this, null, progressText, true, false);
+
     }
 
     private void hideSavingProgress() {
         if (mSavingProgressDialog != null) {
-            ProgressDialog progress = mSavingProgressDialog.get();
-            if (progress != null)
-                progress.dismiss();
+            mSavingProgressDialog.dismiss();
+            mSavingProgressDialog = null;
         }
     }
 

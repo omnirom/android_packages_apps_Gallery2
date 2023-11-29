@@ -68,11 +68,11 @@ public class MuteVideo {
                 mHandler.post(new Runnable() {
                         @Override
                     public void run() {
-                        Toast.makeText(mActivity,
+                        /*Toast.makeText(mActivity,
                                 mActivity.getString(R.string.save_into,
                                         mDstFileInfo.mFolderName),
                                 Toast.LENGTH_SHORT)
-                                .show();
+                                .show();*/
 
                         if (mMuteProgress != null) {
                             mMuteProgress.dismiss();
@@ -85,11 +85,6 @@ public class MuteVideo {
     }
 
     private void showProgressDialog() {
-        mMuteProgress = new ProgressDialog(mActivity);
-        mMuteProgress.setTitle(mActivity.getString(R.string.muting));
-        mMuteProgress.setMessage(mActivity.getString(R.string.please_wait));
-        mMuteProgress.setCancelable(false);
-        mMuteProgress.setCanceledOnTouchOutside(false);
-        mMuteProgress.show();
+        mMuteProgress = ProgressDialog.show(mActivity, null, mActivity.getString(R.string.muting), true, false);
     }
 }

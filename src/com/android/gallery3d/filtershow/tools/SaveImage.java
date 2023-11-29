@@ -534,13 +534,14 @@ public class SaveImage {
 
         filterShowActivity.startService(processIntent);
 
-        if (!filterShowActivity.isSimpleEditAction()) {
+        // TODO progress?
+        /*if (!filterShowActivity.isSimpleEditAction()) {
             String toastMessage = filterShowActivity.getResources().getString(
                     R.string.save_and_processing);
             Toast.makeText(filterShowActivity,
                     toastMessage,
                     Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 
     public static void querySource(Context context, Uri sourceUri, String[] projection,
