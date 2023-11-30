@@ -171,8 +171,8 @@ public class ExportDialog extends DialogFragment implements SeekBar.OnSeekBarCha
                 float scaleFactor = mExportWidth / (float) mOriginalBounds.width();
                 Intent processIntent = ProcessingService.getSaveIntent(activity, MasterImage
                         .getImage().getPreset(), dest, activity.getSelectedImageUri(), sourceUri,
-                        true, mSeekBar.getProgress(), scaleFactor, false);
-                activity.startService(processIntent);
+                        true, mSeekBar.getProgress(), scaleFactor);
+                activity.startForegroundService(processIntent);
                 break;
         }
     }

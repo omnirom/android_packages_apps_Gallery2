@@ -57,15 +57,8 @@ import java.util.TimeZone;
  * Handles saving edited photo
  */
 public class SaveImage {
-    private static final String LOGTAG = "SaveImage";
-
-    /**
-     * Callback for updates
-     */
-    public interface Callback {
-        void onPreviewSaved(Uri uri);
-        void onProgress(int max, int current);
-    }
+    private static final String LOGTAG = "Gallery2:SaveImage";
+    private static final boolean DEBUG = false;
 
     public interface ContentResolverQueryCallback {
         void onCursorResult(Cursor cursor);
@@ -75,52 +68,16 @@ public class SaveImage {
     private static final String PREFIX_PANO = "PANO";
     private static final String PREFIX_IMG = "IMG";
     private static final String POSTFIX_JPG = ".jpg";
-    private static final String AUX_DIR_NAME = ".aux";
 
     private final Context mContext;
     private final Uri mSourceUri;
-    private final Callback mCallback;
     private final File mDestinationFile;
     private final Uri mSelectedImageUri;
-    private final Bitmap mPreviewImage;
-
-    private int mCurrentProcessingStep = 1;
-
-    public static final int MAX_PROCESSING_STEPS = 6;
-
-    // In order to support the new edit-save behavior such that user won't see
-    // the edited image together with the original image, we are adding a new
-    // auxiliary directory for the edited image. Basically, the original image
-    // will be hidden in that directory after edit and user will see the edited
-    // image only.
-    // Note that deletion on the edited image will also cause the deletion of
-    // the original image under auxiliary directory.
-    //
-    // There are several situations we need to consider:
-    // 1. User edit local image local01.jpg. A local02.jpg will be created in the
-    // same directory, and original image will be moved to auxiliary directory as
-    // ./.aux/local02.jpg.
-    // If user edit the local02.jpg, local03.jpg will be created in the local
-    // directory and ./.aux/local02.jpg will be renamed to ./.aux/local03.jpg
-    //
-    // 2. User edit remote image remote01.jpg from picassa or other server.
-    // remoteSavedLocal01.jpg will be saved under proper local directory.
-    // In remoteSavedLocal01.jpg, there will be a reference pointing to the
-    // remote01.jpg. There will be no local copy of remote01.jpg.
-    // If user edit remoteSavedLocal01.jpg, then a new remoteSavedLocal02.jpg
-    // will be generated and still pointing to the remote01.jpg
-    //
-    // 3. User delete any local image local.jpg.
-    // Since the filenames are kept consistent in auxiliary directory, every
-    // time a local.jpg get deleted, the files in auxiliary directory whose
-    // names starting with "local." will be deleted.
-    // This pattern will facilitate the multiple images deletion in the auxiliary
-    // directory.
+    private final boolean mEditInPlace = false;
 
     /**
      * @param context
-     * @param sourceUri The Uri for the original image, which can be the hidden
-     *  image under the auxiliary directory or the same as selectedImageUri.
+     * @param sourceUri The Uri for the original image,
      * @param selectedImageUri The Uri for the image selected by the user.
      *  In most cases, it is a content Uri for local image or remote image.
      * @param destination Destinaton File, if this is null, a new file will be
@@ -129,13 +86,15 @@ public class SaveImage {
      * @return the newSourceUri
      */
     public SaveImage(Context context, Uri sourceUri, Uri selectedImageUri,
-                     File destination, Bitmap previewImage, Callback callback)  {
+                     File destination)  {
         mContext = context;
         mSourceUri = sourceUri;
-        mCallback = callback;
-        mPreviewImage = previewImage;
         if (destination == null) {
-            mDestinationFile = getNewFile(context, selectedImageUri);
+            if (mEditInPlace) {
+                mDestinationFile = getLocalFileFromUri(context, sourceUri);
+            } else {
+                mDestinationFile = getNewFile(context, selectedImageUri);
+            }
         } else {
             mDestinationFile = destination;
         }
@@ -151,58 +110,6 @@ public class SaveImage {
             return new File(saveDirectory, PREFIX_PANO + filename + POSTFIX_JPG);
         }
         return new File(saveDirectory, PREFIX_IMG + filename + POSTFIX_JPG);
-    }
-
-    /**
-     * Remove the files in the auxiliary directory whose names are the same as
-     * the source image.
-     * @param contentResolver The application's contentResolver
-     * @param srcContentUri The content Uri for the source image.
-     */
-    public static void deleteAuxFiles(ContentResolver contentResolver,
-            Uri srcContentUri) {
-        final String[] fullPath = new String[1];
-        String[] queryProjection = new String[] { ImageColumns.DATA };
-        querySourceFromContentResolver(contentResolver,
-                srcContentUri, queryProjection,
-                new ContentResolverQueryCallback() {
-                    @Override
-                    public void onCursorResult(Cursor cursor) {
-                        fullPath[0] = cursor.getString(0);
-                    }
-                }
-        );
-        if (fullPath[0] != null) {
-            // Construct the auxiliary directory given the source file's path.
-            // Then select and delete all the files starting with the same name
-            // under the auxiliary directory.
-            File currentFile = new File(fullPath[0]);
-
-            String filename = currentFile.getName();
-            int firstDotPos = filename.indexOf(".");
-            final String filenameNoExt = (firstDotPos == -1) ? filename :
-                filename.substring(0, firstDotPos);
-            File auxDir = getLocalAuxDirectory(currentFile);
-            if (auxDir.exists()) {
-                FilenameFilter filter = new FilenameFilter() {
-                    @Override
-                    public boolean accept(File dir, String name) {
-                        if (name.startsWith(filenameNoExt + ".")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                };
-
-                // Delete all auxiliary files whose name is matching the
-                // current local image.
-                File[] auxFiles = auxDir.listFiles(filter);
-                for (File file : auxFiles) {
-                    file.delete();
-                }
-            }
-        }
     }
 
     public Object getPanoramaXMPData(Uri source, ImagePreset preset) {
@@ -274,35 +181,6 @@ public class SaveImage {
         return ret;
     }
 
-    private Uri resetToOriginalImageIfNeeded(ImagePreset preset, boolean doAuxBackup) {
-        Uri uri = null;
-        if (!preset.hasModifications()) {
-            // This can happen only when preset has no modification but save
-            // button is enabled, it means the file is loaded with filters in
-            // the XMP, then all the filters are removed or restore to default.
-            // In this case, when mSourceUri exists, rename it to the
-            // destination file.
-            File srcFile = getLocalFileFromUri(mContext, mSourceUri);
-            // If the source is not a local file, then skip this renaming and
-            // create a local copy as usual.
-            if (srcFile != null) {
-                srcFile.renameTo(mDestinationFile);
-                uri = SaveImage.linkNewFileToUri(mContext, mSelectedImageUri,
-                        mDestinationFile, System.currentTimeMillis(), doAuxBackup);
-            }
-        }
-        return uri;
-    }
-
-    private void resetProgress() {
-        mCurrentProcessingStep = 0;
-    }
-
-    private void updateProgress() {
-        if (mCallback != null) {
-            mCallback.onProgress(MAX_PROCESSING_STEPS, ++mCurrentProcessingStep);
-        }
-    }
 
     private void updateExifData(ExifInterface exif, long time) {
         // Set tags
@@ -315,74 +193,19 @@ public class SaveImage {
     }
 
     public Uri processAndSaveImage(ImagePreset preset, boolean flatten,
-                                   int quality, float sizeFactor, boolean exit) {
+                                   int quality, float sizeFactor) {
 
+        if (DEBUG) Log.d(LOGTAG, "processAndSaveImage flatten = " + flatten + " mSourceUri = " + mSourceUri + " mSelectedImageUri = " + mSelectedImageUri +  " mDestinationFile = " + mDestinationFile);
         Uri uri = null;
-        if (exit) {
-            uri = resetToOriginalImageIfNeeded(preset, !flatten);
-        }
-        if (uri != null) {
-            return null;
-        }
-
-        resetProgress();
-
         boolean noBitmap = true;
         int num_tries = 0;
         int sampleSize = 1;
 
-        // If necessary, move the source file into the auxiliary directory,
-        // newSourceUri is then pointing to the new location.
-        // If no file is moved, newSourceUri will be the same as mSourceUri.
-        Uri newSourceUri = mSourceUri;
-        /*
-         * if (!flatten) { newSourceUri = moveSrcToAuxIfNeeded(mSourceUri, mDestinationFile); }
-         */
-
-        Uri savedUri = mSelectedImageUri;
-        if (mPreviewImage != null) {
-            if (flatten) {
-                Object xmp = getPanoramaXMPData(newSourceUri, preset);
-                ExifInterface exif = getExifData(newSourceUri);
-                long time = System.currentTimeMillis();
-                updateExifData(exif, time);
-                if (putExifData(mDestinationFile, exif, mPreviewImage, quality)) {
-                    putPanoramaXMPData(mDestinationFile, xmp);
-                    ContentValues values = getContentValues(mContext, mSelectedImageUri, mDestinationFile, time);
-                    Object result = mContext.getContentResolver().insert(
-                            Images.Media.EXTERNAL_CONTENT_URI, values);
-
-                }
-            } else {
-                Object xmp = getPanoramaXMPData(newSourceUri, preset);
-                ExifInterface exif = getExifData(newSourceUri);
-                long time = System.currentTimeMillis();
-                updateExifData(exif, time);
-                // If we succeed in writing the bitmap as a jpeg, return a uri.
-                if (putExifData(mDestinationFile, exif, mPreviewImage, quality)) {
-                    putPanoramaXMPData(mDestinationFile, xmp);
-                    // mDestinationFile will save the newSourceUri info in the XMP.
-                    if (!flatten) {
-                        XmpPresets.writeFilterXMP(mContext, newSourceUri,
-                                mDestinationFile, preset);
-                    }
-                    // After this call, mSelectedImageUri will be actually
-                    // pointing at the new file mDestinationFile.
-                    savedUri = SaveImage.linkNewFileToUri(mContext, mSelectedImageUri,
-                            mDestinationFile, time, false);
-                }
-            }
-            if (mCallback != null) {
-                mCallback.onPreviewSaved(savedUri);
-            }
-        }
-
         // Stopgap fix for low-memory devices.
         while (noBitmap) {
             try {
-                updateProgress();
                 // Try to do bitmap operations, downsample if low-memory
-                Bitmap bitmap = ImageLoader.loadOrientedBitmapWithBackouts(mContext, newSourceUri,
+                Bitmap bitmap = ImageLoader.loadOrientedBitmapWithBackouts(mContext, mSourceUri,
                         sampleSize);
                 if (bitmap == null) {
                     return null;
@@ -397,38 +220,32 @@ public class SaveImage {
                     }
                     bitmap = Bitmap.createScaledBitmap(bitmap, w, h, true);
                 }
-                updateProgress();
                 CachingPipeline pipeline = new CachingPipeline(mContext, FiltersManager.getManager(),
                         "Saving");
 
                 bitmap = pipeline.renderFinalImage(bitmap, preset);
-                updateProgress();
 
-                Object xmp = getPanoramaXMPData(newSourceUri, preset);
-                ExifInterface exif = getExifData(newSourceUri);
+                Object xmp = getPanoramaXMPData(mSourceUri, preset);
+                ExifInterface exif = getExifData(mSourceUri);
                 long time = System.currentTimeMillis();
-                updateProgress();
 
                 updateExifData(exif, time);
-                updateProgress();
 
                 // If we succeed in writing the bitmap as a jpeg, return a uri.
                 if (putExifData(mDestinationFile, exif, bitmap, quality)) {
                     putPanoramaXMPData(mDestinationFile, xmp);
-                    // mDestinationFile will save the newSourceUri info in the XMP.
+                    
                     if (!flatten) {
-                        XmpPresets.writeFilterXMP(mContext, newSourceUri,
+                        XmpPresets.writeFilterXMP(mContext, mSourceUri,
                                 mDestinationFile, preset);
-                        uri = updateFile(mContext, savedUri, mDestinationFile, time);
-
+                    }
+                    if (mEditInPlace) {
+                        uri = updateFile(mContext, mSelectedImageUri, mDestinationFile, time);
                     } else {
-
-                        ContentValues values = getContentValues(mContext, mSelectedImageUri, mDestinationFile, time);
-                        Object result = mContext.getContentResolver().insert(
-                                Images.Media.EXTERNAL_CONTENT_URI, values);
+                        uri = createNewUriFromFile(mContext, mSelectedImageUri,
+                                mDestinationFile, time);
                     }
                 }
-                updateProgress();
 
                 noBitmap = false;
             } catch (OutOfMemoryError e) {
@@ -438,87 +255,19 @@ public class SaveImage {
                 }
                 System.gc();
                 sampleSize *= 2;
-                resetProgress();
             }
         }
+        
+        if (DEBUG) Log.d(LOGTAG, "processAndSaveImage uri = " + uri);
         return uri;
-    }
-
-    /**
-     *  Move the source file to auxiliary directory if needed and return the Uri
-     *  pointing to this new source file. If any file error happens, then just
-     *  don't move into the auxiliary directory.
-     * @param srcUri Uri to the source image.
-     * @param dstFile Providing the destination file info to help to build the
-     *  auxiliary directory and new source file's name.
-     * @return the newSourceUri pointing to the new source image.
-     */
-    private Uri moveSrcToAuxIfNeeded(Uri srcUri, File dstFile) {
-        File srcFile = getLocalFileFromUri(mContext, srcUri);
-        if (srcFile == null) {
-            Log.d(LOGTAG, "Source file is not a local file, no update.");
-            return srcUri;
-        }
-
-        // Get the destination directory and create the auxilliary directory
-        // if necessary.
-        File auxDiretory = getLocalAuxDirectory(dstFile);
-        if (!auxDiretory.exists()) {
-            boolean success = auxDiretory.mkdirs();
-            if (!success) {
-                return srcUri;
-            }
-        }
-
-        // Make sure there is a .nomedia file in the auxiliary directory, such
-        // that MediaScanner will not report those files under this directory.
-        File noMedia = new File(auxDiretory, ".nomedia");
-        if (!noMedia.exists()) {
-            try {
-                noMedia.createNewFile();
-            } catch (IOException e) {
-                Log.e(LOGTAG, "Can't create the nomedia");
-                return srcUri;
-            }
-        }
-        // We are using the destination file name such that photos sitting in
-        // the auxiliary directory are matching the parent directory.
-        File newSrcFile = new File(auxDiretory, dstFile.getName());
-        // Maintain the suffix during move
-        String to = newSrcFile.getName();
-        String from = srcFile.getName();
-        to = to.substring(to.lastIndexOf("."));
-        from = from.substring(from.lastIndexOf("."));
-
-        if (!to.equals(from)) {
-            String name = dstFile.getName();
-            name = name.substring(0, name.lastIndexOf(".")) + from;
-            newSrcFile = new File(auxDiretory, name);
-        }
-
-        if (!newSrcFile.exists()) {
-            boolean success = srcFile.renameTo(newSrcFile);
-            if (!success) {
-                return srcUri;
-            }
-        }
-
-        return Uri.fromFile(newSrcFile);
-
-    }
-
-    private static File getLocalAuxDirectory(File dstFile) {
-        File dstDirectory = dstFile.getParentFile();
-        File auxDiretory = new File(dstDirectory + "/" + AUX_DIR_NAME);
-        return auxDiretory;
     }
 
     public static Uri makeAndInsertUri(Context context, Uri sourceUri) {
         long time = System.currentTimeMillis();
         String filename = new SimpleDateFormat(TIME_STAMP_NAME).format(new Date(time));
         File saveDirectory = getSaveDirectory(context, sourceUri);
-        File file = new File(saveDirectory, filename  + ".JPG");
-        return linkNewFileToUri(context, sourceUri, file, time, false);
+        File file = new File(saveDirectory, filename  + POSTFIX_JPG);
+        return createNewUriFromFile(context, sourceUri, file, time);
     }
 
     public static void saveImage(ImagePreset preset, final FilterShowActivity filterShowActivity,
@@ -529,19 +278,12 @@ public class SaveImage {
         if (preset.contains(FilterRepresentation.TYPE_TINYPLANET)){
             flatten = true;
         }
+        if (DEBUG) Log.d(LOGTAG, "saveImage flatten = " + flatten + " sourceImageUri = " + sourceImageUri + " selectedImageUri = " + selectedImageUri +  " destination = " + destination);
+        
         Intent processIntent = ProcessingService.getSaveIntent(filterShowActivity, preset,
-                destination, selectedImageUri, sourceImageUri, flatten, 90, 1f, true);
+                destination, selectedImageUri, sourceImageUri, flatten, 90, 1f);
 
-        filterShowActivity.startService(processIntent);
-
-        // TODO progress?
-        /*if (!filterShowActivity.isSimpleEditAction()) {
-            String toastMessage = filterShowActivity.getResources().getString(
-                    R.string.save_and_processing);
-            Toast.makeText(filterShowActivity,
-                    toastMessage,
-                    Toast.LENGTH_SHORT).show();
-        }*/
+        filterShowActivity.startForegroundService(processIntent);
     }
 
     public static void querySource(Context context, Uri sourceUri, String[] projection,
@@ -644,35 +386,12 @@ public class SaveImage {
         return name != null && name.startsWith(PREFIX_PANO);
     }
 
-    /**
-     * If the <code>sourceUri</code> is a local content Uri, update the
-     * <code>sourceUri</code> to point to the <code>file</code>.
-     * At the same time, the old file <code>sourceUri</code> used to point to
-     * will be removed if it is local.
-     * If the <code>sourceUri</code> is not a local content Uri, then the
-     * <code>file</code> will be inserted as a new content Uri.
-     * @return the final Uri referring to the <code>file</code>.
-     */
-    public static Uri linkNewFileToUri(Context context, Uri sourceUri,
-            File file, long time, boolean deleteOriginal) {
-        File oldSelectedFile = getLocalFileFromUri(context, sourceUri);
+    private static Uri createNewUriFromFile(Context context, Uri sourceUri,
+            File file, long time) {
+        //File oldSelectedFile = getLocalFileFromUri(context, sourceUri);
         final ContentValues values = getContentValues(context, sourceUri, file, time);
-
-        Uri result = sourceUri;
-
-        // In the case of incoming Uri is just a local file Uri (like a cached
-        // file), we can't just update the Uri. We have to create a new Uri.
-        boolean fileUri = isFileUri(sourceUri);
-
-        if (fileUri || oldSelectedFile == null || !deleteOriginal) {
-            result = context.getContentResolver().insert(
+        Uri result = context.getContentResolver().insert(
                     Images.Media.EXTERNAL_CONTENT_URI, values);
-        } else {
-            context.getContentResolver().update(sourceUri, values, null, null);
-            if (oldSelectedFile.exists()) {
-                oldSelectedFile.delete();
-            }
-        }
         return result;
     }
 

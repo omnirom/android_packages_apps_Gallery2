@@ -599,8 +599,8 @@ public class ImageShow extends View implements OnGestureListener,
         updateImage();
     }
 
-    public void saveImage(FilterShowActivity filterShowActivity, File file) {
-        SaveImage.saveImage(getImagePreset(), filterShowActivity, file);
+    public void saveImage(FilterShowActivity filterShowActivity, File destination) {
+        SaveImage.saveImage(getImagePreset(), filterShowActivity, destination);
     }
 
 

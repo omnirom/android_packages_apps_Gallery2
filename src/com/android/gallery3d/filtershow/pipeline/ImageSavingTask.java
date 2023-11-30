@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.util.Log;
 import com.android.gallery3d.filtershow.cache.ImageLoader;
 import com.android.gallery3d.filtershow.filters.FiltersManager;
 import com.android.gallery3d.filtershow.tools.SaveImage;
@@ -28,6 +29,9 @@ import com.android.gallery3d.filtershow.tools.SaveImage;
 import java.io.File;
 
 public class ImageSavingTask extends ProcessingTask {
+    private static final String TAG = "Gallery2:ImageSavingTask";
+    private static final boolean DEBUG = false;
+
     private ProcessingService mProcessingService;
 
     static class SaveRequest implements Request {
@@ -39,26 +43,10 @@ public class ImageSavingTask extends ProcessingTask {
         int quality;
         float sizeFactor;
         Bitmap previewImage;
-        boolean exit;
-    }
-
-    static class UpdateBitmap implements Update {
-        Bitmap bitmap;
-    }
-
-    static class UpdateProgress implements Update {
-        int max;
-        int current;
-    }
-
-    static class UpdatePreviewSaved implements Update {
-        Uri uri;
-        boolean exit;
     }
 
     static class URIResult implements Result {
         Uri uri;
-        boolean exit;
     }
 
     public ImageSavingTask(ProcessingService service) {
@@ -67,8 +55,9 @@ public class ImageSavingTask extends ProcessingTask {
 
     public void saveImage(Uri sourceUri, Uri selectedUri,
                           File destinationFile, ImagePreset preset,
-                          Bitmap previewImage, boolean flatten,
-                          int quality, float sizeFactor, boolean exit) {
+                          boolean flatten,
+                          int quality, float sizeFactor) {
+        if (DEBUG) Log.d(TAG, "saveImage flatten = " + flatten + " sourceUri = " + sourceUri + " selectedUri = " + selectedUri +  " destinationFile = " + destinationFile);
         SaveRequest request = new SaveRequest();
         request.sourceUri = sourceUri;
         request.selectedUri = selectedUri;
@@ -77,8 +66,6 @@ public class ImageSavingTask extends ProcessingTask {
         request.flatten = flatten;
         request.quality = quality;
         request.sizeFactor = sizeFactor;
-        request.previewImage = previewImage;
-        request.exit = exit;
         postRequest(request);
     }
 
@@ -87,76 +74,26 @@ public class ImageSavingTask extends ProcessingTask {
         Uri sourceUri = request.sourceUri;
         Uri selectedUri = request.selectedUri;
         File destinationFile = request.destinationFile;
-        Bitmap previewImage = request.previewImage;
         ImagePreset preset = request.preset;
         boolean flatten = request.flatten;
-        final boolean exit = request.exit;
-        // We create a small bitmap showing the result that we can
-        // give to the notification
-        UpdateBitmap updateBitmap = new UpdateBitmap();
-        updateBitmap.bitmap = createNotificationBitmap(previewImage, sourceUri, preset);
-        postUpdate(updateBitmap);
+        
+        if (DEBUG) Log.d(TAG, "doInBackground flatten = " + flatten + " sourceUri = " + sourceUri + " selectedUri = " + selectedUri +  " destinationFile = " + destinationFile);
         SaveImage saveImage = new SaveImage(mProcessingService, sourceUri,
-                selectedUri, destinationFile, previewImage,
-                new SaveImage.Callback() {
-                    @Override
-                    public void onPreviewSaved(Uri uri){
-                        UpdatePreviewSaved previewSaved = new UpdatePreviewSaved();
-                        previewSaved.uri = uri;
-                        previewSaved.exit = exit;
-                        postUpdate(previewSaved);
-                    }
-
-                    @Override
-                    public void onProgress(int max, int current) {
-                        UpdateProgress updateProgress = new UpdateProgress();
-                        updateProgress.max = max;
-                        updateProgress.current = current;
-                        postUpdate(updateProgress);
-                    }
-                });
+                selectedUri, destinationFile);
         Uri uri = saveImage.processAndSaveImage(preset, flatten,
-                request.quality, request.sizeFactor, request.exit);
+                request.quality, request.sizeFactor);
         URIResult result = new URIResult();
         result.uri = uri;
-        result.exit = request.exit;
         return result;
     }
 
     @Override
     public void onResult(Result message) {
         URIResult result = (URIResult) message;
-        mProcessingService.completeSaveImage(result.uri, result.exit);
+        mProcessingService.completeSaveImage(result.uri);
     }
 
     @Override
     public void onUpdate(Update message) {
-        if (message instanceof UpdatePreviewSaved){
-            Uri uri = ((UpdatePreviewSaved) message).uri;
-            boolean exit = ((UpdatePreviewSaved) message).exit;
-            mProcessingService.completePreviewSaveImage(uri, exit);
-        }
-        if (message instanceof UpdateBitmap) {
-            Bitmap bitmap = ((UpdateBitmap) message).bitmap;
-            mProcessingService.updateNotificationWithBitmap(bitmap);
-        }
-        if (message instanceof UpdateProgress) {
-            UpdateProgress progress = (UpdateProgress) message;
-            mProcessingService.updateProgress(progress.max, progress.current);
-        }
     }
-
-    private Bitmap createNotificationBitmap(Bitmap preview, Uri sourceUri, ImagePreset preset) {
-        int notificationBitmapSize = Resources.getSystem().getDimensionPixelSize(
-                android.R.dimen.notification_large_icon_width);
-        if (preview != null) {
-            return Bitmap.createScaledBitmap(preview,
-                    notificationBitmapSize, notificationBitmapSize, true);
-        }
-        Bitmap bitmap = ImageLoader.loadConstrainedBitmap(sourceUri, getContext(),
-                notificationBitmapSize, null, true);
-        CachingPipeline pipeline = new CachingPipeline(mProcessingService, FiltersManager.getManager(), "Thumb");
-        return pipeline.renderFinalImage(bitmap, preset);
-    }
-
 }

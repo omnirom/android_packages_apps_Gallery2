@@ -1317,7 +1317,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
     public void saveImage() {
         if (mImageShow.hasModifications()) {
             showSavingProgress();
-            mImageShow.saveImage(this, null);
+            mImageShow.saveImage(this, /* destination */null);
         } else {
             done();
         }
