@@ -299,6 +299,7 @@ public class ImageCrop extends ImageShow {
                 mCropObj.moveCurrentSelection(-dx[i], -dy[i]);
             }
             mCropObj.selectEdge(CropObject.MOVE_NONE);
+            applyOriginalAspect();
         }
         // Draw actual bitmap
         mPaint.reset();
