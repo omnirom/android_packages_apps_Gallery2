@@ -537,10 +537,6 @@ public class PhotoView extends GLView {
             case 180: mCameraRect.set(w - r, h - b, w - l, h - t); break;
             case 270: mCameraRect.set(t, w - r, b, w - l); break;
         }
-
-        Log.d(TAG, "compensation = " + mCompensation
-                + ", CameraRelativeFrame = " + mCameraRelativeFrame
-                + ", mCameraRect = " + mCameraRect);
     }
 
     public void setCameraRelativeFrame(Rect frame) {

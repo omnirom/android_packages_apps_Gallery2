@@ -74,7 +74,6 @@ class Paper {
     }
 
     public float[] getTransform(Rect rect, float scroll) {
-        Log.d(TAG, rect.toString());
         float start = mAnimationBegin.getValue();
         float end = mAnimationEnd.getValue();
         int center = 0;

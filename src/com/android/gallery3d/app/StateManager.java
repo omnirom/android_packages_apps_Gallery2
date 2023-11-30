@@ -33,6 +33,7 @@ import java.util.Stack;
 public class StateManager {
     @SuppressWarnings("unused")
     private static final String TAG = "StateManager";
+    private static final boolean DEBUG = false;
     private boolean mIsResumed = false;
 
     private static final String KEY_MAIN = "activity-state";
@@ -50,7 +51,7 @@ public class StateManager {
 
     public void startState(Class<? extends ActivityState> klass,
             Bundle data) {
-        Log.v(TAG, "startState " + klass);
+        if (DEBUG) Log.v(TAG, "startState " + klass);
         ActivityState state = null;
         try {
             state = klass.newInstance();
@@ -76,7 +77,7 @@ public class StateManager {
 
     public void startStateForResult(Class<? extends ActivityState> klass,
             int requestCode, Bundle data) {
-        Log.v(TAG, "startStateForResult " + klass + ", " + requestCode);
+        if (DEBUG) Log.v(TAG, "startStateForResult " + klass + ", " + requestCode);
         ActivityState state = null;
         try {
             state = klass.newInstance();
@@ -186,10 +187,9 @@ public class StateManager {
                 Log.w(TAG, "finish is rejected, keep the last state");
                 return;
             }
-            Log.v(TAG, "no more state, finish activity");
         }
 
-        Log.v(TAG, "finishState " + state);
+        if (DEBUG) Log.v(TAG, "finishState " + state);
         if (state != mStack.peek().activityState) {
             if (state.isDestroyed()) {
                 Log.d(TAG, "The state is already destroyed");
@@ -224,7 +224,7 @@ public class StateManager {
 
     public void switchState(ActivityState oldState,
             Class<? extends ActivityState> klass, Bundle data) {
-        Log.v(TAG, "switchState " + oldState + ", " + klass);
+        if (DEBUG) Log.v(TAG, "switchState " + oldState + ", " + klass);
         if (oldState != mStack.peek().activityState) {
             Log.d(TAG, "The stateview to be finished"
                     + " is not at the top of the stack: " + oldState + ", "
@@ -256,7 +256,7 @@ public class StateManager {
     }
 
     public void destroy() {
-        Log.v(TAG, "destroy");
+        if (DEBUG) Log.v(TAG, "destroy");
         while (!mStack.isEmpty()) {
             mStack.pop().activityState.onDestroy();
         }
@@ -265,7 +265,7 @@ public class StateManager {
 
     @SuppressWarnings("unchecked")
     public void restoreFromState(Bundle inState) {
-        Log.v(TAG, "restoreFromState");
+        if (DEBUG) Log.v(TAG, "restoreFromState");
         Parcelable list[] = inState.getParcelableArray(KEY_MAIN);
         ActivityState topState = null;
         for (Parcelable parcelable : list) {
@@ -278,7 +278,7 @@ public class StateManager {
 
             ActivityState activityState;
             try {
-                Log.v(TAG, "restoreFromState " + klass);
+                if (DEBUG) Log.v(TAG, "restoreFromState " + klass);
                 activityState = klass.newInstance();
             } catch (Exception e) {
                 throw new AssertionError(e);
@@ -295,7 +295,7 @@ public class StateManager {
     }
 
     public void saveState(Bundle outState) {
-        Log.v(TAG, "saveState");
+        if (DEBUG) Log.v(TAG, "saveState");
 
         Parcelable list[] = new Parcelable[mStack.size()];
         int i = 0;
@@ -306,7 +306,7 @@ public class StateManager {
             Bundle state = new Bundle();
             entry.activityState.onSaveState(state);
             bundle.putBundle(KEY_STATE, state);
-            Log.v(TAG, "saveState " + entry.activityState.getClass());
+            if (DEBUG) Log.v(TAG, "saveState " + entry.activityState.getClass());
             list[i++] = bundle;
         }
         outState.putParcelableArray(KEY_MAIN, list);
