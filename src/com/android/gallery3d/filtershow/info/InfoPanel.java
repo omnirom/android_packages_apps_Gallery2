@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,6 @@ public class InfoPanel extends DialogFragment {
 
         List<ExifTag> exif = MasterImage.getImage().getEXIF();
         String exifString = "";
-        boolean hasExifData = false;
         if (exif != null) {
             for (ExifTag tag : exif) {
                 exifString += createStringFromIfFound(tag,
@@ -124,14 +124,16 @@ public class InfoPanel extends DialogFragment {
                 exifString += createStringFromIfFound(tag,
                         ExifInterface.TAG_COPYRIGHT,
                         R.string.filtershow_exif_copyright);
-                hasExifData = true;
             }
         }
-        if (hasExifData) {
-            exifLabel.setVisibility(View.VISIBLE);
-            mExifData.setText(Html.fromHtml(exifString));
+        if (!TextUtils.isEmpty(exifString.trim())) {
+                exifLabel.setVisibility(View.VISIBLE);
+                mExifData.setVisibility(View.VISIBLE);
+                mExifData.setText(Html.fromHtml(exifString));
         } else {
-            exifLabel.setVisibility(View.GONE);
+                exifLabel.setVisibility(View.GONE);
+                mExifData.setVisibility(View.GONE);
+
         }
         return mMainView;
     }
@@ -142,6 +144,7 @@ public class InfoPanel extends DialogFragment {
         
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
+                .setTitle(R.string.filtershow_show_info_panel)
                 .setPositiveButton(android.R.string.ok, null)
                 .create();
      }

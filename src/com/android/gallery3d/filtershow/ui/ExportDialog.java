@@ -59,7 +59,6 @@ public class ExportDialog extends DialogFragment implements SeekBar.OnSeekBarCha
     Rect mCompressedBounds;
     float mExportCompressionMargin = 1.1f;
     float mRatio;
-    String mSliderLabel;
     boolean mEditing = false;
     Handler mHandler;
     int mUpdateDelay = 1000;
@@ -102,9 +101,8 @@ public class ExportDialog extends DialogFragment implements SeekBar.OnSeekBarCha
         View view = getLayoutInflater().inflate(R.layout.filtershow_export_dialog, null);
         mSeekBar = (SeekBar) view.findViewById(R.id.qualitySeekBar);
         mSeekVal = (TextView) view.findViewById(R.id.qualityTextView);
-        mSliderLabel = getString(R.string.quality) + ": ";
         mSeekBar.setProgress(mQuality);
-        mSeekVal.setText(mSliderLabel + mSeekBar.getProgress());
+        mSeekVal.setText(String.valueOf(mSeekBar.getProgress()));
         mSeekBar.setOnSeekBarChangeListener(this);
         mWidthText = (EditText) view.findViewById(R.id.editableWidth);
         mHeightText = (EditText) view.findViewById(R.id.editableHeight);
@@ -152,7 +150,7 @@ public class ExportDialog extends DialogFragment implements SeekBar.OnSeekBarCha
 
     @Override
     public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
-        mSeekVal.setText(mSliderLabel + arg1);
+        mSeekVal.setText(String.valueOf(arg1));
         mQuality = mSeekBar.getProgress();
         scheduleUpdateCompressionFactor();
     }

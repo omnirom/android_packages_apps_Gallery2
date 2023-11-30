@@ -18,32 +18,29 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:paddingBottom="10dp"
-              android:paddingStart="@dimen/alert_dialog_padding_material"
-              android:paddingEnd="@dimen/alert_dialog_padding_material">
+              android:padding="@dimen/alert_dialog_padding_material">
 
         <com.android.gallery3d.filtershow.colorpicker.ColorCompareView
                 android:id="@+id/btnSelect"
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
-                android:layout_marginTop="20dp"
                 />
         <com.android.gallery3d.filtershow.colorpicker.ColorSVRectView
                 android:id="@+id/colorRectView"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="20dp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"/>
 
         <com.android.gallery3d.filtershow.colorpicker.ColorHueView
                 android:id="@+id/ColorHueView"
                 android:layout_width="match_parent"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_height="32dp" />
 
         <com.android.gallery3d.filtershow.colorpicker.ColorOpacityView
                 android:id="@+id/colorOpacityView"
                 android:layout_width="match_parent"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_height="32dp" />
 
 </LinearLayout>

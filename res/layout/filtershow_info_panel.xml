@@ -16,11 +16,9 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:minWidth="340dp"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:background="?android:attr/colorBackground"
-              android:padding="16dp">
+              android:padding="@dimen/alert_dialog_padding_material">
 
     <ScrollView
             android:layout_width="match_parent"
@@ -31,65 +29,86 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+        
+                        <TextView
+                                android:text="@string/title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical" />
+        
+                        <TextView
+                                android:id="@+id/imageName"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="end"
+                                android:ellipsize="end" />
+                </LinearLayout>
 
-                <TextView
-                        android:id="@+id/imageName"
-                        style="?android:textAppearanceSmall"
-                        android:textStyle="bold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp">
+        
+                        <TextView
+                                android:text="@string/size"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical" />
 
-                <TextView
-                        android:id="@+id/imageSize"
-                        style="?android:textAppearanceSmall"
-                        android:textAllCaps="true"
-                        android:textStyle="bold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        <TextView
+                                android:id="@+id/imageSize"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="end" />
+                </LinearLayout>
 
 
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    >
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp">
 
-                <ImageView
-                        android:id="@+id/imageThumbnail"
-                        android:layout_weight="0.3"
-                        android:layout_width="0dp"
-                        android:layout_height="150dp"
-                        android:scaleType="centerInside"
-                        android:layout_marginEnd="10dp"
-                        android:background="@null"
+                        <ImageView
+                                android:id="@+id/imageThumbnail"
+                                android:layout_weight="0.3"
+                                android:layout_width="0dp"
+                                android:layout_height="150dp"
+                                android:scaleType="centerInside"
+                                android:layout_marginEnd="10dp"
+                                android:background="@null"/>
 
-                        />
-
-                <com.android.gallery3d.filtershow.info.HistogramView
-                        android:id="@+id/histogramView"
-                        android:layout_weight="0.7"
-                        android:layout_width="0dp"
-                        android:layout_height="150dp"
-                        android:layout_margin="0dp"/>
-            </LinearLayout>
+                        <com.android.gallery3d.filtershow.info.HistogramView
+                                android:id="@+id/histogramView"
+                                android:layout_weight="0.7"
+                                android:layout_width="0dp"
+                                android:layout_height="150dp"
+                                android:layout_margin="0dp"/>
+                </LinearLayout>
 
             <TextView
                     style="?android:textAppearanceMedium"
                     android:id="@+id/exifLabel"
                     android:textStyle="bold"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
                     android:text="@string/filtershow_show_info_panel_exif"/>
 
             <TextView
                     android:id="@+id/exifData"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_gravity="start"
-                    />
+                    android:layout_marginTop="10dp" />
         </LinearLayout>
     </ScrollView>
 
