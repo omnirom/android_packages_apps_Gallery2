@@ -84,8 +84,6 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
         // The new API is available in ICE_CREAM_SANDWICH (15)
         views.setRemoteAdapter(widgetId, R.id.appwidget_stack_view, intent);
 
-        views.setEmptyView(R.id.appwidget_stack_view, R.id.appwidget_empty_view);
-
         Intent clickIntent = new Intent(context, WidgetClickHandler.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);

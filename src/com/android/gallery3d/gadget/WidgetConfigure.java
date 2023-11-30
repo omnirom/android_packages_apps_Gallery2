@@ -24,7 +24,14 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.view.MenuItem;
+
 import android.widget.RemoteViews;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.app.AlbumPicker;
@@ -38,7 +45,7 @@ import com.android.gallery3d.data.Path;
 import com.android.gallery3d.filtershow.crop.CropActivity;
 import com.android.gallery3d.filtershow.crop.CropExtras;
 
-public class WidgetConfigure extends Activity {
+public class WidgetConfigure extends AppCompatActivity {
     @SuppressWarnings("unused")
     private static final String TAG = "WidgetConfigure";
 
@@ -52,20 +59,17 @@ public class WidgetConfigure extends Activity {
 
     public static final int RESULT_ERROR = RESULT_FIRST_USER;
 
-    // Scale up the widget size since we only specified the minimized
-    // size of the gadget. The real size could be larger.
-    // Note: There is also a limit on the size of data that can be
-    // passed in Binder's transaction.
-    private static float WIDGET_SCALE_FACTOR = 1.5f;
-    private static int MAX_WIDGET_SIDE = 360;
-
     private int mAppWidgetId = -1;
     private Uri mPickedItem;
-
+    
     @Override
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
         mAppWidgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setTitle(getResources().getString(R.string.appwidget_title));
 
         if (mAppWidgetId == -1) {
             setResult(Activity.RESULT_CANCELED);
@@ -73,17 +77,25 @@ public class WidgetConfigure extends Activity {
             return;
         }
 
-        if (savedState == null) {
-            if (ApiHelper.HAS_REMOTE_VIEWS_SERVICE) {
-                Intent intent = new Intent(this, WidgetTypeChooser.class);
-                startActivityForResult(intent, REQUEST_WIDGET_TYPE);
-            } else { // Choose the photo type widget
-                setWidgetType(new Intent()
-                        .putExtra(KEY_WIDGET_TYPE, R.id.widget_type_photo));
+        setContentView(R.layout.choose_widget_type);
+        RadioGroup rg = (RadioGroup) findViewById(R.id.widget_type);
+        rg.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                setWidgetType(new Intent().putExtra(KEY_WIDGET_TYPE, checkedId));
             }
-        } else {
-            mPickedItem = savedState.getParcelable(KEY_PICKED_ITEM);
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            setResult(RESULT_CANCELED);
+            finish();
+            return true;
         }
+        return false;
     }
 
     protected void onSaveInstanceStates(Bundle outState) {
@@ -109,9 +121,7 @@ public class WidgetConfigure extends Activity {
             return;
         }
 
-        if (requestCode == REQUEST_WIDGET_TYPE) {
-            setWidgetType(data);
-        } else if (requestCode == REQUEST_CHOOSE_ALBUM) {
+        if (requestCode == REQUEST_CHOOSE_ALBUM) {
             setChoosenAlbum(data);
         } else if (requestCode == REQUEST_GET_PHOTO) {
             setChoosenPhoto(data);
@@ -137,16 +147,8 @@ public class WidgetConfigure extends Activity {
     private void setChoosenPhoto(Intent data) {
         Resources res = getResources();
 
-        float width = res.getDimension(R.dimen.appwidget_width);
-        float height = res.getDimension(R.dimen.appwidget_height);
-
-        // We try to crop a larger image (by scale factor), but there is still
-        // a bound on the binder limit.
-        float scale = Math.min(WIDGET_SCALE_FACTOR,
-                MAX_WIDGET_SIDE / Math.max(width, height));
-
-        int widgetWidth = Math.round(width * scale);
-        int widgetHeight = Math.round(height * scale);
+        float widgetWidth = res.getDimensionPixelSize(R.dimen.max_appwidget_resize_width);
+        float widgetHeight = res.getDimensionPixelSize(R.dimen.max_appwidget_resize_height);
 
         mPickedItem = data.getData();
         Intent request = new Intent(CropActivity.CROP_ACTION, mPickedItem)
