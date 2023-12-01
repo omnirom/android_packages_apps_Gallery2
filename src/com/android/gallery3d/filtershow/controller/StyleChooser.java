@@ -65,7 +65,6 @@ public class StyleChooser implements Control {
             mIconButton.add(button);
 
             GradientDrawable sd = ((GradientDrawable) button.getBackground());
-            sd.setColor(mTransparent);
             sd.setStroke(mSelectedBorderWith, (mSelectedStyle == i) ? mSelected : mTransparent);
 
             final int buttonNo = i;
@@ -85,19 +84,10 @@ public class StyleChooser implements Control {
                     if (bmap == null) {
                         return;
                     }
-                    button.setImageBitmap(tintImage(bmap, getAttrColor(context, android.R.attr.colorControlNormal)));
+                    button.setImageBitmap(bmap);
                 }
             });
         }
-    }
-    
-    public static Bitmap tintImage(Bitmap bitmap, int color) {
-        Paint paint = new Paint();
-        paint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
-        Bitmap bitmapResult = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmapResult);
-        canvas.drawBitmap(bitmap, 0, 0, paint);
-        return bitmapResult;
     }
 
     private int getAttrColor(Context context, Integer attr) {

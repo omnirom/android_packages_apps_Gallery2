@@ -19,9 +19,15 @@ package com.android.gallery3d.filtershow.editors;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -277,11 +283,26 @@ public class EditorDraw extends ParametricEditor implements FilterView {
     @Override
     public void computeIcon(int index, BitmapCaller caller) {
         Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), brushIcons[index]);
-        caller.available(bitmap);
+        caller.available(tintImage(bitmap, getAttrColor(mContext, android.R.attr.colorControlNormal)));
     }
 
     public int getBrushIcon(int type) {
         return brushIcons[type];
     }
 
+    public static Bitmap tintImage(Bitmap bitmap, int color) {
+        Paint paint = new Paint();
+        paint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+        Bitmap bitmapResult = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmapResult);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        return bitmapResult;
+    }
+
+    private int getAttrColor(Context context, Integer attr) {
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        int color = ta.getColor(0, 0);
+        ta.recycle();
+        return color;
+    }
 }

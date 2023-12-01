@@ -2,6 +2,7 @@ package com.android.gallery3d.filtershow.controller;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -30,7 +31,7 @@ import java.util.Arrays;
 import java.util.Vector;
 
 public class ColorChooser implements Control {
-    private final String LOGTAG = "StyleChooser";
+    private final String LOGTAG = "ColorChooser";
     protected ParameterColor mParameter;
     protected LinearLayout mLinearLayout;
     protected Editor mEditor;
@@ -58,12 +59,12 @@ public class ColorChooser implements Control {
     @Override
     public void setUp(ViewGroup container, Parameter parameter, Editor editor) {
         container.removeAllViews();
-        Resources res = container.getContext().getResources();
+        mContext = container.getContext();
+        Resources res = mContext.getResources();
         mTransparent  = res.getColor(R.color.color_chooser_unslected_border);
         mSelected    = res.getColor(R.color.color_chooser_slected_border);
         mSelectedBorderWith = res.getDimensionPixelSize(R.dimen.selected_border_width);
         mEditor = editor;
-        mContext = container.getContext();
         int iconDim = res.getDimensionPixelSize(R.dimen.draw_style_icon_dim);
         mParameter = (ParameterColor) parameter;
         LayoutInflater inflater =
@@ -87,7 +88,6 @@ public class ColorChooser implements Control {
             hsvo[OPACITY_OFFSET] = (0xFF & (palette[i] >> 24)) / (float) 255;
             button.setTag(hsvo);
             GradientDrawable sd = ((GradientDrawable) button.getBackground());
-            sd.setColor(mTransparent);
             sd.setStroke(mSelectedBorderWith, (mSelectedButton == i) ? mSelected : mTransparent);
 
             final int buttonNo = i;

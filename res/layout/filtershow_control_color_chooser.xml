@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2013 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,62 +18,72 @@
     xmlns:app="http://schemas.android.com/apk/res/com.example.imagefilterharness"
     android:layout_width="match_parent"
     android:layout_height="@dimen/category_panel_height"
-    android:orientation="horizontal" >
-    <LinearLayout
+    android:orientation="horizontal">
+
+    <HorizontalScrollView
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
             android:id="@+id/listColors"
-            android:layout_weight="5"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
-        <ImageButton
+            <ImageButton
                 android:id="@+id/draw_color_button01"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@drawable/filtershow_color_picker_circle" />
 
-        <ImageButton
+            <ImageButton
                 android:id="@+id/draw_color_button02"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@drawable/filtershow_color_picker_circle" />
-        <ImageButton
+
+            <ImageButton
                 android:id="@+id/draw_color_button03"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@drawable/filtershow_color_picker_circle" />
-        <ImageButton
+
+            <ImageButton
                 android:id="@+id/draw_color_button04"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@drawable/filtershow_color_picker_circle" />
-        <ImageButton
+
+            <ImageButton
                 android:id="@+id/draw_color_button05"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@drawable/filtershow_color_picker_circle" />
-        <ImageButton
+
+            <ImageButton
                 android:id="@+id/draw_color_button06"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@drawable/filtershow_color_picker_circle" />
-    </LinearLayout>
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <ImageView
-            android:id="@+id/draw_color_popupbutton"
-            android:layout_width="@dimen/draw_color_icon_dim"
-            android:layout_height="@dimen/draw_color_icon_dim"
-            android:layout_gravity="end|center_vertical"
-            android:src="@drawable/ic_action_overflow"
-            android:scaleType="center"
-            android:background="?android:attr/selectableItemBackground"
-            />
+        android:id="@+id/draw_color_popupbutton"
+        android:layout_width="@dimen/draw_color_icon_dim"
+        android:layout_height="@dimen/draw_color_icon_dim"
+        android:layout_gravity="end|center_vertical"
+        android:background="?android:attr/selectableItemBackground"
+        android:scaleType="center"
+        android:src="@drawable/ic_action_overflow" />
 </LinearLayout>
 

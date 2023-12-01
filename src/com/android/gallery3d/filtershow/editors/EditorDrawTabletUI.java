@@ -45,6 +45,7 @@ import com.android.gallery3d.filtershow.colorpicker.ColorOpacityView;
 import com.android.gallery3d.filtershow.colorpicker.ColorSVRectView;
 import com.android.gallery3d.filtershow.controller.BasicParameterInt;
 import com.android.gallery3d.filtershow.controller.BasicParameterStyle;
+import com.android.gallery3d.filtershow.controller.BitmapCaller;
 import com.android.gallery3d.filtershow.controller.ParameterColor;
 import com.android.gallery3d.filtershow.filters.FilterDrawRepresentation;
 
@@ -111,14 +112,6 @@ public class EditorDrawTabletUI {
         mdrawSizeSeekBar = (SeekBar) lp.findViewById(R.id.drawSizeSeekBar);
         mDrawSizeValue = (TextView) lp.findViewById(R.id.drawSizeValue);
 
-        Button clearButton = (Button) lp.findViewById(R.id.clearButton);
-        clearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mEditorDraw.clearDrawing();
-            }
-        });
-
         mdrawSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
@@ -147,14 +140,20 @@ public class EditorDrawTabletUI {
             mStyleButton[i] = button;
             button.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             button.setLayoutParams(params);
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), mBrushIcons[i]);
-            button.setImageBitmap(bitmap);
+            editorDraw.computeIcon(i, new BitmapCaller() {
+                @Override
+                public void available(Bitmap bmap) {
+                    if (bmap == null) {
+                        return;
+                    }
+                    button.setImageBitmap(bmap);
+                }
+            });
             button.setBackgroundResource(R.drawable.filtershow_color_picker_circle);
             buttonContainer.addView(button);
             final int current = i;
 
             GradientDrawable sd = ((GradientDrawable) button.getBackground());
-            sd.setColor(mTransparent);
             sd.setStroke(mSelectedBorderWith, (mSelectedStyleButton == i) ? mSelected : mTransparent);
 
             button.setOnClickListener(new View.OnClickListener() {
@@ -201,7 +200,6 @@ public class EditorDrawTabletUI {
             hsvo[3] = (0xFF & (mBasColors[i] >> 24)) / (float) 255;
             mColorButton[i].setTag(hsvo);
             GradientDrawable sd = ((GradientDrawable) mColorButton[i].getBackground());
-            sd.setColor(mTransparent);
             sd.setStroke(mSelectedBorderWith, (0 == i) ? mSelected : mTransparent);
 
             final int buttonNo = i;

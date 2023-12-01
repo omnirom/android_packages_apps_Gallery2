@@ -113,7 +113,6 @@ public class EditorColorBorderTabletUI {
 
         Resources res = context.getResources();
         sIconDim = res.getDimensionPixelSize(R.dimen.draw_style_icon_dim);
-        LinearLayout buttonContainer = (LinearLayout) lp.findViewById(R.id.listStyles);
 
         mCBCornerSizeSeekBar = (SeekBar) lp.findViewById(R.id.colorBorderCornerSizeSeekBar);
         mCBCornerSizeValue = (TextView) lp.findViewById(R.id.colorBorderCornerValue);

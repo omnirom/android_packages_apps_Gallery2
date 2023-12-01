@@ -178,6 +178,6 @@
     <dimen name="dialog_padding_top_material">18dp</dimen>
     <dimen name="color_rect_width">32dp</dimen>
     <dimen name="details_height">175dp</dimen>
-    <dimen name="bottom_control_height">64dp</dimen>
+    <dimen name="bottom_control_height">60dp</dimen>
     <dimen name="selected_border_width">2dp</dimen>
 </resources>

@@ -100,8 +100,9 @@ public class EditorColorBorder extends ParametricEditor  {
                 }
 
             }
-            cbRep.setPramMode(FilterColorBorderRepresentation.PARAM_SIZE);
-            mParameterString = mContext.getString(R.string.color_border_size);
+            
+            cbRep.setPramMode(FilterColorBorderRepresentation.PARAM_COLOR);
+            mParameterString = mContext.getString(R.string.color_border_color);
             if (mEditControl != null) {
                 control(cbRep.getCurrentParam(), mEditControl);
             }
@@ -112,7 +113,7 @@ public class EditorColorBorder extends ParametricEditor  {
     public void openUtilityPanel(final LinearLayout accessoryViewList) {
         Button view = (Button) accessoryViewList.findViewById(R.id.applyEffect);
         if (ParametricEditor.useCompact(mContext)) {
-            view.setText(mContext.getString(R.string.color_border_size));
+            view.setText(mContext.getString(R.string.color_border_color));
         } else {
             view.setText(mContext.getString(R.string.borders));
         }

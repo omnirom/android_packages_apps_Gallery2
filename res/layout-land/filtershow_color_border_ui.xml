@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2013 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,104 +15,94 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/top"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:visibility="visible">
+    android:id="@+id/top"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="visible"
+    android:background="?android:attr/colorBackground">
 
     <FrameLayout
-            android:id="@+id/editorContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="6"
-            android:layout_gravity="bottom">
+        android:id="@+id/editorContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:layout_weight="6">
 
         <LinearLayout
-                android:id="@+id/controls"
+            android:id="@+id/controls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <GridLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-            <GridLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:columnCount="2"
-                    android:orientation="horizontal">
+                android:layout_height="56dp"
+                android:columnCount="2"
+                android:orientation="horizontal">
 
                 <TextView
-                        android:id="@+id/controlName1"
-                        android:layout_gravity="start"
-                        android:layout_marginStart="8dip"
-                        android:text="@string/color_border_size"/>
+                    android:id="@+id/controlName1"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="8dip"
+                    android:text="@string/color_border_size" />
 
                 <TextView
-                        android:id="@+id/colorBorderSizeValue"
-                        android:layout_gravity="end"
-                        android:layout_marginEnd="8dip"
-                        android:textStyle="bold"/>
+                    android:id="@+id/colorBorderSizeValue"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="8dip" />
 
                 <SeekBar
-                        android:id="@+id/colorBorderSizeSeekBar"
-                        android:layout_width="match_parent"
-                        android:layout_column="0"
-                        android:layout_columnSpan="2"
-                        android:layout_gravity="fill_horizontal"
-                        style="@style/FilterShowSlider"/>
-            </GridLayout>
-
-            <Space
+                    android:id="@+id/colorBorderSizeSeekBar"
+                    style="@style/FilterShowSlider"
                     android:layout_width="match_parent"
-                    android:layout_height="5dp"/>
+                    android:layout_column="0"
+                    android:layout_columnSpan="2"
+                    android:layout_gravity="fill_horizontal" />
+            </GridLayout>
 
             <GridLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:columnCount="2"
-                    android:orientation="horizontal">
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:columnCount="2"
+                android:orientation="horizontal">
 
                 <TextView
-                        android:id="@+id/controlName2"
-                        android:layout_gravity="start"
-                        android:layout_marginStart="8dip"
-                        android:text="@string/color_border_corner_size"/>
+                    android:id="@+id/controlName2"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="8dip"
+                    android:text="@string/color_border_corner_size" />
 
                 <TextView
-                        android:id="@+id/colorBorderCornerValue"
-                        android:layout_gravity="end"
-                        android:layout_marginEnd="8dip"
-                        android:textStyle="bold"/>
+                    android:id="@+id/colorBorderCornerValue"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="8dip" />
 
                 <SeekBar
-                        android:id="@+id/colorBorderCornerSizeSeekBar"
-                        android:layout_width="match_parent"
-                        android:layout_column="0"
-                        android:layout_columnSpan="2"
-                        android:layout_gravity="fill_horizontal"
-                        style="@style/FilterShowSlider"/>
-            </GridLayout>
-            <Space
+                    android:id="@+id/colorBorderCornerSizeSeekBar"
+                    style="@style/FilterShowSlider"
                     android:layout_width="match_parent"
-                    android:layout_height="5dp"/>
+                    android:layout_column="0"
+                    android:layout_columnSpan="2"
+                    android:layout_gravity="fill_horizontal" />
+            </GridLayout>
 
         </LinearLayout>
 
         <LinearLayout
-                android:id="@+id/colorPicker"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                android:padding="10dp">
+            android:id="@+id/colorPicker"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="0.5"
                 android:layout_height="match_parent"
+                android:layout_weight="0.5"
                 android:orientation="vertical">
 
                 <com.android.gallery3d.filtershow.colorpicker.ColorSVRectView
@@ -124,18 +113,17 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="0.5"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
                 android:layout_marginStart="10dp"
-                >
+                android:layout_weight="0.5"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
                 <com.android.gallery3d.filtershow.colorpicker.ColorCompareView
                     android:id="@+id/btnSelect"
                     android:layout_width="match_parent"
-                    android:layout_height="32dp"
-                    />
+                    android:layout_height="32dp" />
+
                 <com.android.gallery3d.filtershow.colorpicker.ColorHueView
                     android:id="@+id/ColorHueView"
                     android:layout_width="match_parent"
@@ -152,72 +140,76 @@
     </FrameLayout>
 
     <LinearLayout
-            android:layout_width="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal">
+
+        <HorizontalScrollView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:scrollbars="none">
 
             <LinearLayout
-                    android:id="@+id/listColors"
-                    android:layout_weight="5"
-                    android:layout_width="wrap_content"
+                android:id="@+id/listColors"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/draw_color_button01"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_weight="1"
+                    android:background="@drawable/filtershow_color_picker_circle" />
 
                 <ImageButton
-                        android:id="@+id/draw_color_button01"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/filtershow_color_picker_circle" />
+                    android:id="@+id/draw_color_button02"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/filtershow_color_picker_circle" />
 
                 <ImageButton
-                        android:id="@+id/draw_color_button02"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/filtershow_color_picker_circle" />
+                    android:id="@+id/draw_color_button03"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/filtershow_color_picker_circle" />
 
                 <ImageButton
-                        android:id="@+id/draw_color_button03"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/filtershow_color_picker_circle" />
+                    android:id="@+id/draw_color_button04"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/filtershow_color_picker_circle" />
 
                 <ImageButton
-                        android:id="@+id/draw_color_button04"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/filtershow_color_picker_circle" />
+                    android:id="@+id/draw_color_button05"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/filtershow_color_picker_circle" />
 
                 <ImageButton
-                        android:id="@+id/draw_color_button05"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/filtershow_color_picker_circle" />
-
-                <ImageButton
-                        android:id="@+id/draw_color_button06"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/filtershow_color_picker_circle" />
+                    android:id="@+id/draw_color_button06"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/filtershow_color_picker_circle" />
 
             </LinearLayout>
-                <ImageView
-                    android:id="@+id/draw_color_popupbutton"
-                    android:layout_width="@dimen/draw_color_icon_dim"
-                    android:layout_height="@dimen/draw_color_icon_dim"
-                    android:layout_gravity="end"
-                    android:src="@drawable/ic_action_overflow"
-                    android:scaleType="center"
-                    android:background="?android:attr/selectableItemBackground"
-                    />
+        </HorizontalScrollView>
+
+        <ImageView
+            android:id="@+id/draw_color_popupbutton"
+            android:layout_width="@dimen/draw_color_icon_dim"
+            android:layout_height="@dimen/draw_color_icon_dim"
+            android:layout_gravity="end|center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleType="center"
+            android:src="@drawable/ic_action_overflow" />
     </LinearLayout>
-    <Space
-            android:layout_width="match_parent"
-            android:layout_height="5dp"/>
 
 </LinearLayout>
