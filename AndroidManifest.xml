@@ -18,7 +18,7 @@
 -->
 
 <manifest android:versionCode="50008"
-        android:versionName="1.2.8"
+        android:versionName="2.0.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.android.gallery3d">
 

@@ -73,10 +73,6 @@ final class Config {
                     R.dimen.albumset_left_margin);
             labelSpec.titleRightMargin = r.getDimensionPixelSize(
                     R.dimen.albumset_title_right_margin);
-            /*labelSpec.backgroundColor = r.getColor(
-                    R.color.albumset_label_background);
-            labelSpec.titleColor = r.getColor(R.color.albumset_label_title);
-            labelSpec.countColor = r.getColor(R.color.albumset_label_count);*/
             labelSpec.backgroundColor = getAttrColor(context, android.R.attr.colorBackground);
             labelSpec.titleColor = getAttrColor(context, android.R.attr.textColorSecondary);
             labelSpec.countColor = getAttrColor(context, android.R.attr.textColorSecondary);

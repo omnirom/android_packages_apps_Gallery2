@@ -14,18 +14,15 @@
      limitations under the License.
 -->
 <resources>
-    <color name="default_background">#000</color>
-    <color name="bottom_bar_background">#000</color>
+    <color name="default_background">#111111</color>
     <color name="placeholder_background">#171717</color>
 
     <!-- configuration for album set page -->
-    <!-- material_grey_900 -->
     <color name="albumset_background">@color/default_background</color>
     <color name="albumset_placeholder">@color/placeholder_background</color>
-    <!-- material_grey_800 -->
     <color name="albumset_label_background">@color/placeholder_background</color>
-    <color name="albumset_label_title">#fff</color>
-    <color name="albumset_label_count">#fff</color>
+    <color name="filtershow_background">@color/default_background</color>
+    <color name="movieplayer_background">@color/default_background</color>
 
     <!-- configuration for album page -->
     <color name="album_background">@color/default_background</color>
@@ -42,8 +39,6 @@
     <color name="bitmap_screennail_placeholder">@color/placeholder_background</color>
 
     <color name="slideshow_background">@color/default_background</color>
-
-    <color name="button_dark_transparent_background">#1d1d1d</color>
 
     <color name="primary">@color/default_background</color>
     <color name="accent_light">#BBDEFB</color>
