@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2013 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,99 +15,86 @@
 -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:id="@+id/mainView"
-             android:background="@color/filtershow_background">
+    android:id="@+id/mainView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/default_background">
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:animateLayoutChanges="true">
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
             <ProgressBar
-                    android:id="@+id/loading"
-                    style="@android:style/Widget.Material.ProgressBar.Large"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    android:indeterminateOnly="true"
-                    android:background="@null"/>
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
 
             <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    >
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <LinearLayout
-                        android:layout_weight="1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
                     <FrameLayout
-                            android:id="@+id/central_panel_container"
-                            android:layout_gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:visibility="gone"/>
+                        android:id="@+id/central_panel_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:visibility="gone" />
 
                     <FrameLayout
-                            android:id="@+id/editorContainer"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"/>
+                        android:id="@+id/editorContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
                     <com.android.gallery3d.filtershow.imageshow.ImageShow
-                            android:id="@+id/imageShow"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"/>
+                        android:id="@+id/imageShow"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
 
                 </LinearLayout>
 
                 <FrameLayout
-                        android:id="@+id/state_panel_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="visible"/>
+                    android:id="@+id/state_panel_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 
         </FrameLayout>
 
         <LinearLayout
-                android:id="@+id/mainPanel"
-                android:layout_width="300dip"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:animateLayoutChanges="true">
+            android:id="@+id/mainPanel"
+            android:layout_width="300dip"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <FrameLayout
-                    android:id="@+id/main_panel_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dip"
-                    android:layout_weight="1"/>
+                android:id="@+id/main_panel_container"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="1" />
 
         </LinearLayout>
 
     </LinearLayout>
 
     <com.android.gallery3d.filtershow.category.CategorySelected
-            android:layout_width="@dimen/category_panel_icon_size"
-            android:layout_height="@dimen/category_panel_icon_size"
-            android:id="@+id/categorySelectedIndicator"
-            android:visibility="invisible"/>
+        android:id="@+id/categorySelectedIndicator"
+        android:layout_width="@dimen/category_panel_icon_size"
+        android:layout_height="@dimen/category_panel_icon_size"
+        android:visibility="invisible" />
 
 </FrameLayout>

@@ -42,12 +42,10 @@ public class CropView extends View {
     private RectF mScreenBounds = new RectF();
     private RectF mScreenImageBounds = new RectF();
     private RectF mScreenCropBounds = new RectF();
-    private Rect mShadowBounds = new Rect();
 
     private Bitmap mBitmap;
     private Paint mPaint = new Paint();
 
-    private NinePatchDrawable mShadow;
     private CropObject mCropObj = null;
     private Drawable mCropIndicator;
     private int mIndicatorSize;
@@ -63,7 +61,6 @@ public class CropView extends View {
     private float mSpotY = 0;
     private boolean mDoSpot = false;
 
-    private int mShadowMargin = 15;
     private int mMargin = 32;
     private int mOverlayShadowColor = 0xCF000000;
     private int mOverlayWPShadowColor = 0x5F000000;
@@ -96,10 +93,8 @@ public class CropView extends View {
 
     private void setup(Context context) {
         Resources rsc = context.getResources();
-        mShadow = (NinePatchDrawable) rsc.getDrawable(R.drawable.geometry_shadow);
         mCropIndicator = rsc.getDrawable(R.drawable.camera_crop);
         mIndicatorSize = (int) rsc.getDimension(R.dimen.crop_indicator_size);
-        mShadowMargin = (int) rsc.getDimension(R.dimen.shadow_margin);
         mMargin = (int) rsc.getDimension(R.dimen.preview_margin);
         mMinSideSize = (int) rsc.getDimension(R.dimen.crop_min_side);
         mTouchTolerance = (int) rsc.getDimension(R.dimen.crop_touch_tolerance);
@@ -329,16 +324,6 @@ public class CropView extends View {
         }
 
         mScreenImageBounds.set(mImageBounds);
-
-        // Draw background shadow
-        if (mDisplayMatrix.mapRect(mScreenImageBounds)) {
-            int margin = (int) mDisplayMatrix.mapRadius(mShadowMargin);
-            mScreenImageBounds.roundOut(mShadowBounds);
-            mShadowBounds.set(mShadowBounds.left - margin, mShadowBounds.top -
-                    margin, mShadowBounds.right + margin, mShadowBounds.bottom + margin);
-            mShadow.setBounds(mShadowBounds);
-            mShadow.draw(canvas);
-        }
 
         mPaint.setAntiAlias(true);
         mPaint.setFilterBitmap(true);

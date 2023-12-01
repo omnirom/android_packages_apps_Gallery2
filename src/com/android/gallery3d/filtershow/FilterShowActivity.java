@@ -254,7 +254,6 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
         setupMenu();
         setDefaultValues();
         fillEditors();
-        getWindow().setBackgroundDrawable(new ColorDrawable(0));
         loadXML();
 
         fillCategories();
@@ -274,7 +273,6 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
 
         clearGalleryBitmapPool();
         doBindService();
-        getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
         setContentView(R.layout.filtershow_splashscreen);
         mLoadingComplete = false;
     }
@@ -816,6 +814,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
             }
             final View imageShow = findViewById(R.id.imageShow);
             imageShow.setVisibility(View.VISIBLE);
+            stopLoadingIndicator();
 
 
             Bitmap largeBitmap = MasterImage.getImage().getOriginalBitmapLarge();
@@ -1094,8 +1093,6 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
             mCategoryLooksAdapter.clear();
         }
         mCategoryLooksAdapter = new CategoryAdapter(this);
-        int verticalItemHeight = (int) getResources().getDimension(R.dimen.action_item_height);
-        mCategoryLooksAdapter.setItemHeight(verticalItemHeight);
         for (FilterRepresentation representation : filtersRepresentations) {
             mCategoryLooksAdapter.add(new Action(this, representation, Action.FULL_VIEW));
         }

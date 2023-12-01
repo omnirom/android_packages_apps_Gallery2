@@ -30,10 +30,12 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import com.android.gallery3d.R;
 
 public class IconView extends View {
+    private static final String TAG = "Gallery2:IconView";
 
     public static final int VERTICAL = 0;
     public static final int HORIZONTAL = 1;
@@ -176,7 +178,7 @@ public class IconView extends View {
         return false;
     }
 
-    public void computeBitmapBounds() {
+    private void computeBitmapBounds() {
         if (mUseOnlyDrawable) {
             mBitmapBounds = new Rect(mMargin/2, mMargin, getWidth() - mMargin/2,
                     getHeight() - mTextSize - 2*mMargin);

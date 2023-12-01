@@ -25,6 +25,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.util.Log;
 
 import com.android.gallery3d.exif.ExifTag;
 import com.android.gallery3d.filtershow.FilterShowActivity;
@@ -50,7 +51,7 @@ import java.util.Vector;
 
 public class MasterImage implements RenderingRequestCaller {
 
-    private static final String LOGTAG = "MasterImage";
+    private static final String LOGTAG = "Gallery2:MasterImage";
     private boolean DEBUG  = false;
     private static final boolean DISABLEZOOM = false;
     public static final int SMALL_BITMAP_DIM = 160;
@@ -83,7 +84,6 @@ public class MasterImage implements RenderingRequestCaller {
     private Bitmap mPartialBitmap = null;
     private Bitmap mHighresBitmap = null;
     private Bitmap mPreviousImage = null;
-    private int mShadowMargin = 15; // not scaled, fixed in the asset
     private Rect mPartialBounds = new Rect();
 
     private ValueAnimator mAnimator = null;
@@ -578,6 +578,8 @@ public class MasterImage implements RenderingRequestCaller {
         }
 
         Matrix m = null;
+        float scaleX = 1f;
+        float scaleY = 1f;
         float scale = 1f;
         float translateX = 0;
         float translateY = 0;
@@ -593,12 +595,15 @@ public class MasterImage implements RenderingRequestCaller {
             RectF size = new RectF(0, 0,
                     bitmapToDraw.getWidth(),
                     bitmapToDraw.getHeight());
-            scale = mImageShowSize.x / size.width();
-            if (size.width() < size.height()) {
-                scale = mImageShowSize.y / size.height();
-            }
+            scaleX = mImageShowSize.x / size.width();
+            scaleY = mImageShowSize.y / size.height();
+            scale = Math.min(scaleX, scaleY);
+            if (DEBUG) Log.d(LOGTAG, "size = " + size + " mImageShowSize = " + mImageShowSize + " scaleX = " + scaleX + " scaleY = " + scaleY);
+            
             translateX = (mImageShowSize.x - (size.width() * scale)) / 2.0f;
             translateY = (mImageShowSize.y - (size.height() * scale)) / 2.0f;
+            if (DEBUG)  Log.d(LOGTAG, "translateX = " + translateX + " translateY = " + translateY);
+
         } else {
             return null;
         }
@@ -607,7 +612,6 @@ public class MasterImage implements RenderingRequestCaller {
         m.postScale(scale, scale);
         m.postRotate(rotate, mImageShowSize.x / 2.0f, mImageShowSize.y / 2.0f);
         m.postTranslate(translateX, translateY);
-        m.postTranslate(mShadowMargin, mShadowMargin);
         m.postScale(getScaleFactor(), getScaleFactor(),
                 mImageShowSize.x / 2.0f,
                 mImageShowSize.y / 2.0f);
@@ -671,8 +675,8 @@ public class MasterImage implements RenderingRequestCaller {
         Matrix screenToOriginal = new Matrix();
         originalToScreen.invert(screenToOriginal);
         RectF bounds = new RectF(0, 0,
-                mImageShowSize.x + 2 * mShadowMargin,
-                mImageShowSize.y + 2 * mShadowMargin);
+                mImageShowSize.x,
+                mImageShowSize.y);
         screenToOriginal.mapRect(bounds);
         Rect rBounds = new Rect();
         bounds.roundOut(rBounds);

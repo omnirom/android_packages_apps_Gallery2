@@ -65,13 +65,6 @@
     <dimen name="popup_title_frame_min_height_xlarge">60dp</dimen>
     <dimen name="big_setting_popup_window_width_xlarge">590dp</dimen>
     <dimen name="setting_item_icon_width_xlarge">35dp</dimen>
-    <dimen name="effect_setting_item_icon_width_xlarge">54dp</dimen>
-    <dimen name="effect_setting_item_text_size_xlarge">21dp</dimen>
-    <dimen name="effect_setting_type_text_size_xlarge">21dp</dimen>
-    <dimen name="effect_setting_type_text_min_height_xlarge">34dp</dimen>
-    <dimen name="effect_setting_clear_text_size_xlarge">23dp</dimen>
-    <dimen name="effect_setting_clear_text_min_height_xlarge">44dp</dimen>
-    <dimen name="effect_setting_type_text_left_padding_xlarge">26dp</dimen>
     <dimen name="onscreen_indicators_height_xlarge">36dp</dimen>
     <dimen name="onscreen_exposure_indicator_text_size_xlarge">18dp</dimen>
     <dimen name="pie_radius_start">80dp</dimen>
@@ -161,7 +154,6 @@
     <!--  configuration for filtershow UI -->
     <dimen name="thumbnail_size">96dip</dimen>
     <dimen name="thumbnail_margin">3dip</dimen>
-    <dimen name="action_item_height">175dip</dimen>
     <dimen name="touch_circle_size">8dp</dimen>
 
     <!-- configuration for preview in editor -->

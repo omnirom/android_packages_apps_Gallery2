@@ -58,19 +58,17 @@ public class ImageShow extends View implements OnGestureListener,
         ScaleGestureDetector.OnScaleGestureListener,
         OnDoubleTapListener {
 
-    private static final String LOGTAG = "ImageShow";
-    private static final boolean ENABLE_ZOOMED_COMPARISON = false;
+    private static final String LOGTAG = "Gallery2:ImageShow";
+    private static final boolean ENABLE_ZOOMED_COMPARISON = true;
 
     protected Paint mPaint = new Paint();
     protected int mTextSize;
     protected int mTextPadding;
 
-    protected int mBackgroundColor;
-
     private GestureDetector mGestureDetector = null;
     private ScaleGestureDetector mScaleGestureDetector = null;
 
-    protected Rect mImageBounds = new Rect();
+    private Rect mImageBounds = new Rect();
     private boolean mOriginalDisabled = false;
     private boolean mTouchShowOriginal = false;
     private long mTouchShowOriginalDate = 0;
@@ -78,12 +76,7 @@ public class ImageShow extends View implements OnGestureListener,
     private int mShowOriginalDirection = 0;
     private static int UNVEIL_HORIZONTAL = 1;
     private static int UNVEIL_VERTICAL = 2;
-
-    private NinePatchDrawable mShadow = null;
-    private Rect mShadowBounds = new Rect();
-    private int mShadowMargin = 15; // not scaled, fixed in the asset
-    private boolean mShadowDrawn = false;
-
+    
     private Point mTouchDown = new Point();
     private Point mTouch = new Point();
     private boolean mFinishedScalingOperation = false;
@@ -173,9 +166,7 @@ public class ImageShow extends View implements OnGestureListener,
         mTextPadding = res.getDimensionPixelSize(R.dimen.photoeditor_text_padding);
         mOriginalTextMargin = res.getDimensionPixelSize(R.dimen.photoeditor_original_text_margin);
         mOriginalTextSize = res.getDimensionPixelSize(R.dimen.photoeditor_original_text_size);
-        mBackgroundColor = res.getColor(R.color.background_screen);
         mOriginalText = res.getString(R.string.original_picture_text);
-        mShadow = (NinePatchDrawable) res.getDrawable(R.drawable.geometry_shadow);
         setupGestureDetector(context);
         mActivity = (FilterShowActivity) context;
         if (sMask == null) {
@@ -257,8 +248,8 @@ public class ImageShow extends View implements OnGestureListener,
         mPaint.setAntiAlias(true);
         mPaint.setFilterBitmap(true);
         MasterImage.getImage().setImageShowSize(
-                getWidth() - 2*mShadowMargin,
-                getHeight() - 2*mShadowMargin);
+                getWidth(),
+                getHeight());
 
         MasterImage img = MasterImage.getImage();
         // Hide the loading indicator as needed
@@ -274,8 +265,6 @@ public class ImageShow extends View implements OnGestureListener,
         }
 
         canvas.save();
-
-        mShadowDrawn = false;
 
         Bitmap highresPreview = MasterImage.getImage().getHighresImage();
         Bitmap fullHighres = MasterImage.getImage().getPartialImage();
@@ -419,7 +408,6 @@ public class ImageShow extends View implements OnGestureListener,
                     maskShader.setLocalMatrix(mShaderMatrix);
                     mMaskPaint.setShader(maskShader);
 
-                    drawShadow(canvas, mImageBounds); // as needed
                     canvas.drawBitmap(previousImage, m, mPaint);
                     canvas.clipRect(mImageBounds);
                     canvas.translate(x, y);
@@ -476,13 +464,11 @@ public class ImageShow extends View implements OnGestureListener,
             }
 
             if (needsToDrawImage) {
-                drawShadow(canvas, previousBounds); // as needed
                 canvas.drawBitmap(previousImage, mp, mPaint);
             }
 
             canvas.restore();
         } else {
-            drawShadow(canvas, mImageBounds); // as needed
             canvas.drawBitmap(image, m, mPaint);
         }
 
@@ -497,20 +483,10 @@ public class ImageShow extends View implements OnGestureListener,
         float h = imageHeight * scale;
         float ty = (getHeight() - h) / 2.0f;
         float tx = (getWidth() - w) / 2.0f;
-        return new Rect((int) tx + mShadowMargin,
-                (int) ty + mShadowMargin,
-                (int) (w + tx) - mShadowMargin,
-                (int) (h + ty) - mShadowMargin);
-    }
-
-    private void drawShadow(Canvas canvas, Rect d) {
-        if (!mShadowDrawn) {
-            mShadowBounds.set(d.left - mShadowMargin, d.top - mShadowMargin,
-                    d.right + mShadowMargin, d.bottom + mShadowMargin);
-            mShadow.setBounds(mShadowBounds);
-            mShadow.draw(canvas);
-            mShadowDrawn = true;
-        }
+        return new Rect((int) tx,
+                (int) ty,
+                (int) (w + tx),
+                (int) (h + ty));
     }
 
     public void drawCompareImage(Canvas canvas, Bitmap image) {
@@ -820,41 +796,41 @@ public class ImageShow extends View implements OnGestureListener,
         RectF screenPos = new RectF(originalBounds);
         originalToScreen.mapRect(screenPos);
 
-        boolean rightConstraint = screenPos.right < getWidth() - mShadowMargin;
-        boolean leftConstraint = screenPos.left > mShadowMargin;
-        boolean topConstraint = screenPos.top > mShadowMargin;
-        boolean bottomConstraint = screenPos.bottom < getHeight() - mShadowMargin;
+        boolean rightConstraint = screenPos.right < getWidth();
+        boolean leftConstraint = screenPos.left > 0;
+        boolean topConstraint = screenPos.top > 0;
+        boolean bottomConstraint = screenPos.bottom < getHeight();
 
         if (screenPos.width() > getWidth()) {
             if (rightConstraint && !leftConstraint) {
                 float tx = screenPos.right - translation.x * scale;
-                translation.x = (int) ((getWidth() - mShadowMargin - tx) / scale);
+                translation.x = (int) ((getWidth() - tx) / scale);
                 currentEdgeEffect = EDGE_RIGHT;
             } else if (leftConstraint && !rightConstraint) {
                 float tx = screenPos.left - translation.x * scale;
-                translation.x = (int) ((mShadowMargin - tx) / scale);
+                translation.x = (int) (tx / scale);
                 currentEdgeEffect = EDGE_LEFT;
             }
         } else {
             float tx = screenPos.right - translation.x * scale;
-            float dx = (getWidth() - 2 * mShadowMargin - screenPos.width()) / 2f;
-            translation.x = (int) ((getWidth() - mShadowMargin - tx - dx) / scale);
+            float dx = (getWidth() - screenPos.width()) / 2f;
+            translation.x = (int) ((getWidth() - tx - dx) / scale);
         }
 
         if (screenPos.height() > getHeight()) {
             if (bottomConstraint && !topConstraint) {
                 float ty = screenPos.bottom - translation.y * scale;
-                translation.y = (int) ((getHeight() - mShadowMargin - ty) / scale);
+                translation.y = (int) ((getHeight() - ty) / scale);
                 currentEdgeEffect = EDGE_BOTTOM;
             } else if (topConstraint && !bottomConstraint) {
                 float ty = screenPos.top - translation.y * scale;
-                translation.y = (int) ((mShadowMargin - ty) / scale);
+                translation.y = (int) (ty / scale);
                 currentEdgeEffect = EDGE_TOP;
             }
         } else {
             float ty = screenPos.bottom - translation.y * scale;
-            float dy = (getHeight()- 2 * mShadowMargin - screenPos.height()) / 2f;
-            translation.y = (int) ((getHeight() - mShadowMargin - ty - dy) / scale);
+            float dy = (getHeight() - screenPos.height()) / 2f;
+            translation.y = (int) ((getHeight()  - ty - dy) / scale);
         }
 
         if (mCurrentEdgeEffect != currentEdgeEffect) {

@@ -36,7 +36,6 @@ public class ImageDraw extends ImageShow {
     private EditorDraw mEditorDraw;
     private long mTimeout;
     private Paint mCheckerdPaint = makeCheckedPaint();
-    private Paint mShadowPaint = new Paint();
     private Paint mIconPaint = new Paint();
     private Paint mBorderPaint = new Paint();
     private Handler mHandler;
@@ -49,8 +48,6 @@ public class ImageDraw extends ImageShow {
     private Matrix mRotateToScreen = new Matrix();
     private Matrix mToOrig;
     private int mBorderColor;
-    private int mBorderShadowSize;
-    private NinePatchDrawable mShadow;
 
     Runnable mUpdateRunnable = new Runnable() {
         @Override
@@ -78,18 +75,12 @@ public class ImageDraw extends ImageShow {
         Resources res = context.getResources();
         mDisplayRound = res.getDimensionPixelSize(R.dimen.draw_rect_round);
         mDisplayBorder = res.getDimensionPixelSize(R.dimen.draw_rect_border);
-        mBorderShadowSize = res.getDimensionPixelSize(R.dimen.draw_rect_shadow);
         float edge = res.getDimensionPixelSize(R.dimen.draw_rect_border_edge);
 
         mBorderColor = res.getColor(R.color.draw_rect_border);
         mBorderPaint.setColor(mBorderColor);
         mBorderPaint.setStyle(Paint.Style.STROKE);
         mBorderPaint.setStrokeWidth(edge);
-        mShadowPaint.setStyle(Paint.Style.FILL);
-        mShadowPaint.setColor(Color.BLACK);
-        mShadowPaint.setShadowLayer(mBorderShadowSize,mBorderShadowSize,
-                mBorderShadowSize,Color.BLACK);
-        mShadow = (NinePatchDrawable) res.getDrawable(R.drawable.geometry_shadow);
     }
 
     public void setEditor(EditorDraw editorDraw) {

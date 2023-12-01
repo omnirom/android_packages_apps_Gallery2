@@ -141,10 +141,6 @@ public class Action implements RenderingRequestCaller {
         return mImage;
     }
 
-    public void setImage(Bitmap image) {
-        mImage = image;
-    }
-
     public void setAdapter(ArrayAdapter adapter) {
         mAdapter = adapter;
     }

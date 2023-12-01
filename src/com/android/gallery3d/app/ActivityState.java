@@ -105,9 +105,7 @@ abstract public class ActivityState {
 
     protected float[] mBackgroundColor;
 
-    protected int getBackgroundColorId() {
-        return R.color.default_background;
-    }
+    abstract protected int getBackgroundColorId();
 
     protected float[] getBackgroundColor() {
         return mBackgroundColor;
