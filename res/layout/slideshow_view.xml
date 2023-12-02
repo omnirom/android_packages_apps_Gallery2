@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.gallery3d.ui.SlideshowImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/slideshow_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/slideshow_background">
+
+    <ImageView
+        android:id="@+id/back_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/front_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/slideshow_no_images"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/slideshow_no_images_title"
+        android:gravity="center"
+        android:visibility="gone" />
+
+</com.android.gallery3d.ui.SlideshowImageView>

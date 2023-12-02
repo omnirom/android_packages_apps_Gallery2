@@ -100,7 +100,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     private float mUserDistance; // in pixel
     private boolean mLaunchedFromPhotoPage;
     private boolean mInCameraApp;
-    private boolean mInCameraAndWantQuitOnPause;
 
     private RelativePosition mOpenCenter = new RelativePosition();
 
@@ -435,8 +434,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         mAlbumView.resume();
         mAlbumView.setPressedIndex(-1);
         mActionModeHandler.resume();
-
-        mInCameraAndWantQuitOnPause = mInCameraApp;
     }
 
     @Override
@@ -578,17 +575,11 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
                 return true;
             }
             case R.id.action_slideshow: {
-                if (mAlbumDataAdapter.size() == 0) {
-                    // return true;
-                }
-                mInCameraAndWantQuitOnPause = false;
                 Bundle data = new Bundle();
-                data.putString(SlideshowPage.KEY_SET_PATH,
-                        mMediaSetPath.toString());
-                data.putBoolean(SlideshowPage.KEY_REPEAT, GalleryUtils.isRepeatSlideshow(mActivity));
-                data.putBoolean(SlideshowPage.KEY_RANDOM_ORDER, GalleryUtils.isRandomSlideshow(mActivity));
-                mActivity.getStateManager().startStateForResult(
-                        SlideshowPage.class, REQUEST_SLIDESHOW, data);
+                data.putString(SlideshowPage.KEY_SET_PATH, mMediaSetPath.toString());
+                Intent intent = new Intent(mActivity, SlideshowActivity.class);
+                intent.putExtras(data);
+                mActivity.startActivity(intent);
                 return true;
             }
             case R.id.action_layout: {

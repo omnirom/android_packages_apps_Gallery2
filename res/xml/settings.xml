@@ -25,6 +25,10 @@
             android:key="slideshow_repeat"
             android:title="@string/slideshow_repeat_title"
             android:defaultValue="true" />
+        <SwitchPreference
+            android:key="slideshow_fill_screen"
+            android:title="@string/slideshow_fill_screen_title"
+            android:defaultValue="false" />
         <com.android.gallery3d.settings.SeekBarPreference
             android:key="slideshow_duration"
             android:title="@string/slideshow_duration_title"

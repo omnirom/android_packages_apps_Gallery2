@@ -99,7 +99,6 @@ public abstract class PhotoPage extends ActivityState implements
 
     private static final int HIDE_BARS_TIMEOUT = 3500;
 
-    private static final int REQUEST_SLIDESHOW = 1;
     private static final int REQUEST_CROP = 2;
     private static final int REQUEST_EDIT = 4;
     private static final int REQUEST_PLAY_VIDEO = 5;
@@ -970,17 +969,6 @@ public abstract class PhotoPage extends ActivityState implements
                 onUpPressed();
                 return true;
             }
-            case R.id.action_slideshow: {
-                Bundle data = new Bundle();
-                data.putString(SlideshowPage.KEY_SET_PATH, mMediaSet.getPath().toString());
-                data.putString(SlideshowPage.KEY_ITEM_PATH, path.toString());
-                data.putInt(SlideshowPage.KEY_PHOTO_INDEX, currentIndex);
-                data.putBoolean(SlideshowPage.KEY_REPEAT, GalleryUtils.isRepeatSlideshow(mActivity));
-                data.putBoolean(SlideshowPage.KEY_RANDOM_ORDER, GalleryUtils.isRandomSlideshow(mActivity));
-                mActivity.getStateManager().startStateForResult(
-                        SlideshowPage.class, REQUEST_SLIDESHOW, data);
-                return true;
-            }
             case R.id.action_trim: {
                 Intent intent = new Intent(mActivity, TrimVideo.class);
                 intent.setData(manager.getContentUri(path));
@@ -1251,20 +1239,6 @@ public abstract class PhotoPage extends ActivityState implements
                     setCurrentPhotoByIntent(data);
                 }
                 break;
-            case REQUEST_SLIDESHOW: {
-                if (data == null) break;
-                String path = data.getStringExtra(SlideshowPage.KEY_ITEM_PATH);
-                int index = data.getIntExtra(SlideshowPage.KEY_PHOTO_INDEX, 0);
-
-                // If RTL, the index need be revised.
-                if (View.LAYOUT_DIRECTION_RTL == TextUtils
-                        .getLayoutDirectionFromLocale(Locale.getDefault())) {
-                    index = mMediaSet.getMediaItemCount() - index - 1;
-                }
-                if (path != null) {
-                    mModel.setCurrentPhoto(Path.fromString(path), index);
-                }
-            }
         }
     }
 

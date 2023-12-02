@@ -15,6 +15,7 @@ android_app {
     ],
     srcs: [
         "src/**/*.java",
+        "src/**/*.kt",
         "src_pd/**/*.java",
         ":Gallery2-rscript{Gallery2-rscript.srcjar}",
     ],
@@ -40,6 +41,7 @@ android_app {
     },
     libs: ["org.apache.http.legacy"],
     optional_uses_libs: ["com.google.android.media.effects"],
+    kotlincflags: ["-Xjvm-default=enable"],
 }
 
 genrule {

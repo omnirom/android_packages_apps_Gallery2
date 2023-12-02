@@ -43,7 +43,6 @@ import com.android.gallery3d.util.GalleryUtils;
 import java.util.ArrayList;
 
 public final class GalleryActivity extends AbstractGalleryActivity implements OnCancelListener {
-    public static final String EXTRA_SLIDESHOW = "slideshow";
     public static final String EXTRA_DREAM = "dream";
     public static final String EXTRA_CROP = "crop";
 
@@ -104,7 +103,7 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
             }
             startGetContent(intent);
         } else if (Intent.ACTION_VIEW.equalsIgnoreCase(action)
-                || ACTION_REVIEW.equalsIgnoreCase(action)){
+                || ACTION_REVIEW.equalsIgnoreCase(action)) {
             startViewAction(intent);
         } else {
             startDefaultPage();
@@ -134,7 +133,7 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
         String type = intent.getType();
         if (type != null) {
             return GalleryUtils.MIME_TYPE_PANORAMA360.equals(type)
-                ? MediaItem.MIME_TYPE_JPEG : type;
+                    ? MediaItem.MIME_TYPE_JPEG : type;
         }
 
         Uri uri = intent.getData();
@@ -147,87 +146,72 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
     }
 
     private void startViewAction(Intent intent) {
-        Boolean slideshow = intent.getBooleanExtra(EXTRA_SLIDESHOW, false);
-        if (slideshow) {
-            DataManager manager = getDataManager();
-            Path path = manager.findPathByUri(intent.getData(), intent.getType());
-            if (path == null || manager.getMediaObject(path)
-                    instanceof MediaItem) {
-                return;
-            }
-            Bundle data = new Bundle();
-            data.putString(SlideshowPage.KEY_SET_PATH, path.toString());
-            data.putBoolean(SlideshowPage.KEY_RANDOM_ORDER, GalleryUtils.isRandomSlideshow(this));
-            data.putBoolean(SlideshowPage.KEY_REPEAT, GalleryUtils.isRepeatSlideshow(this));
-            getStateManager().startState(SlideshowPage.class, data);
-        } else {
-            Bundle data = new Bundle();
-            DataManager dm = getDataManager();
-            Uri uri = intent.getData();
-            String contentType = getContentType(intent);
-            if (contentType == null) {
-                // TODO error dialog?
+        Bundle data = new Bundle();
+        DataManager dm = getDataManager();
+        Uri uri = intent.getData();
+        String contentType = getContentType(intent);
+        if (contentType == null) {
+            // TODO error dialog?
                 /*Toast.makeText(this,
                         R.string.no_such_item, Toast.LENGTH_LONG).show();
                 finish();*/
-                return;
+            return;
+        }
+        if (uri == null) {
+            int typeBits = GalleryUtils.determineTypeBits(this, intent);
+            data.putInt(KEY_TYPE_BITS, typeBits);
+            data.putString(AlbumSetPage.KEY_MEDIA_PATH,
+                    getDataManager().getTopSetPath(typeBits));
+            getStateManager().startState(AlbumSetPage.class, data);
+        } else if (contentType.startsWith(
+                ContentResolver.CURSOR_DIR_BASE_TYPE)) {
+            int mediaType = intent.getIntExtra(KEY_MEDIA_TYPES, 0);
+            if (mediaType != 0) {
+                uri = uri.buildUpon().appendQueryParameter(
+                                KEY_MEDIA_TYPES, String.valueOf(mediaType))
+                        .build();
             }
-            if (uri == null) {
-                int typeBits = GalleryUtils.determineTypeBits(this, intent);
-                data.putInt(KEY_TYPE_BITS, typeBits);
-                data.putString(AlbumSetPage.KEY_MEDIA_PATH,
-                        getDataManager().getTopSetPath(typeBits));
-                getStateManager().startState(AlbumSetPage.class, data);
-            } else if (contentType.startsWith(
-                    ContentResolver.CURSOR_DIR_BASE_TYPE)) {
-                int mediaType = intent.getIntExtra(KEY_MEDIA_TYPES, 0);
-                if (mediaType != 0) {
-                    uri = uri.buildUpon().appendQueryParameter(
-                            KEY_MEDIA_TYPES, String.valueOf(mediaType))
-                            .build();
-                }
-                Path setPath = dm.findPathByUri(uri, null);
-                MediaSet mediaSet = null;
-                if (setPath != null) {
-                    mediaSet = (MediaSet) dm.getMediaObject(setPath);
-                }
-                if (mediaSet != null) {
-                    if (mediaSet.isLeafAlbum()) {
-                        data.putString(AlbumPage.KEY_MEDIA_PATH, setPath.toString());
-                        data.putString(AlbumPage.KEY_PARENT_MEDIA_PATH,
-                                dm.getTopSetPath(DataManager.INCLUDE_ALL));
-                        getStateManager().startState(AlbumPage.class, data);
-                    } else {
-                        data.putString(AlbumSetPage.KEY_MEDIA_PATH, setPath.toString());
-                        getStateManager().startState(AlbumSetPage.class, data);
-                    }
+            Path setPath = dm.findPathByUri(uri, null);
+            MediaSet mediaSet = null;
+            if (setPath != null) {
+                mediaSet = (MediaSet) dm.getMediaObject(setPath);
+            }
+            if (mediaSet != null) {
+                if (mediaSet.isLeafAlbum()) {
+                    data.putString(AlbumPage.KEY_MEDIA_PATH, setPath.toString());
+                    data.putString(AlbumPage.KEY_PARENT_MEDIA_PATH,
+                            dm.getTopSetPath(DataManager.INCLUDE_ALL));
+                    getStateManager().startState(AlbumPage.class, data);
                 } else {
-                    startDefaultPage();
+                    data.putString(AlbumSetPage.KEY_MEDIA_PATH, setPath.toString());
+                    getStateManager().startState(AlbumSetPage.class, data);
                 }
             } else {
-                Path itemPath = dm.findPathByUri(uri, contentType);
-                Path albumPath = dm.getDefaultSetOf(itemPath);
-
-                data.putString(PhotoPage.KEY_MEDIA_ITEM_PATH, itemPath.toString());
-                //data.putBoolean(PhotoPage.KEY_READONLY, true);
-
-                // TODO: Make the parameter "SingleItemOnly" public so other
-                //       activities can reference it.
-                boolean singleItemOnly = (albumPath == null)
-                        || intent.getBooleanExtra("SingleItemOnly", false);
-                if (!singleItemOnly) {
-                    data.putString(PhotoPage.KEY_MEDIA_SET_PATH, albumPath.toString());
-                    // when FLAG_ACTIVITY_NEW_TASK is set, (e.g. when intent is fired
-                    // from notification), back button should behave the same as up button
-                    // rather than taking users back to the home screen
-                    if (intent.getBooleanExtra(PhotoPage.KEY_TREAT_BACK_AS_UP, false)
-                            || ((intent.getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0)) {
-                        data.putBoolean(PhotoPage.KEY_TREAT_BACK_AS_UP, true);
-                    }
-                }
-
-                getStateManager().startState(SinglePhotoPage.class, data);
+                startDefaultPage();
             }
+        } else {
+            Path itemPath = dm.findPathByUri(uri, contentType);
+            Path albumPath = dm.getDefaultSetOf(itemPath);
+
+            data.putString(PhotoPage.KEY_MEDIA_ITEM_PATH, itemPath.toString());
+            //data.putBoolean(PhotoPage.KEY_READONLY, true);
+
+            // TODO: Make the parameter "SingleItemOnly" public so other
+            //       activities can reference it.
+            boolean singleItemOnly = (albumPath == null)
+                    || intent.getBooleanExtra("SingleItemOnly", false);
+            if (!singleItemOnly) {
+                data.putString(PhotoPage.KEY_MEDIA_SET_PATH, albumPath.toString());
+                // when FLAG_ACTIVITY_NEW_TASK is set, (e.g. when intent is fired
+                // from notification), back button should behave the same as up button
+                // rather than taking users back to the home screen
+                if (intent.getBooleanExtra(PhotoPage.KEY_TREAT_BACK_AS_UP, false)
+                        || ((intent.getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0)) {
+                    data.putBoolean(PhotoPage.KEY_TREAT_BACK_AS_UP, true);
+                }
+            }
+
+            getStateManager().startState(SinglePhotoPage.class, data);
         }
     }
 
@@ -268,7 +252,7 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[],
-            int[] grantResults) {
+                                           int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PERMISSION_REQUEST_STORAGE: {

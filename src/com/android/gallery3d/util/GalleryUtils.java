@@ -77,6 +77,7 @@ public class GalleryUtils {
     private static final String KEY_RANDOM_SLIDESHOW = "slideshow_random";
     private static final String KEY_REPEAT_SLIDESHOW = "slideshow_repeat";
     private static final String KEY_DURATION_SLIDESHOW = "slideshow_duration";
+    private static final String KEY_FILL_SCREEN_SLIDESHOW = "slideshow_fill_screen";
     private static final String KEY_ALBUMSET_ZOOM_LEVEL = "albumset_zoom_level";
     private static final String KEY_ALBUM_ZOOM_LEVEL = "album_zoom_level";
     private static final String KEY_TIME_CLUSTER_WEEKS = "time_cluster_weeks";
@@ -426,6 +427,11 @@ public class GalleryUtils {
     public static int getSlideshowDuration(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(KEY_DURATION_SLIDESHOW, 3) * 1000;
+    }
+
+    public static boolean getSlideshowFillScreen(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(KEY_FILL_SCREEN_SLIDESHOW, false);
     }
 
     public static int getAlbumsetZoomLevel(Context context) {

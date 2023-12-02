@@ -465,9 +465,9 @@ public class AlbumSetPage extends ActivityState implements
             case R.id.action_slideshow: {
                 Bundle data = new Bundle();
                 data.putString(SlideshowPage.KEY_SET_PATH, mMediaSet.getPath().toString());
-                data.putBoolean(SlideshowPage.KEY_REPEAT, GalleryUtils.isRepeatSlideshow(mActivity));
-                data.putBoolean(SlideshowPage.KEY_RANDOM_ORDER, GalleryUtils.isRandomSlideshow(mActivity));
-                mActivity.getStateManager().startState(SlideshowPage.class, data);
+                Intent intent = new Intent(mActivity, SlideshowActivity.class);
+                intent.putExtras(data);
+                mActivity.startActivity(intent);
                 return true;
             }
             default:

@@ -49,4 +49,6 @@
     <string name="video_page_title">Video</string>
     <string name="deleting">Deleting\u2026</string>
     <string name="estimated_size">Estimated size</string>
+    <string name="slideshow_fill_screen_title">Image fill screen</string>
+    <string name="slideshow_no_images_title">No images in this selection</string>
 </resources>

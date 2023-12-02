@@ -240,9 +240,9 @@
             </intent-filter>
         </activity>
 
-        <!--<activity android:name="com.android.gallery3d.app.SlideshowActivity"
+        <activity android:name="com.android.gallery3d.app.SlideshowActivity"
                 android:exported="true"
-                android:configChanges="keyboardHidden|orientation|screenSize"/>-->
+                android:configChanges="keyboardHidden|orientation|screenSize"/>
 
 
         <!--<activity android:name="com.android.gallery3d.gadget.WidgetClickHandler"
