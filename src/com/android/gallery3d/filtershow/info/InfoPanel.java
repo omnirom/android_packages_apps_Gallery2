@@ -47,7 +47,6 @@ public class InfoPanel extends DialogFragment {
     public static final String FRAGMENT_TAG = "InfoPanel";
     private static final String LOGTAG = FRAGMENT_TAG;
     private LinearLayout mMainView;
-    private ImageView mImageThumbnail;
     private TextView mImageName;
     private TextView mImageSize;
     private TextView mExifData;
@@ -67,11 +66,8 @@ public class InfoPanel extends DialogFragment {
     private View doCreateView() {
         mMainView = (LinearLayout) getLayoutInflater().inflate(
                 R.layout.filtershow_info_panel, null, false);
-
-        mImageThumbnail = (ImageView) mMainView.findViewById(R.id.imageThumbnail);
+                
         Bitmap bitmap = MasterImage.getImage().getFilteredImage();
-        mImageThumbnail.setImageBitmap(bitmap);
-
         mImageName = (TextView) mMainView.findViewById(R.id.imageName);
         mImageSize = (TextView) mMainView.findViewById(R.id.imageSize);
         mExifData = (TextView) mMainView.findViewById(R.id.exifData);

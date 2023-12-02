@@ -46,6 +46,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_gravity="center_vertical"
+                                android:maxLines="1"
                                 android:gravity="end"
                                 android:ellipsize="end" />
                 </LinearLayout>
@@ -78,21 +79,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp">
 
-                        <ImageView
-                                android:id="@+id/imageThumbnail"
-                                android:layout_weight="0.3"
-                                android:layout_width="0dp"
-                                android:layout_height="150dp"
-                                android:scaleType="centerInside"
-                                android:layout_marginEnd="10dp"
-                                android:background="@null"/>
-
                         <com.android.gallery3d.filtershow.info.HistogramView
                                 android:id="@+id/histogramView"
-                                android:layout_weight="0.7"
-                                android:layout_width="0dp"
-                                android:layout_height="150dp"
-                                android:layout_margin="0dp"/>
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"/>
                 </LinearLayout>
 
             <TextView
