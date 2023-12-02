@@ -437,10 +437,6 @@ public class AlbumSetPage extends ActivityState implements
             helpItem.setVisible(helpIntent != null);
             if (helpIntent != null) helpItem.setIntent(helpIntent);
 
-            MenuItem moreItem = menu.findItem(R.id.action_more_image);
-            moreItem.setVisible(mActivity.getResources().getBoolean(
-                    R.bool.config_show_more_images));
-
             setActiveActionBarTitle();
         }
         return true;
@@ -449,11 +445,6 @@ public class AlbumSetPage extends ActivityState implements
     @Override
     protected boolean onItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_more_image:
-                Uri moreUri = Uri.parse(mActivity.getString(R.string.website_for_more_image));
-                Intent moreIntent = new Intent(Intent.ACTION_VIEW, moreUri);
-                mActivity.startActivity(moreIntent);
-                return true;
             case R.id.action_cancel:
                 mActivity.setResult(Activity.RESULT_CANCELED);
                 mActivity.finish();

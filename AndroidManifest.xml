@@ -22,10 +22,6 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.android.gallery3d">
 
-
-    <permission android:name="com.android.gallery3d.permission.GALLERY_PROVIDER"
-            android:protectionLevel="signatureOrSystem" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.NFC" />
@@ -36,7 +32,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE"/>
-    <uses-permission android:name="com.android.gallery3d.permission.GALLERY_PROVIDER" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
@@ -245,12 +240,10 @@
             </intent-filter>
         </activity>
 
-        <provider android:name="com.android.gallery3d.provider.GalleryProvider"
-                android:syncable="false"
-                android:grantUriPermissions="true"
+        <!--<activity android:name="com.android.gallery3d.app.SlideshowActivity"
                 android:exported="true"
-                android:permission="com.android.gallery3d.permission.GALLERY_PROVIDER"
-                android:authorities="com.android.gallery3d.provider" />
+                android:configChanges="keyboardHidden|orientation|screenSize"/>-->
+
 
         <!--<activity android:name="com.android.gallery3d.gadget.WidgetClickHandler"
                   android:exported="true"/>

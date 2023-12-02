@@ -36,7 +36,4 @@
             android:title="@string/help"
             android:visible="false"
             app:showAsAction="never" />
-    <item android:id="@+id/action_more_image"
-            android:title="@string/more_image"
-            app:showAsAction="never" />
 </menu>

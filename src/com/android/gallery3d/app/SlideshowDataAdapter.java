@@ -16,6 +16,7 @@
 
 package com.android.gallery3d.app;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.android.gallery3d.app.SlideshowPage.Slide;
@@ -66,13 +67,14 @@ public class SlideshowDataAdapter implements SlideshowPage.Model {
     private final SourceListener mSourceListener = new SourceListener();
 
     // The index is just a hint if initialPath is set
-    public SlideshowDataAdapter(GalleryContext context, SlideshowSource source, int index,
+    public SlideshowDataAdapter(Context context, SlideshowSource source, int index,
             Path initialPath) {
         mSource = source;
         mInitialPath = initialPath;
         mLoadIndex = index;
         mNextOutput = index;
-        mThreadPool = context.getThreadPool();
+        GalleryApp app = (GalleryApp) context.getApplicationContext();
+        mThreadPool = app.getThreadPool();
     }
 
     private MediaItem loadItem() {

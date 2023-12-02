@@ -39,10 +39,4 @@
 
     </HorizontalScrollView>
 
-    <com.android.gallery3d.filtershow.category.IconView
-            android:id="@+id/addButton"
-            android:layout_width="@dimen/category_panel_height"
-            android:layout_height="@dimen/category_panel_height"
-            android:src="@drawable/filtershow_add"/>
-
 </LinearLayout>

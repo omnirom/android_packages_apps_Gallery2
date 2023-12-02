@@ -640,8 +640,6 @@ public abstract class PhotoPage extends ActivityState implements
                 .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0) {
             intent.setAction(Intent.ACTION_EDIT);
         }
-        intent.putExtra(FilterShowActivity.LAUNCH_FULLSCREEN,
-                mActivity.isFullscreen());
         ((Activity) mActivity).startActivityForResult(intent, REQUEST_EDIT);
         overrideTransitionToEditor();
     }
@@ -661,8 +659,6 @@ public abstract class PhotoPage extends ActivityState implements
                 .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0) {
             intent.setAction(Intent.ACTION_EDIT);
         }
-        intent.putExtra(FilterShowActivity.LAUNCH_FULLSCREEN,
-                mActivity.isFullscreen());
         ((Activity) mActivity).startActivityForResult(intent, REQUEST_EDIT);
         overrideTransitionToEditor();
     }

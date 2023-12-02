@@ -20,12 +20,6 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <com.android.gallery3d.filtershow.category.IconView
-            android:id="@+id/addButton"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/category_panel_height"
-            android:src="@drawable/filtershow_add"/>
-
     <ListView
             android:id="@+id/listItems"
             android:orientation="vertical"

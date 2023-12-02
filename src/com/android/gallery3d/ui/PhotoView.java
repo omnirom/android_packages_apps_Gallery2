@@ -1812,47 +1812,4 @@ public class PhotoView extends GLView {
     public Rect getPhotoRect(int index) {
         return mPositionController.getPosition(index);
     }
-
-    public PhotoFallbackEffect buildFallbackEffect(GLView root, GLCanvas canvas) {
-        Rect location = new Rect();
-        Utils.assertTrue(root.getBoundsOf(this, location));
-
-        Rect fullRect = bounds();
-        PhotoFallbackEffect effect = new PhotoFallbackEffect();
-        for (int i = -SCREEN_NAIL_MAX; i <= SCREEN_NAIL_MAX; ++i) {
-            MediaItem item = mModel.getMediaItem(i);
-            if (item == null) continue;
-            ScreenNail sc = mModel.getScreenNail(i);
-            if (!(sc instanceof TiledScreenNail)
-                    || ((TiledScreenNail) sc).isShowingPlaceholder()) continue;
-
-            // Now, sc is BitmapScreenNail and is not showing placeholder
-            Rect rect = new Rect(getPhotoRect(i));
-            if (!Rect.intersects(fullRect, rect)) continue;
-            rect.offset(location.left, location.top);
-
-            int width = sc.getWidth();
-            int height = sc.getHeight();
-
-            int rotation = mModel.getImageRotation(i);
-            RawTexture texture;
-            if ((rotation % 180) == 0) {
-                texture = new RawTexture(width, height, true);
-                canvas.beginRenderTarget(texture);
-                canvas.translate(width / 2f, height / 2f);
-            } else {
-                texture = new RawTexture(height, width, true);
-                canvas.beginRenderTarget(texture);
-                canvas.translate(height / 2f, width / 2f);
-            }
-
-            canvas.rotate(rotation, 0, 0, 1);
-            canvas.translate(-width / 2f, -height / 2f);
-            sc.draw(canvas, 0, 0, width, height);
-            canvas.endRenderTarget();
-            effect.addEntry(item.getPath(), rect, texture);
-        }
-        return effect;
-    }
-
 }

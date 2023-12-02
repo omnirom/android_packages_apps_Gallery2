@@ -338,7 +338,7 @@ public class ImageShow extends View implements OnGestureListener,
         return MasterImage.getImage().getFilteredImage();
     }
 
-    public void drawImageAndAnimate(Canvas canvas,
+    private void drawImageAndAnimate(Canvas canvas,
                                     Bitmap image) {
         if (image == null) {
             return;
@@ -389,7 +389,10 @@ public class ImageShow extends View implements OnGestureListener,
                 if (maskScale >= 0.0f) {
                     float maskW = sMask.getWidth() / 2.0f;
                     float maskH = sMask.getHeight() / 2.0f;
-                    Point point = mActivity.hintTouchPoint(this);
+                    
+                    int location[] = new int[2];
+                    getLocationOnScreen(location);
+                    Point point =  new Point(location[0], location[1]);
                     float maxMaskScale = 2 * Math.max(getWidth(), getHeight())
                             / Math.min(maskW, maskH);
                     maskScale = maskScale * maxMaskScale;

@@ -32,7 +32,7 @@ import java.util.Stack;
 
 public class StateManager {
     @SuppressWarnings("unused")
-    private static final String TAG = "StateManager";
+    private static final String TAG = "Gallery2:StateManager";
     private static final boolean DEBUG = false;
     private boolean mIsResumed = false;
 

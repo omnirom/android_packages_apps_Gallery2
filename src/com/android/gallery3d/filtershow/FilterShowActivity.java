@@ -71,7 +71,6 @@ import com.android.gallery3d.data.LocalAlbum;
 import com.android.gallery3d.filtershow.cache.ImageLoader;
 import com.android.gallery3d.filtershow.category.Action;
 import com.android.gallery3d.filtershow.category.CategoryAdapter;
-import com.android.gallery3d.filtershow.category.CategorySelected;
 import com.android.gallery3d.filtershow.category.CategoryView;
 import com.android.gallery3d.filtershow.category.MainPanel;
 import com.android.gallery3d.filtershow.category.SwipableView;
@@ -135,11 +134,13 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
     MasterImage mMasterImage = null;
 
     public static final String TINY_PLANET_ACTION = "com.android.camera.action.TINY_PLANET";
-    public static final String LAUNCH_FULLSCREEN = "launch-fullscreen";
     public static final boolean RESET_TO_LOADED = false;
     private ImageShow mImageShow = null;
 
     private MenuItem mSaveButton;
+    private MenuItem mUndoItem;
+    private MenuItem mRedoItem;
+    private MenuItem mResetItem;
 
     private EditorPlaceHolder mEditorPlaceHolder = new EditorPlaceHolder(this);
     private Editor mCurrentEditor = null;
@@ -251,10 +252,9 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
         mUserPresetsAdapter = new UserPresetsAdapter(this);
 
         setupMasterImage();
-        setupMenu();
         setDefaultValues();
         fillEditors();
-        loadXML();
+        setup();
 
         fillCategories();
         loadMainPanel();
@@ -273,7 +273,14 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
 
         clearGalleryBitmapPool();
         doBindService();
-        setContentView(R.layout.filtershow_splashscreen);
+        
+        setContentView(R.layout.filtershow_activity);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
+
+        mImageShow = (ImageShow) findViewById(R.id.imageShow);
+        
         mLoadingComplete = false;
     }
 
@@ -337,20 +344,10 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
         panel.show(transaction, InfoPanel.FRAGMENT_TAG);
     }
 
-    private void loadXML() {
-        setContentView(R.layout.filtershow_activity);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
-
-        mImageShow = (ImageShow) findViewById(R.id.imageShow);
-        mImageViews.add(mImageShow);
-
+    private void setup() {
         setupEditors();
-
         mEditorPlaceHolder.hide();
         mImageShow.attach();
-
         setupStatePanel();
     }
 
@@ -473,10 +470,6 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
 
     private void processIntent() {
         Intent intent = getIntent();
-        if (intent.getBooleanExtra(LAUNCH_FULLSCREEN, false)) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
-
         mAction = intent.getAction();
         mSelectedImageUri = intent.getData();
         Uri loadUri = mSelectedImageUri;
@@ -528,8 +521,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
     }
 
     private void startLoadBitmap(Uri uri) {
-        final View imageShow = findViewById(R.id.imageShow);
-        imageShow.setVisibility(View.INVISIBLE);
+        mImageShow.setVisibility(View.INVISIBLE);
         startLoadingIndicator();
         mShowingTinyPlanet = false;
         mLoadBitmapTask = new LoadBitmapTask();
@@ -812,8 +804,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
                 Log.v(LOGTAG,"RenderScript context destroyed during load");
                 return;
             }
-            final View imageShow = findViewById(R.id.imageShow);
-            imageShow.setVisibility(View.VISIBLE);
+            mImageShow.setVisibility(View.VISIBLE);
             stopLoadingIndicator();
 
 
@@ -903,6 +894,10 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
     public void completeSaveImage(Uri saveUri) {
         setResult(RESULT_OK, new Intent().setData(saveUri));
         hideSavingProgress();
+        
+        // TODO add first time show info that saved image is
+        // in Pictures folder no matter where original is
+        // with maybe a link to show that album
         finish();
     }
 
@@ -910,33 +905,17 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.filtershow_activity_menu, menu);
         mMenu = menu;
-        setupMenu();
-        return true;
-    }
-
-    private void setupMenu(){
-        if (mMenu == null || mMasterImage == null) {
-            return;
-        }
-        MenuItem undoItem = mMenu.findItem(R.id.undoButton);
-        MenuItem redoItem = mMenu.findItem(R.id.redoButton);
-        MenuItem resetItem = mMenu.findItem(R.id.resetHistoryButton);
+        
+        mUndoItem = mMenu.findItem(R.id.undoButton);
+        mRedoItem = mMenu.findItem(R.id.redoButton);
+        mResetItem = mMenu.findItem(R.id.resetHistoryButton);
         MenuItem printItem = mMenu.findItem(R.id.printButton);
         if (!PrintHelper.systemSupportsPrint()) {
             printItem.setVisible(false);
         }
-        mMasterImage.getHistory().setMenuItems(undoItem, redoItem, resetItem);
         mSaveButton = mMenu.findItem(R.id.saveButton);
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
+        return true;
     }
 
     @Override
@@ -1169,7 +1148,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
         if (mMasterImage == null) {
             return;
         }
-        loadXML();
+        setup();
         fillCategories();
         loadMainPanel();
 
@@ -1189,7 +1168,6 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
     }
 
     public void setupMasterImage() {
-
         HistoryManager historyManager = new HistoryManager();
         StateAdapter imageStateAdapter = new StateAdapter(this, 0);
         MasterImage.reset();
@@ -1198,6 +1176,7 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
         mMasterImage.setStateAdapter(imageStateAdapter);
         mMasterImage.setActivity(this);
         mMasterImage.setSupportsHighRes(true);
+        mMasterImage.getHistory().setMenuItems(mUndoItem, mRedoItem, mResetItem);
     }
 
     void resetHistory() {
@@ -1394,40 +1373,5 @@ public class FilterShowActivity extends AppCompatActivity implements OnItemClick
             return true;
         }
         return super.dispatchTouchEvent(ev);
-    }
-
-    public Point mHintTouchPoint = new Point();
-
-    public Point hintTouchPoint(View view) {
-        int location[] = new int[2];
-        view.getLocationOnScreen(location);
-        int x = mHintTouchPoint.x - location[0];
-        int y = mHintTouchPoint.y - location[1];
-        return new Point(x, y);
-    }
-
-    public void startTouchAnimation(View target, float x, float y) {
-        final CategorySelected hint =
-                (CategorySelected) findViewById(R.id.categorySelectedIndicator);
-        int location[] = new int[2];
-        target.getLocationOnScreen(location);
-        mHintTouchPoint.x = (int) (location[0] + x);
-        mHintTouchPoint.y = (int) (location[1] + y);
-        int locationHint[] = new int[2];
-        ((View)hint.getParent()).getLocationOnScreen(locationHint);
-        int dx = (int) (x - (hint.getWidth())/2);
-        int dy = (int) (y - (hint.getHeight())/2);
-        hint.setTranslationX(location[0] - locationHint[0] + dx);
-        hint.setTranslationY(location[1] - locationHint[1] + dy);
-        hint.setVisibility(View.VISIBLE);
-        hint.animate().scaleX(2).scaleY(2).alpha(0).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-                hint.setVisibility(View.INVISIBLE);
-                hint.setScaleX(1);
-                hint.setScaleY(1);
-                hint.setAlpha(1);
-            }
-        });
     }
 }

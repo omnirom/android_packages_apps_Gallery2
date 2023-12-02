@@ -168,9 +168,6 @@ public class CategoryView extends IconView
         boolean ret = super.onTouchEvent(event);
         FilterShowActivity activity = (FilterShowActivity) getContext();
 
-        if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-            activity.startTouchAnimation(this, event.getX(), event.getY());
-        }
         if (!canBeRemoved()) {
             return ret;
         }

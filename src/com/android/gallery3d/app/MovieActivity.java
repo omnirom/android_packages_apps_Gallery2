@@ -68,7 +68,7 @@ public class MovieActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         mUri = intent.getData();
-        initializeActionBar(intent);
+        initializeActionBar();
 
         mPlayer = new MoviePlayer(rootView, this, intent.getData(), savedInstanceState) {
             @Override
@@ -85,7 +85,7 @@ public class MovieActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeActionBar(Intent intent) {
+    private void initializeActionBar() {
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setTitle(getResources().getString(R.string.video_page_title));

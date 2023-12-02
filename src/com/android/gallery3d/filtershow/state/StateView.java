@@ -307,9 +307,6 @@ public class StateView extends View implements SwipableView {
         boolean ret = super.onTouchEvent(event);
         FilterShowActivity activity = (FilterShowActivity) getContext();
 
-        if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-            activity.startTouchAnimation(this, event.getX(), event.getY());
-        }
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
             mStartTouchY = event.getY();
             mStartTouchX = event.getX();

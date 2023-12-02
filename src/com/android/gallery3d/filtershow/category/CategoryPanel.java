@@ -30,14 +30,13 @@ import android.widget.TextView;
 import com.android.gallery3d.R;
 import com.android.gallery3d.filtershow.FilterShowActivity;
 
-public class CategoryPanel extends Fragment implements View.OnClickListener {
+public class CategoryPanel extends Fragment {
 
     public static final String FRAGMENT_TAG = "CategoryPanel";
     private static final String PARAMETER_TAG = "currentPanel";
 
     private int mCurrentAdapter = MainPanel.LOOKS;
     private CategoryAdapter mAdapter;
-    private IconView mAddButton;
 
     public void setAdapter(int value) {
         mCurrentAdapter = value;
@@ -90,7 +89,6 @@ public class CategoryPanel extends Fragment implements View.OnClickListener {
                 break;
             }
         }
-        updateAddButtonVisibility();
     }
 
     @Override
@@ -125,36 +123,6 @@ public class CategoryPanel extends Fragment implements View.OnClickListener {
             mAdapter.setContainer(panel);
         }
 
-        mAddButton = (IconView) main.findViewById(R.id.addButton);
-        if (mAddButton != null) {
-            mAddButton.setOnClickListener(this);
-            updateAddButtonVisibility();
-        }
         return main;
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.addButton:
-                FilterShowActivity activity = (FilterShowActivity) getActivity();
-                activity.addCurrentVersion();
-                break;
-        }
-    }
-
-    public void updateAddButtonVisibility() {
-        if (mAddButton == null) {
-            return;
-        }
-        FilterShowActivity activity = (FilterShowActivity) getActivity();
-        if (activity.isShowingImageStatePanel() && mAdapter.showAddButton()) {
-            mAddButton.setVisibility(View.VISIBLE);
-            if (mAdapter != null) {
-                mAddButton.setText(mAdapter.getAddButtonText());
-            }
-        } else {
-            mAddButton.setVisibility(View.GONE);
-        }
     }
 }
