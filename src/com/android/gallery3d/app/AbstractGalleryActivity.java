@@ -77,7 +77,6 @@ public class AbstractGalleryActivity extends AppCompatActivity implements Galler
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setBackgroundDrawable(null);
         mPanoramaViewHelper = new PanoramaViewHelper(this);
         mPanoramaViewHelper.onCreate();
         doBindBatchService();

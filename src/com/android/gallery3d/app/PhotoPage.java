@@ -74,13 +74,12 @@ import com.android.gallery3d.ui.PhotoView;
 import com.android.gallery3d.ui.SelectionManager;
 import com.android.gallery3d.ui.SynchronizedHandler;
 import com.android.gallery3d.util.GalleryUtils;
-import com.android.gallery3d.util.UsageStatistics;
 import com.android.gallery3d.util.ViewGifImage;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public abstract class PhotoPage extends ActivityState implements
+public class PhotoPage extends ActivityState implements
         PhotoView.Listener, AppBridge.Server,
         PhotoPageBottomControls.Delegate, GalleryActionBar.OnAlbumModeSelectedListener {
     private static final String TAG = "PhotoPage";
@@ -466,10 +465,6 @@ public abstract class PhotoPage extends ActivityState implements
                         if (oldIndex == 0 && mCurrentIndex > 0
                                 && !mPhotoView.getFilmMode()) {
                             mPhotoView.setFilmMode(true);
-                            if (mAppBridge != null) {
-                                UsageStatistics.onEvent("CameraToFilmstrip",
-                                        UsageStatistics.TRANSITION_SWIPE, null);
-                            }
                         } else if (oldIndex == 2 && mCurrentIndex == 1) {
                             mCameraSwitchCutoff = SystemClock.uptimeMillis() +
                                     CAMERA_SWITCH_CUTOFF_THRESHOLD_MS;
@@ -639,7 +634,7 @@ public abstract class PhotoPage extends ActivityState implements
                 .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0) {
             intent.setAction(Intent.ACTION_EDIT);
         }
-        ((Activity) mActivity).startActivityForResult(intent, REQUEST_EDIT);
+        mActivity.startActivityForResult(intent, REQUEST_EDIT);
         overrideTransitionToEditor();
     }
 
@@ -658,7 +653,7 @@ public abstract class PhotoPage extends ActivityState implements
                 .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0) {
             intent.setAction(Intent.ACTION_EDIT);
         }
-        ((Activity) mActivity).startActivityForResult(intent, REQUEST_EDIT);
+        mActivity.startActivityForResult(intent, REQUEST_EDIT);
         overrideTransitionToEditor();
     }
 
@@ -1216,7 +1211,7 @@ public abstract class PhotoPage extends ActivityState implements
                 Bundle data = new Bundle(getData());
                 data.putString(KEY_MEDIA_SET_PATH, albumPath.toString());
                 data.putString(PhotoPage.KEY_MEDIA_ITEM_PATH, path.toString());
-                mActivity.getStateManager().startState(SinglePhotoPage.class, data);
+                mActivity.getStateManager().startState(PhotoPage.class, data);
                 return;
             }
             mModel.setCurrentPhoto(path, mCurrentIndex);
@@ -1271,18 +1266,7 @@ public abstract class PhotoPage extends ActivityState implements
         if (enabled) {
             mActionBar.setTitle(mMediaSet.getName());
         }
-        if (enabled) {
-            UsageStatistics.onContentViewChanged(
-                    UsageStatistics.COMPONENT_GALLERY, "FilmstripPage");
-        } else {
-            if (mAppBridge == null || mCurrentIndex > 0) {
-                UsageStatistics.onContentViewChanged(
-                        UsageStatistics.COMPONENT_GALLERY, "SinglePhotoPage");
-            } else {
-                UsageStatistics.onContentViewChanged(
-                        UsageStatistics.COMPONENT_CAMERA, "Unknown"); // TODO
-            }
-        }
+
         // hide immediately upfront
         if (mBottomControls != null && enabled) {
             mBottomControls.hide(false);

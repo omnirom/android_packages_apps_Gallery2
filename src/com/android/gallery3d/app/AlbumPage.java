@@ -73,7 +73,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
 
     private static final int REQUEST_SLIDESHOW = 1;
     public static final int REQUEST_PHOTO = 2;
-    private static final int REQUEST_DO_ANIMATION = 3;
 
     private static final float USER_DISTANCE_METER = 0.3f;
 
@@ -317,7 +316,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
                 mActivity.getStateManager().switchState(this, FilmstripPage.class, data);
             } else {
                 mActivity.getStateManager().startStateForResult(
-                            SinglePhotoPage.class, REQUEST_PHOTO, data);
+                            PhotoPage.class, REQUEST_PHOTO, data);
             }
         }
     }
@@ -365,8 +364,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         data.putString(AlbumSetPage.KEY_MEDIA_PATH, newPath);
 
         // mAlbumView.savePositions(PositionRepository.getInstance(mActivity));
-        mActivity.getStateManager().startStateForResult(
-                AlbumSetPage.class, REQUEST_DO_ANIMATION, data);
+        mActivity.getStateManager().startState(AlbumSetPage.class, data);
     }
 
     @Override
@@ -624,10 +622,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
                     // Reset variable
                     mSlotView.setIsFromPhotoPage(false);
                 }
-                break;
-            }
-            case REQUEST_DO_ANIMATION: {
-                mSlotView.startRisingAnimation();
                 break;
             }
         }

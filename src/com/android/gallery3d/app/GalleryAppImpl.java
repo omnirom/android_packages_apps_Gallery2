@@ -29,7 +29,6 @@ import com.android.gallery3d.gadget.WidgetUtils;
 import com.android.gallery3d.util.GalleryUtils;
 import com.android.gallery3d.util.LightCycleHelper;
 import com.android.gallery3d.util.ThreadPool;
-import com.android.gallery3d.util.UsageStatistics;
 
 import com.android.gallery3d.R;
 
@@ -53,7 +52,6 @@ public class GalleryAppImpl extends Application implements GalleryApp {
         initializeAsyncTask();
         GalleryUtils.initialize(this);
         WidgetUtils.initialize(this);
-        UsageStatistics.initialize(this);
         // create notificatioon channels
         makeNotificationChannels(this);
     }

@@ -211,7 +211,7 @@ public final class GalleryActivity extends AbstractGalleryActivity implements On
                 }
             }
 
-            getStateManager().startState(SinglePhotoPage.class, data);
+            getStateManager().startState(PhotoPage.class, data);
         }
     }
 

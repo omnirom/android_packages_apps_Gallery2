@@ -67,9 +67,11 @@ abstract public class ActivityState {
 
     protected void setContentPane(GLView content) {
         mContentPane = content;
-        if (mIntroAnimation != null) {
-            mContentPane.setIntroAnimation(mIntroAnimation);
-            mIntroAnimation = null;
+        if (GalleryUtils.isUseStateTransitionAnimation(mActivity)) {
+            if (mIntroAnimation != null) {
+                mContentPane.setIntroAnimation(mIntroAnimation);
+                mIntroAnimation = null;
+            }
         }
         mContentPane.setBackgroundColor(getBackgroundColor());
         mActivity.getGLRoot().setContentPane(mContentPane);
@@ -121,9 +123,9 @@ abstract public class ActivityState {
 
     protected void transitionOnNextPause(Class<? extends ActivityState> outgoing,
             Class<? extends ActivityState> incoming, StateTransitionAnimation.Transition hint) {
-        if (outgoing == SinglePhotoPage.class && incoming == AlbumPage.class) {
+        if (outgoing == PhotoPage.class && incoming == AlbumPage.class) {
             mNextTransition = StateTransitionAnimation.Transition.Outgoing;
-        } else if (outgoing == AlbumPage.class && incoming == SinglePhotoPage.class) {
+        } else if (outgoing == AlbumPage.class && incoming == PhotoPage.class) {
             mNextTransition = StateTransitionAnimation.Transition.PhotoIncoming;
         } else {
             mNextTransition = hint;

@@ -81,6 +81,7 @@ public class GalleryUtils {
     private static final String KEY_ALBUMSET_ZOOM_LEVEL = "albumset_zoom_level";
     private static final String KEY_ALBUM_ZOOM_LEVEL = "album_zoom_level";
     private static final String KEY_TIME_CLUSTER_WEEKS = "time_cluster_weeks";
+    private static final String KEY_USE_TRANSITION_ANIMATION = "use_transition_animation";
 
     private static float sPixelDensity = -1f;
     private static boolean sCameraAvailableInitialized = false;
@@ -457,5 +458,10 @@ public class GalleryUtils {
     public static boolean isTimeClusterByWeeks(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(KEY_TIME_CLUSTER_WEEKS, false);
+    }
+
+    public static boolean isUseStateTransitionAnimation(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(KEY_USE_TRANSITION_ANIMATION, false);
     }
 }

@@ -75,8 +75,9 @@ public class AlbumSetPage extends ActivityState implements
     public static final String KEY_SELECTED_CLUSTER_TYPE = "selected-cluster";
 
     private static final int DATA_CACHE_SIZE = 256;
-    private static final int REQUEST_DO_ANIMATION = 1;
     private static final int REQUEST_SETTINGS = 2;
+    //private static final int REQUEST_CHOOSE_ALBUM = 3;
+    //private static final int REQUEST_GET_PHOTO = 4;
 
     private boolean mIsActive = false;
     private SlotView mSlotView;
@@ -217,8 +218,7 @@ public class AlbumSetPage extends ActivityState implements
             activity.finish();
         } else if (targetSet.getSubMediaSetCount() > 0) {
             data.putString(AlbumSetPage.KEY_MEDIA_PATH, mediaPath);
-            mActivity.getStateManager().startStateForResult(
-                    AlbumSetPage.class, REQUEST_DO_ANIMATION, data);
+            mActivity.getStateManager().startState(AlbumSetPage.class, data);
         } else {
             if (!mGetContent && albumShouldOpenInSinglePhotoPage(targetSet)) {
                 data.putParcelable(PhotoPage.KEY_OPEN_ANIMATION_RECT,
@@ -228,7 +228,7 @@ public class AlbumSetPage extends ActivityState implements
                         mediaPath);
                 data.putBoolean(PhotoPage.KEY_IN_CAMERA_ROLL, targetSet.isCameraRoll());
                 mActivity.getStateManager().startStateForResult(
-                        SinglePhotoPage.class, AlbumPage.REQUEST_PHOTO, data);
+                        PhotoPage.class, AlbumPage.REQUEST_PHOTO, data);
                 return;
             }
             if (!mGetContent && albumShouldOpenInFilmstrip(targetSet)) {
@@ -244,8 +244,7 @@ public class AlbumSetPage extends ActivityState implements
             }
             data.putString(AlbumPage.KEY_MEDIA_PATH, mediaPath);
 
-            mActivity.getStateManager().startStateForResult(
-                    AlbumPage.class, REQUEST_DO_ANIMATION, data);
+            mActivity.getStateManager().startState(AlbumPage.class, data);
         }
     }
 
@@ -409,36 +408,21 @@ public class AlbumSetPage extends ActivityState implements
         Activity activity = mActivity;
         final boolean inAlbum = mActivity.getStateManager().hasStateClass(AlbumPage.class);
         MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.albumset, menu);
 
-        if (mGetContent) {
-            inflater.inflate(R.menu.pickup, menu);
-            int typeBits = mData.getInt(
-                    GalleryActivity.KEY_TYPE_BITS, DataManager.INCLUDE_IMAGE);
-            mActionBar.setTitle(GalleryUtils.getSelectionModePrompt(typeBits));
-        } else  if (mGetAlbum) {
-            inflater.inflate(R.menu.pickup, menu);
-            mActionBar.setTitle(R.string.select_album);
-        } else {
-            inflater.inflate(R.menu.albumset, menu);
-            boolean selectAlbums = !inAlbum &&
-                    mSelectedAction == FilterUtils.CLUSTER_BY_ALBUM;
-            MenuItem selectItem = menu.findItem(R.id.action_select);
-            selectItem.setTitle(activity.getString(
-                    selectAlbums ? R.string.select_album : R.string.select_group));
+        boolean selectAlbums = !inAlbum &&
+                mSelectedAction == FilterUtils.CLUSTER_BY_ALBUM;
+        MenuItem selectItem = menu.findItem(R.id.action_select);
+        selectItem.setTitle(activity.getString(
+                selectAlbums ? R.string.select_album : R.string.select_group));
 
-            MenuItem cameraItem = menu.findItem(R.id.action_camera);
-            cameraItem.setVisible(GalleryUtils.isAnyCameraAvailable(activity) && selectAlbums);
+        MenuItem cameraItem = menu.findItem(R.id.action_camera);
+        cameraItem.setVisible(GalleryUtils.isAnyCameraAvailable(activity) && selectAlbums);
 
-            FilterUtils.setupMenuItems(mActionBar, mMediaSet.getPath(), false);
+        FilterUtils.setupMenuItems(mActionBar, mMediaSet.getPath(), false);
 
-            Intent helpIntent = HelpUtils.getHelpIntent(activity);
+        setActiveActionBarTitle();
 
-            MenuItem helpItem = menu.findItem(R.id.action_general_help);
-            helpItem.setVisible(helpIntent != null);
-            if (helpIntent != null) helpItem.setIntent(helpIntent);
-
-            setActiveActionBarTitle();
-        }
         return true;
     }
 
@@ -453,6 +437,16 @@ public class AlbumSetPage extends ActivityState implements
                 mSelectionManager.setAutoLeaveSelectionMode(false);
                 mSelectionManager.enterSelectionMode();
                 return true;
+            /*case R.id.action_pick_album:
+                Intent requestAlbum = new Intent(mActivity, AlbumPicker.class);
+                mActivity.startActivityForResult(requestAlbum, REQUEST_CHOOSE_ALBUM);
+                return true;
+            case R.id.action_pick_item:
+                Intent requestItem = new Intent(mActivity, DialogPicker.class)
+                    .setAction(Intent.ACTION_GET_CONTENT)
+                    .setType("image/*");
+                mActivity.startActivityForResult(requestItem, REQUEST_GET_PHOTO);
+                return true;*/
             case R.id.action_camera: {
                 GalleryUtils.startCameraActivity(mActivity);
                 return true;
@@ -478,13 +472,21 @@ public class AlbumSetPage extends ActivityState implements
     @Override
     protected void onStateResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case REQUEST_DO_ANIMATION:
-                mSlotView.startRisingAnimation();
-                break;
             case REQUEST_SETTINGS:
                 mMediaSet.reloadClustering();
                 doCluster(mSelectedAction);
                 break;
+            /*case REQUEST_CHOOSE_ALBUM:
+                if (resultCode == Activity.RESULT_OK) {
+                    String albumPath = data.getStringExtra(AlbumPicker.KEY_ALBUM_PATH);
+                    Log.d(TAG, "REQUEST_CHOOSE_ALBUM albumPath = " + albumPath);
+                }
+                break;
+            case REQUEST_GET_PHOTO:
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.d(TAG, "REQUEST_GET_PHOTO pickedItem = " + data.getData());
+                }
+                break;*/
         }
     }
 

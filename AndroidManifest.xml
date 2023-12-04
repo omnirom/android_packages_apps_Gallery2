@@ -244,13 +244,15 @@
                 android:exported="true"
                 android:configChanges="keyboardHidden|orientation|screenSize"/>
 
+        <activity android:name="com.android.gallery3d.app.DialogPicker"
+                android:exported="true"
+                android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name="com.android.gallery3d.app.AlbumPicker"
+                android:exported="true"
+                android:configChanges="keyboardHidden|orientation|screenSize"/>
 
         <!--<activity android:name="com.android.gallery3d.gadget.WidgetClickHandler"
                   android:exported="true"/>
-        <activity android:name="com.android.gallery3d.app.DialogPicker"
-                android:exported="true"/>
-        <activity android:name="com.android.gallery3d.app.AlbumPicker"
-                android:exported="true" />
 
         <receiver android:name="com.android.gallery3d.gadget.PhotoAppWidgetProvider"
                 android:exported="true"

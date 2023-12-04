@@ -17,5 +17,6 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_cancel"
             android:title="@string/cancel"
-            app:showAsAction="always|withText" />
+            android:icon="@drawable/ic_menu_cancel"
+            app:showAsAction="always" />
 </menu>

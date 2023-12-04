@@ -26,7 +26,6 @@ import android.view.MenuItem;
 
 import com.android.gallery3d.anim.StateTransitionAnimation;
 import com.android.gallery3d.common.Utils;
-import com.android.gallery3d.util.UsageStatistics;
 
 import java.util.Stack;
 
@@ -65,9 +64,6 @@ public class StateManager {
             if (mIsResumed) top.onPause();
         }
 
-        UsageStatistics.onContentViewChanged(
-                UsageStatistics.COMPONENT_GALLERY,
-                klass.getSimpleName());
         state.initialize(mActivity, data);
 
         mStack.push(new StateEntry(data, state));
@@ -97,8 +93,7 @@ public class StateManager {
         } else {
             mResult = state.mResult;
         }
-        UsageStatistics.onContentViewChanged(UsageStatistics.COMPONENT_GALLERY,
-                klass.getSimpleName());
+
         mStack.push(new StateEntry(data, state));
         state.onCreate(data, null);
         if (mIsResumed) state.resume();
@@ -216,10 +211,6 @@ public class StateManager {
         state.onDestroy();
 
         if (top != null && mIsResumed) top.resume();
-        if (top != null) {
-            UsageStatistics.onContentViewChanged(UsageStatistics.COMPONENT_GALLERY,
-                    top.getClass().getSimpleName());
-        }
     }
 
     public void switchState(ActivityState oldState,
@@ -251,8 +242,6 @@ public class StateManager {
         mStack.push(new StateEntry(data, state));
         state.onCreate(data, null);
         if (mIsResumed) state.resume();
-        UsageStatistics.onContentViewChanged(UsageStatistics.COMPONENT_GALLERY,
-                klass.getSimpleName());
     }
 
     public void destroy() {
@@ -287,10 +276,6 @@ public class StateManager {
             activityState.onCreate(data, state);
             mStack.push(new StateEntry(data, activityState));
             topState = activityState;
-        }
-        if (topState != null) {
-            UsageStatistics.onContentViewChanged(UsageStatistics.COMPONENT_GALLERY,
-                    topState.getClass().getSimpleName());
         }
     }
 
