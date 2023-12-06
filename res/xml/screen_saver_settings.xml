@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:settings="http://schemas.android.com/apk/res/com.android.gallery3d"
+    android:title="@string/screensaver_settings_label">
+
+        <SwitchPreference
+            android:key="screensaver_slideshow_random"
+            android:title="@string/slideshow_random_title" />
+        <SwitchPreference
+            android:key="screensaver_slideshow_fill_screen"
+            android:title="@string/slideshow_fill_screen_title"
+            android:defaultValue="false" />
+        <com.android.gallery3d.settings.SeekBarPreference
+            android:key="screensaver_slideshow_duration"
+            android:title="@string/slideshow_duration_title"
+            android:max="10"
+            android:defaultValue="3"
+            settings:min="1"
+            settings:unitsLeft=""
+            settings:unitsRight="@string/unit_sec"/>
+        <SwitchPreference
+            android:key="screensaver_slideshow_all_albums"
+            android:title="@string/slideshow_all_albums_title"
+            android:defaultValue="false"
+            android:disableDependentsState="true" />
+        <Preference
+            android:key="screensaver_pick_album"
+            android:title="@string/slideshow_pick_album_title"
+            android:persistent="false"
+            android:dependency="screensaver_slideshow_all_albums"/>
+        <Preference
+            android:key="placeholder1"
+            android:persistent="false" />
+</PreferenceScreen>

@@ -500,7 +500,8 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             Utils.fail("MediaSet is null. Path = %s", mMediaSetPath);
         }
         mSelectionManager.setSourceMediaSet(mMediaSet);
-        mAlbumDataAdapter = new AlbumDataLoader(mActivity, mMediaSet);
+        mAlbumDataAdapter = new AlbumDataLoader(mMediaSet);
+        mAlbumDataAdapter.setGLMainHandler(mActivity);
         mAlbumDataAdapter.setLoadingListener(new MyLoadingListener());
         mAlbumView.setModel(mAlbumDataAdapter);
     }

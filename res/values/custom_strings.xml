@@ -51,4 +51,14 @@
     <string name="estimated_size">Estimated size</string>
     <string name="slideshow_fill_screen_title">Image fill screen</string>
     <string name="slideshow_no_images_title">No images in this selection</string>
+    <string name="screensaver_settings_label">Photo gallery</string>
+    <string name="screensaver_config_label">Photo gallery</string>
+    <string name="slideshow_all_albums_title">All albums</string>
+    <string name="slideshow_pick_album_title">Pick albums</string>
+    <string name="add_album">Add</string>
+    <plurals name="album_list_selection">
+        <item quantity="zero">No album selected</item>
+        <item quantity="one">One album selected</item>
+        <item quantity="other">%1$d albums selected</item>
+    </plurals>
 </resources>

@@ -20,7 +20,7 @@
             android:icon="@drawable/grid_layout"
             app:showAsAction="ifRoom"/>
     <item android:id="@+id/action_slideshow"
-            android:icon="@drawable/slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/slideshow"
             app:showAsAction="ifRoom" />
     <item android:id="@+id/action_trim"

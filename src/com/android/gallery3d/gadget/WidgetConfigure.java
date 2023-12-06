@@ -35,7 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.app.AlbumPicker;
-import com.android.gallery3d.app.DialogPicker;
+import com.android.gallery3d.app.GetContentPicker;
 import com.android.gallery3d.app.GalleryApp;
 import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.data.DataManager;
@@ -202,7 +202,7 @@ public class WidgetConfigure extends AppCompatActivity {
             }
         } else {
             // Explicitly send the intent to the DialogPhotoPicker
-            Intent request = new Intent(this, DialogPicker.class)
+            Intent request = new Intent(this, GetContentPicker.class)
                     .setAction(Intent.ACTION_GET_CONTENT)
                     .setType("image/*");
             startActivityForResult(request, REQUEST_GET_PHOTO);

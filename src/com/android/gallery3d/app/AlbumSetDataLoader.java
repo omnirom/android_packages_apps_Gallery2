@@ -70,11 +70,11 @@ public class AlbumSetDataLoader {
     private LoadingListener mLoadingListener;
     private ReloadTask mReloadTask;
 
-    private final Handler mMainHandler;
+    private Handler mMainHandler;
 
     private final MySourceListener mSourceListener = new MySourceListener();
 
-    public AlbumSetDataLoader(AbstractGalleryActivity activity, MediaSet albumSet, int cacheSize) {
+    public AlbumSetDataLoader(MediaSet albumSet, int cacheSize) {
         mSource = Utils.checkNotNull(albumSet);
         mCoverItem = new MediaItem[cacheSize];
         mData = new MediaSet[cacheSize];
@@ -83,8 +83,29 @@ public class AlbumSetDataLoader {
         mSetVersion = new long[cacheSize];
         Arrays.fill(mItemVersion, MediaObject.INVALID_DATA_VERSION);
         Arrays.fill(mSetVersion, MediaObject.INVALID_DATA_VERSION);
+    }
 
+    public void setGLMainHandler(AbstractGalleryActivity activity) {
         mMainHandler = new SynchronizedHandler(activity.getGLRoot()) {
+            @Override
+            public void handleMessage(Message message) {
+                switch (message.what) {
+                    case MSG_RUN_OBJECT:
+                        ((Runnable) message.obj).run();
+                        return;
+                    case MSG_LOAD_START:
+                        if (mLoadingListener != null) mLoadingListener.onLoadingStarted();
+                        return;
+                    case MSG_LOAD_FINISH:
+                        if (mLoadingListener != null) mLoadingListener.onLoadingFinished();
+                        return;
+                }
+            }
+        };
+    }
+
+    public void setDummyMainHandler() {
+        mMainHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
                 switch (message.what) {
@@ -318,8 +339,10 @@ public class AlbumSetDataLoader {
 
     private <T> T executeAndWait(Callable<T> callable) {
         FutureTask<T> task = new FutureTask<T>(callable);
-        mMainHandler.sendMessage(
-                mMainHandler.obtainMessage(MSG_RUN_OBJECT, task));
+        if (mMainHandler != null){
+            mMainHandler.sendMessage(
+                    mMainHandler.obtainMessage(MSG_RUN_OBJECT, task));
+        }
         try {
             return task.get();
         } catch (InterruptedException e) {
@@ -338,7 +361,9 @@ public class AlbumSetDataLoader {
         private void updateLoading(boolean loading) {
             if (mIsLoading == loading) return;
             mIsLoading = loading;
-            mMainHandler.sendEmptyMessage(loading ? MSG_LOAD_START : MSG_LOAD_FINISH);
+            if (mMainHandler != null) {
+                mMainHandler.sendEmptyMessage(loading ? MSG_LOAD_START : MSG_LOAD_FINISH);
+            }
         }
 
         @Override

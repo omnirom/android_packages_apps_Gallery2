@@ -76,8 +76,8 @@ public class AlbumSetPage extends ActivityState implements
 
     private static final int DATA_CACHE_SIZE = 256;
     private static final int REQUEST_SETTINGS = 2;
-    //private static final int REQUEST_CHOOSE_ALBUM = 3;
-    //private static final int REQUEST_GET_PHOTO = 4;
+    private static final int REQUEST_CHOOSE_ALBUM = 3;
+    private static final int REQUEST_GET_PHOTO = 4;
 
     private boolean mIsActive = false;
     private SlotView mSlotView;
@@ -213,7 +213,8 @@ public class AlbumSetPage extends ActivityState implements
         if (mGetAlbum && targetSet.isLeafAlbum()) {
             Activity activity = mActivity;
             Intent result = new Intent()
-                    .putExtra(AlbumPicker.KEY_ALBUM_PATH, targetSet.getPath().toString());
+                    .putExtra(AlbumPicker.KEY_ALBUM_PATH, targetSet.getPath().toString())
+                    .putExtra(AlbumPicker.KEY_ALBUM_NAME, targetSet.getName());
             activity.setResult(Activity.RESULT_OK, result);
             activity.finish();
         } else if (targetSet.getSubMediaSetCount() > 0) {
@@ -361,8 +362,8 @@ public class AlbumSetPage extends ActivityState implements
         String mediaPath = data.getString(AlbumSetPage.KEY_MEDIA_PATH);
         mMediaSet = mActivity.getDataManager().getMediaSet(mediaPath);
         mSelectionManager.setSourceMediaSet(mMediaSet);
-        mAlbumSetDataAdapter = new AlbumSetDataLoader(
-                mActivity, mMediaSet, DATA_CACHE_SIZE);
+        mAlbumSetDataAdapter = new AlbumSetDataLoader(mMediaSet, DATA_CACHE_SIZE);
+        mAlbumSetDataAdapter.setGLMainHandler(mActivity);
         mAlbumSetDataAdapter.setLoadingListener(new MyLoadingListener());
         mAlbumSetView.setModel(mAlbumSetDataAdapter);
     }
@@ -437,12 +438,12 @@ public class AlbumSetPage extends ActivityState implements
                 mSelectionManager.setAutoLeaveSelectionMode(false);
                 mSelectionManager.enterSelectionMode();
                 return true;
-            /*case R.id.action_pick_album:
+            case R.id.action_pick_album:
                 Intent requestAlbum = new Intent(mActivity, AlbumPicker.class);
                 mActivity.startActivityForResult(requestAlbum, REQUEST_CHOOSE_ALBUM);
                 return true;
-            case R.id.action_pick_item:
-                Intent requestItem = new Intent(mActivity, DialogPicker.class)
+            /*case R.id.action_pick_item:
+                Intent requestItem = new Intent(mActivity, GetContentPicker.class)
                     .setAction(Intent.ACTION_GET_CONTENT)
                     .setType("image/*");
                 mActivity.startActivityForResult(requestItem, REQUEST_GET_PHOTO);
@@ -476,13 +477,13 @@ public class AlbumSetPage extends ActivityState implements
                 mMediaSet.reloadClustering();
                 doCluster(mSelectedAction);
                 break;
-            /*case REQUEST_CHOOSE_ALBUM:
+            case REQUEST_CHOOSE_ALBUM:
                 if (resultCode == Activity.RESULT_OK) {
                     String albumPath = data.getStringExtra(AlbumPicker.KEY_ALBUM_PATH);
                     Log.d(TAG, "REQUEST_CHOOSE_ALBUM albumPath = " + albumPath);
                 }
                 break;
-            case REQUEST_GET_PHOTO:
+            /*case REQUEST_GET_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
                     Log.d(TAG, "REQUEST_GET_PHOTO pickedItem = " + data.getData());
                 }

@@ -67,7 +67,7 @@ public class AlbumDataLoader {
     private MediaSet mSource;
     private long mSourceVersion = MediaObject.INVALID_DATA_VERSION;
 
-    private final Handler mMainHandler;
+    private Handler mMainHandler;
     private int mSize = 0;
 
     private DataListener mDataListener;
@@ -78,7 +78,7 @@ public class AlbumDataLoader {
     // the data version on which last loading failed
     private long mFailedVersion = MediaObject.INVALID_DATA_VERSION;
 
-    public AlbumDataLoader(AbstractGalleryActivity context, MediaSet mediaSet) {
+    public AlbumDataLoader(MediaSet mediaSet) {
         mSource = mediaSet;
 
         mData = new MediaItem[DATA_CACHE_SIZE];
@@ -86,8 +86,29 @@ public class AlbumDataLoader {
         mSetVersion = new long[DATA_CACHE_SIZE];
         Arrays.fill(mItemVersion, MediaObject.INVALID_DATA_VERSION);
         Arrays.fill(mSetVersion, MediaObject.INVALID_DATA_VERSION);
+    }
 
-        mMainHandler = new SynchronizedHandler(context.getGLRoot()) {
+    public void setGLMainHandler(AbstractGalleryActivity activity) {
+        mMainHandler = new SynchronizedHandler(activity.getGLRoot()) {
+            @Override
+            public void handleMessage(Message message) {
+                switch (message.what) {
+                    case MSG_RUN_OBJECT:
+                        ((Runnable) message.obj).run();
+                        return;
+                    case MSG_LOAD_START:
+                        if (mLoadingListener != null) mLoadingListener.onLoadingStarted();
+                        return;
+                    case MSG_LOAD_FINISH:
+                        if (mLoadingListener != null) mLoadingListener.onLoadingFinished();
+                        return;
+                }
+            }
+        };
+    }
+
+    public void setDummyMainHandler() {
+        mMainHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
                 switch (message.what) {
@@ -226,8 +247,10 @@ public class AlbumDataLoader {
 
     private <T> T executeAndWait(Callable<T> callable) {
         FutureTask<T> task = new FutureTask<T>(callable);
-        mMainHandler.sendMessage(
-                mMainHandler.obtainMessage(MSG_RUN_OBJECT, task));
+        if (mMainHandler != null) {
+            mMainHandler.sendMessage(
+                    mMainHandler.obtainMessage(MSG_RUN_OBJECT, task));
+        }
         try {
             return task.get();
         } catch (InterruptedException e) {
@@ -349,7 +372,9 @@ public class AlbumDataLoader {
         private void updateLoading(boolean loading) {
             if (mIsLoading == loading) return;
             mIsLoading = loading;
-            mMainHandler.sendEmptyMessage(loading ? MSG_LOAD_START : MSG_LOAD_FINISH);
+            if (mMainHandler != null) {
+                mMainHandler.sendEmptyMessage(loading ? MSG_LOAD_START : MSG_LOAD_FINISH);
+            }
         }
 
         @Override

@@ -21,7 +21,7 @@ import android.os.Bundle;
 
 import com.android.gallery3d.util.GalleryUtils;
 
-public class DialogPicker extends PickerActivity {
+public class GetContentPicker extends PickerActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

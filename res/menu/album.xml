@@ -20,7 +20,7 @@
             android:icon="@drawable/filmstrip_layout"
             app:showAsAction="always"/>
     <item android:id="@+id/action_slideshow"
-            android:icon="@drawable/slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/slideshow"
             app:showAsAction="always" />
     <item android:id="@+id/action_select"

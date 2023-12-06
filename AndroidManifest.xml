@@ -232,6 +232,32 @@
                 android:theme="@style/Theme.Settings"
                 android:exported="true" />
 
+        <activity
+            android:name="com.android.gallery3d.screensaver.ScreenSaverSettingsActivity"
+            android:theme="@style/Theme.Settings"
+            android:exported="true"
+            android:taskAffinity="" />
+        
+        <activity
+            android:name="com.android.gallery3d.screensaver.SelectAlbumListActivity"
+            android:theme="@style/Theme.Settings"
+            android:exported="false" />
+
+        <service
+            android:name="com.android.gallery3d.screensaver.ScreenSaverService"
+            android:exported="true"
+            android:label="@string/screensaver_config_label"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.dream"
+                android:resource="@xml/screen_saver_info" />
+        </service>
+
         <activity android:name="com.android.gallery3d.util.ViewGifImage"
                   android:exported="true">
             <intent-filter>
@@ -244,12 +270,14 @@
                 android:exported="true"
                 android:configChanges="keyboardHidden|orientation|screenSize"/>
 
-        <activity android:name="com.android.gallery3d.app.DialogPicker"
+        <activity android:name="com.android.gallery3d.app.GetContentPicker"
                 android:exported="true"
-                android:configChanges="keyboardHidden|orientation|screenSize"/>
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:taskAffinity="" />
         <activity android:name="com.android.gallery3d.app.AlbumPicker"
                 android:exported="true"
-                android:configChanges="keyboardHidden|orientation|screenSize"/>
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:taskAffinity="" />
 
         <!--<activity android:name="com.android.gallery3d.gadget.WidgetClickHandler"
                   android:exported="true"/>

@@ -29,6 +29,7 @@ import com.android.gallery3d.ui.GLRootView;
 public class PickerActivity extends AbstractGalleryActivity {
 
     public static final String KEY_ALBUM_PATH = "album-path";
+    public static final String KEY_ALBUM_NAME = "album-name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

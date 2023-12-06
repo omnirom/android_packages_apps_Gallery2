@@ -302,4 +302,7 @@
         <item name="android:layout_marginStart">-4dp</item>
         <item name="android:minWidth">60dp</item>
     </style>
+    <style name="ButtonStyleDefault" parent="@style/Widget.Material3.Button.UnelevatedButton">
+        <item name="backgroundTint">@color/accent</item>
+    </style>
 </resources>

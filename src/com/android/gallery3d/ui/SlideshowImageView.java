@@ -23,6 +23,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.gallery3d.R;
@@ -45,6 +46,7 @@ public class SlideshowImageView extends FrameLayout {
     private boolean mFirstImage = true;
     private Bitmap mCurrentBitmap;
     private TextView mNoImagesMessage;
+    private ProgressBar mProgress;
 
     public SlideshowImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -65,6 +67,7 @@ public class SlideshowImageView extends FrameLayout {
         mBackImage = findViewById(R.id.back_image);
         mFrontImage = findViewById(R.id.front_image);
         mNoImagesMessage = findViewById(R.id.slideshow_no_images);
+        mProgress = findViewById(R.id.progress);
     }
 
     public void showNoImagesMessage(boolean show) {
@@ -75,14 +78,21 @@ public class SlideshowImageView extends FrameLayout {
         }
     }
 
-    public void restart() {
-        mFirstImage = true;
+    public void showProgress(boolean show) {
+        if (show) {
+            mProgress.setVisibility(View.VISIBLE);
+        } else {
+            mProgress.setVisibility(View.GONE);
+        }
     }
 
-    private void setScaleType() {
-        boolean fillscreen = GalleryUtils.getSlideshowFillScreen(getContext());
-        mBackImage.setScaleType(fillscreen ? ImageView.ScaleType.CENTER_CROP : ImageView.ScaleType.FIT_CENTER);
-        mFrontImage.setScaleType(fillscreen ? ImageView.ScaleType.CENTER_CROP : ImageView.ScaleType.FIT_CENTER);
+    public void setFillScreen(boolean fillScreen) {
+        mBackImage.setScaleType(fillScreen ? ImageView.ScaleType.CENTER_CROP : ImageView.ScaleType.FIT_CENTER);
+        mFrontImage.setScaleType(fillScreen ? ImageView.ScaleType.CENTER_CROP : ImageView.ScaleType.FIT_CENTER);
+    }
+
+    public void restart() {
+        mFirstImage = true;
     }
 
     private int getTransitionDuration() {
@@ -94,7 +104,6 @@ public class SlideshowImageView extends FrameLayout {
     }
 
     public void next(Bitmap bitmap) {
-        setScaleType();
         int transitionDuration = getTransitionDuration();
 
         if (mFirstImage) {
