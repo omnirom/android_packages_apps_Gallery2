@@ -27,6 +27,7 @@ import com.android.gallery3d.common.Utils
 import com.android.gallery3d.data.ContentListener
 import com.android.gallery3d.data.DataManager
 import com.android.gallery3d.data.LocalAlbum
+import com.android.gallery3d.data.LocalAlbumSet
 import com.android.gallery3d.data.ComboAlbum
 import com.android.gallery3d.data.MediaItem
 import com.android.gallery3d.data.MediaObject
@@ -196,9 +197,9 @@ class ScreenSaverService : DreamService() {
     }
 
     private fun initializeData(config: ScreenSaverConfig) {
-        val topPath = mDataManager.getTopSetPath(DataManager.INCLUDE_ALL)
 
         if (config.allAlbums) {
+            val topPath = mDataManager.getTopSetPath(DataManager.INCLUDE_ALL)
             var mediaPath = FilterUtils.newFilterPath(topPath, FilterUtils.FILTER_IMAGE_ONLY);
             mMediaSet = mDataManager.getMediaSet(mediaPath)
             mMediaSet?.let { mediaSet ->
@@ -214,17 +215,16 @@ class ScreenSaverService : DreamService() {
 
                 for (albumEntry in albumList) {
                     val albumPath = albumEntry.split(":")[1]
-                    val path: Path = Path.fromString(albumPath)
-                    var mediaSet: MediaSet = mDataManager.getMediaObject(path) as MediaSet
+                    var mediaSet: MediaSet = mDataManager.getMediaObject(albumPath) as MediaSet
                     if (mediaSet is LocalAlbum) {                    
-                        var mediaPath = path.toString()
+                        var mediaPath = mediaSet.getPath().toString()
                         mediaPath = FilterUtils.newFilterPath(mediaPath, FilterUtils.FILTER_IMAGE_ONLY);
                         mediaSet = mDataManager.getMediaSet(mediaPath)
                         mediaSets.add(mediaSet)
                     }
                 }
                 var mediaSetsArray: Array<MediaSet> = mediaSets.toTypedArray()                
-                mMediaSet = ComboAlbum(Path.fromString(topPath), mediaSetsArray, "Slideshow")
+                mMediaSet = ComboAlbum(Path.fromString(DataManager.TOP_IMAGE_SET_PATH), mediaSetsArray, "Slideshow")
                 mMediaSet?.let { mediaSet ->
                     mAlbumSetDataLoader = AlbumSetDataLoader(mediaSet, DATA_CACHE_SIZE)
                     mAlbumSetDataLoader!!.setDummyMainHandler()
