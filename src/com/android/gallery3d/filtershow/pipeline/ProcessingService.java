@@ -27,7 +27,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.filtershow.FilterShowActivity;
@@ -35,11 +34,12 @@ import com.android.gallery3d.filtershow.filters.FiltersManager;
 import com.android.gallery3d.filtershow.filters.ImageFilter;
 import com.android.gallery3d.filtershow.imageshow.MasterImage;
 import com.android.gallery3d.filtershow.tools.SaveImage;
+import com.android.gallery3d.util.Log;
 
 import java.io.File;
 
 public class ProcessingService extends Service {
-    private static final String LOGTAG = "Gallery2:ProcessingService";
+    private static final String LOGTAG = "ProcessingService";
     private static final boolean DEBUG = false;
     private static final int NOTIFICATION_ID = 1;
 

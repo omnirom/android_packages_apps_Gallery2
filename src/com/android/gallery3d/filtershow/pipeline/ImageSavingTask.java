@@ -21,15 +21,16 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.util.Log;
+
 import com.android.gallery3d.filtershow.cache.ImageLoader;
 import com.android.gallery3d.filtershow.filters.FiltersManager;
 import com.android.gallery3d.filtershow.tools.SaveImage;
+import com.android.gallery3d.util.Log;
 
 import java.io.File;
 
 public class ImageSavingTask extends ProcessingTask {
-    private static final String TAG = "Gallery2:ImageSavingTask";
+    private static final String TAG = "ImageSavingTask";
     private static final boolean DEBUG = false;
 
     private ProcessingService mProcessingService;

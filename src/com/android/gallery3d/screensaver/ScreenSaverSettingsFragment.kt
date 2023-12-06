@@ -18,7 +18,6 @@ package com.android.gallery3d.screensaver
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,10 +28,11 @@ import androidx.preference.PreferenceManager
 import com.android.gallery3d.R
 import com.android.gallery3d.app.AlbumPicker
 import com.android.gallery3d.data.Path
+import com.android.gallery3d.util.Log
 
 class ScreenSaverSettingsFragment : PreferenceFragmentCompat(),        
     Preference.OnPreferenceChangeListener {
-    private val TAG = "Gallery2:ScreenSaverSettingsFragment"
+    private val TAG = "ScreenSaverSettingsFragment"
     private val REQUEST_CHOOSE_ALBUM = 1
 
     private var mPickAlbum: Preference? = null

@@ -24,6 +24,7 @@ import com.android.gallery3d.anim.CanvasAnimation;
 import com.android.gallery3d.anim.StateTransitionAnimation;
 import com.android.gallery3d.common.Utils;
 import com.android.gallery3d.glrenderer.GLCanvas;
+import com.android.gallery3d.util.Log;
 
 import java.util.ArrayList;
 

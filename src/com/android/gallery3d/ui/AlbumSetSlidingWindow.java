@@ -34,6 +34,7 @@ import com.android.gallery3d.glrenderer.TextureUploader;
 import com.android.gallery3d.glrenderer.TiledTexture;
 import com.android.gallery3d.util.Future;
 import com.android.gallery3d.util.FutureListener;
+import com.android.gallery3d.util.Log;
 import com.android.gallery3d.util.ThreadPool;
 
 public class AlbumSetSlidingWindow implements AlbumSetDataLoader.DataListener {

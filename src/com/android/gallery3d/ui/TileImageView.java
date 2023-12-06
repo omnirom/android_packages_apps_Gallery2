@@ -32,6 +32,7 @@ import com.android.gallery3d.data.GalleryBitmapPool;
 import com.android.gallery3d.glrenderer.GLCanvas;
 import com.android.gallery3d.glrenderer.UploadedTexture;
 import com.android.gallery3d.util.Future;
+import com.android.gallery3d.util.Log;
 import com.android.gallery3d.util.ThreadPool;
 import com.android.gallery3d.util.ThreadPool.CancelListener;
 import com.android.gallery3d.util.ThreadPool.JobContext;

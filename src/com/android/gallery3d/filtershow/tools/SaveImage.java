@@ -27,7 +27,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.ImageColumns;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.gallery3d.R;
@@ -42,6 +41,7 @@ import com.android.gallery3d.filtershow.pipeline.CachingPipeline;
 import com.android.gallery3d.filtershow.pipeline.ImagePreset;
 import com.android.gallery3d.filtershow.pipeline.ProcessingService;
 import com.android.gallery3d.util.XmpUtilHelper;
+import com.android.gallery3d.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,7 +57,7 @@ import java.util.TimeZone;
  * Handles saving edited photo
  */
 public class SaveImage {
-    private static final String LOGTAG = "Gallery2:SaveImage";
+    private static final String LOGTAG = "SaveImage";
     private static final boolean DEBUG = false;
 
     public interface ContentResolverQueryCallback {

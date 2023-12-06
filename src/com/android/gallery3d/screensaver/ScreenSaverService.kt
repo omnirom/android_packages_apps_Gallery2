@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.service.dreams.DreamService
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Space
@@ -37,12 +36,14 @@ import com.android.gallery3d.ui.SlideshowImageView
 import com.android.gallery3d.util.Future
 import com.android.gallery3d.util.FutureListener
 import com.android.gallery3d.util.GalleryUtils
+import com.android.gallery3d.util.Log
 import com.android.gallery3d.util.MediaSetUtils
 
 import java.lang.Thread
 
 class ScreenSaverService : DreamService() {
-    private val TAG = "Gallery2:SlideshowActivity"
+    private val TAG = "ScreenSaverService"
+    private val DEBUG = false
 
     val KEY_SET_PATH = "media-set-path"
     val KEY_ITEM_PATH = "media-item-path"
@@ -92,7 +93,7 @@ class ScreenSaverService : DreamService() {
 
     override fun onDreamingStarted() {
         super.onDreamingStarted()
-        Log.d(TAG, "onDreamingStarted")
+        if (DEBUG) Log.d(TAG, "onDreamingStarted")
         mConfig = ScreenSaverConfig.getFromPreferences(this)
         initializeData(mConfig)
         mSlideshowImageView.showNoImagesMessage(false)
@@ -100,11 +101,11 @@ class ScreenSaverService : DreamService() {
         if (mMediaSet != null) {
             val loadingListener = object : LoadingListener {
                 override fun onLoadingStarted() {
-                    Log.d(TAG, "onLoadingStarted")
+                    if (DEBUG) Log.d(TAG, "onLoadingStarted")
                     mSlideshowImageView.showProgress(true)
                 }
                 override fun onLoadingFinished() {
-                    Log.d(TAG, "onLoadingFinished")
+                    if (DEBUG) Log.d(TAG, "onLoadingFinished")
                     mSlideshowImageView.showProgress(false)
                     if (mMediaSet!!.getTotalMediaItemCount() != 0) {
                         createSlideshow(mConfig)
@@ -166,7 +167,7 @@ class ScreenSaverService : DreamService() {
     }
 
     private fun resumeSlideShow() {
-        Log.d(TAG, "resumeSlideShow")
+        if (DEBUG) Log.d(TAG, "resumeSlideShow")
         mModel?.resume()
         mSlideshowImageView.restart()
         if (mPendingSlide != null) {
@@ -180,7 +181,7 @@ class ScreenSaverService : DreamService() {
         val random: Boolean = config.random
         val repeat: Boolean = true
         mSlideshowImageView.setFillScreen(config.fillScreen)
-        Log.d(TAG, "createSlideshow")
+        if (DEBUG) Log.d(TAG, "createSlideshow")
 
         if (random) {
             mModel = SlideshowDataAdapter(
@@ -205,11 +206,11 @@ class ScreenSaverService : DreamService() {
             mMediaSet?.let { mediaSet ->
                 mAlbumSetDataLoader = AlbumSetDataLoader(mediaSet, DATA_CACHE_SIZE)
                 mAlbumSetDataLoader!!.setDummyMainHandler()
-                Log.d(TAG, "initializeData allAlbums mediaPath = " + mediaPath)
+                if (DEBUG) Log.d(TAG, "initializeData allAlbums mediaPath = " + mediaPath)
             }
         } else {
             val albumList = config.albumList
-            Log.d(TAG, "initializeData albumList = " + albumList);
+            if (DEBUG) Log.d(TAG, "initializeData albumList = " + albumList);
             if (albumList.isNotEmpty()) {
                 val mediaSets = ArrayList<MediaSet>()
 

@@ -56,6 +56,7 @@ import com.android.gallery3d.ui.SlotView;
 import com.android.gallery3d.ui.SynchronizedHandler;
 import com.android.gallery3d.util.Future;
 import com.android.gallery3d.util.GalleryUtils;
+import com.android.gallery3d.util.Log;
 import com.android.gallery3d.util.MediaSetUtils;
 
 import java.util.Locale;
@@ -64,6 +65,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         SelectionManager.SelectionListener,GalleryActionBar.OnAlbumModeSelectedListener {
     @SuppressWarnings("unused")
     private static final String TAG = "AlbumPage";
+    private static final boolean DEBUG = false;
 
     public static final String KEY_MEDIA_PATH = "media-path";
     public static final String KEY_PARENT_MEDIA_PATH = "parent-media-path";
@@ -360,8 +362,11 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     private void doRunClusterAction(int clusterType) {
         String basePath = mMediaSet.getPath().toString();
         String newPath = FilterUtils.newClusterPath(basePath, clusterType);
+        if (DEBUG) Log.d(TAG, "doRunClusterAction " + newPath + " " + this);
+
         Bundle data = new Bundle(getData());
         data.putString(AlbumSetPage.KEY_MEDIA_PATH, newPath);
+        data.putInt(AlbumSetPage.KEY_SELECTED_CLUSTER_TYPE, clusterType);
 
         // mAlbumView.savePositions(PositionRepository.getInstance(mActivity));
         mActivity.getStateManager().startState(AlbumSetPage.class, data);
@@ -370,6 +375,8 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     @Override
     protected void onCreate(Bundle data, Bundle restoreState) {
         super.onCreate(data, restoreState);
+        if (DEBUG) Log.d(TAG, "onCreate " + this);
+
         mUserDistance = GalleryUtils.meterToPixel(USER_DISTANCE_METER);
         initializeViews();
         initializeData(data);
@@ -403,6 +410,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     @Override
     protected void onResume() {
         super.onResume();
+        if (DEBUG) Log.d(TAG, "onResume " + this);
         mIsActive = true;
 
         mActionBar.setTransparentMode(false);
@@ -437,6 +445,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     @Override
     protected void onPause() {
         super.onPause();
+        if (DEBUG) Log.d(TAG, "onPause " + this);
         mIsActive = false;
 
         if (mSelectionManager.inSelectionMode()) {
@@ -453,6 +462,8 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (DEBUG) Log.d(TAG, "onDestroy " + this);
+
         if (mAlbumDataAdapter != null) {
             mAlbumDataAdapter.setLoadingListener(null);
         }
@@ -495,6 +506,8 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     private void initializeData(Bundle data) {
         mMediaSetPath = Path.fromString(data.getString(KEY_MEDIA_PATH));
         mParentMediaSetString = data.getString(KEY_PARENT_MEDIA_PATH);
+        if (DEBUG) Log.d(TAG, "initializeData mediaPath = " + mMediaSetPath + " mParentMediaSetString = " + mParentMediaSetString + " " + this);
+
         mMediaSet = mActivity.getDataManager().getMediaSet(mMediaSetPath);
         if (mMediaSet == null) {
             Utils.fail("MediaSet is null. Path = %s", mMediaSetPath);

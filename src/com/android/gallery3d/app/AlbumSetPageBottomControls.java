@@ -100,6 +100,20 @@ public class AlbumSetPageBottomControls implements OnClickListener {
         }
     }
 
+    public void showItemWithId(int id, boolean visible) {
+        for (int i = 0; i < mContainer.getChildCount(); i++) {
+            View child = mContainer.getChildAt(i);
+            ImageButton b = (ImageButton) child;
+            if (child.getId() == id) {
+                if (visible) {
+                    child.setVisibility(View.VISIBLE);
+                } else {
+                    child.setVisibility(View.GONE);
+                }
+            }
+        }
+    }
+
     public void setGradientBackground(boolean gradient) {
         if (mContainer.getBackground() != null) {
             Drawable[] arrayDrawable = new Drawable[2];

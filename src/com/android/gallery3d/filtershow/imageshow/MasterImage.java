@@ -25,7 +25,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
-import android.util.Log;
 
 import com.android.gallery3d.exif.ExifTag;
 import com.android.gallery3d.filtershow.FilterShowActivity;
@@ -45,13 +44,14 @@ import com.android.gallery3d.filtershow.pipeline.RenderingRequestCaller;
 import com.android.gallery3d.filtershow.pipeline.SharedBuffer;
 import com.android.gallery3d.filtershow.pipeline.SharedPreset;
 import com.android.gallery3d.filtershow.state.StateAdapter;
+import com.android.gallery3d.util.Log;
 
 import java.util.List;
 import java.util.Vector;
 
 public class MasterImage implements RenderingRequestCaller {
 
-    private static final String LOGTAG = "Gallery2:MasterImage";
+    private static final String LOGTAG = "MasterImage";
     private boolean DEBUG  = false;
     private static final boolean DISABLEZOOM = false;
     public static final int SMALL_BITMAP_DIM = 160;

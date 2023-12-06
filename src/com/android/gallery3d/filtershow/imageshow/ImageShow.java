@@ -33,7 +33,6 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
@@ -50,6 +49,7 @@ import com.android.gallery3d.filtershow.filters.FilterRepresentation;
 import com.android.gallery3d.filtershow.filters.ImageFilter;
 import com.android.gallery3d.filtershow.pipeline.ImagePreset;
 import com.android.gallery3d.filtershow.tools.SaveImage;
+import com.android.gallery3d.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class ImageShow extends View implements OnGestureListener,
         ScaleGestureDetector.OnScaleGestureListener,
         OnDoubleTapListener {
 
-    private static final String LOGTAG = "Gallery2:ImageShow";
+    private static final String LOGTAG = "ImageShow";
     private static final boolean ENABLE_ZOOMED_COMPARISON = true;
 
     protected Paint mPaint = new Paint();

@@ -30,12 +30,13 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
+
 import com.android.gallery3d.R;
+import com.android.gallery3d.util.Log;
 
 public class IconView extends View {
-    private static final String TAG = "Gallery2:IconView";
+    private static final String TAG = "IconView";
 
     public static final int VERTICAL = 0;
     public static final int HORIZONTAL = 1;

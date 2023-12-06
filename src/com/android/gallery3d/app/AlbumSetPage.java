@@ -58,6 +58,7 @@ import com.android.gallery3d.ui.SynchronizedHandler;
 import com.android.gallery3d.util.Future;
 import com.android.gallery3d.util.GalleryUtils;
 import com.android.gallery3d.util.HelpUtils;
+import com.android.gallery3d.util.Log;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -67,7 +68,8 @@ public class AlbumSetPage extends ActivityState implements
         EyePosition.EyePositionListener,
         AlbumSetPageBottomControls.Delegate {
     @SuppressWarnings("unused")
-    private static final String TAG = "Gallery2:AlbumSetPage";
+    private static final String TAG = "AlbumSetPage";
+    private static final boolean DEBUG = false;
 
     private static final int MSG_PICK_ALBUM = 1;
 
@@ -274,9 +276,11 @@ public class AlbumSetPage extends ActivityState implements
     private void doRunClusterAction(int clusterType) {
         String basePath = mMediaSet.getPath().toString();
         String newPath = FilterUtils.switchClusterPath(basePath, clusterType);
+        if (DEBUG) Log.d(TAG, "doRunClusterAction newPath = " + newPath);
+
         Bundle data = new Bundle(getData());
         data.putString(AlbumSetPage.KEY_MEDIA_PATH, newPath);
-        data.putInt(KEY_SELECTED_CLUSTER_TYPE, clusterType);
+        data.putInt(AlbumSetPage.KEY_SELECTED_CLUSTER_TYPE, clusterType);
         mActivity.getStateManager().switchState(this, AlbumSetPage.class, data);
     }
 
@@ -293,6 +297,8 @@ public class AlbumSetPage extends ActivityState implements
     @Override
     public void onCreate(Bundle data, Bundle restoreState) {
         super.onCreate(data, restoreState);
+        if (DEBUG) Log.d(TAG, "onCreate " + this);
+
         initializeViews();
         initializeData(data);
         Context context = mActivity.getAndroidContext();
@@ -300,11 +306,6 @@ public class AlbumSetPage extends ActivityState implements
         mGetAlbum = data.getBoolean(GalleryActivity.KEY_GET_ALBUM, false);
         mEyePosition = new EyePosition(context, this);
         mActionBar = mActivity.getGalleryActionBar();
-        mSelectedAction = data.getInt(AlbumSetPage.KEY_SELECTED_CLUSTER_TYPE,
-                FilterUtils.CLUSTER_BY_ALBUM);
-        RelativeLayout galleryRoot = (RelativeLayout) mActivity.findViewById(R.id.gallery_root);
-        mBottomControls = new AlbumSetPageBottomControls(this, mActivity, galleryRoot);
-        selectActiveBottomControl();
 
         mHandler = new SynchronizedHandler(mActivity.getGLRoot()) {
             @Override
@@ -323,12 +324,16 @@ public class AlbumSetPage extends ActivityState implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (DEBUG) Log.d(TAG, "onDestroy " + this);
+
         mActionModeHandler.destroy();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (DEBUG) Log.d(TAG, "onPause " + this);
+
         mIsActive = false;
         mAlbumSetDataAdapter.pause();
         mAlbumSetView.pause();
@@ -341,6 +346,8 @@ public class AlbumSetPage extends ActivityState implements
     @Override
     public void onResume() {
         super.onResume();
+        if (DEBUG) Log.d(TAG, "onResume " + this);
+
         mIsActive = true;
         mActionBar.setTransparentMode(false);
         mActivity.setSystemBarsTranlucent(false);
@@ -355,12 +362,21 @@ public class AlbumSetPage extends ActivityState implements
         mAlbumSetView.resume();
         mEyePosition.resume();
         mActionModeHandler.resume();
+        
+        RelativeLayout galleryRoot = (RelativeLayout) mActivity.findViewById(R.id.gallery_root);
+        mBottomControls = new AlbumSetPageBottomControls(this, mActivity, galleryRoot);
+        mBottomControls.showItemWithId(R.id.albumpage_bottom_control_album, mActivity.getStateManager().getStateCount() == 1);
         mBottomControls.show(false);
+        selectActiveBottomControl();
    }
 
     private void initializeData(Bundle data) {
         String mediaPath = data.getString(AlbumSetPage.KEY_MEDIA_PATH);
+        mSelectedAction = data.getInt(AlbumSetPage.KEY_SELECTED_CLUSTER_TYPE,
+                FilterUtils.CLUSTER_BY_ALBUM);
         mMediaSet = mActivity.getDataManager().getMediaSet(mediaPath);
+        if (DEBUG)  Log.d(TAG, "initializeData mediaPath = " + mediaPath + " mSelectedAction = " + mSelectedAction+ " " + this);
+
         mSelectionManager.setSourceMediaSet(mMediaSet);
         mAlbumSetDataAdapter = new AlbumSetDataLoader(mMediaSet, DATA_CACHE_SIZE);
         mAlbumSetDataAdapter.setGLMainHandler(mActivity);
@@ -430,6 +446,10 @@ public class AlbumSetPage extends ActivityState implements
     @Override
     protected boolean onItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home: {
+                mActivity.getStateManager().finishState(this);
+                return true;
+            }
             case R.id.action_cancel:
                 mActivity.setResult(Activity.RESULT_CANCELED);
                 mActivity.finish();

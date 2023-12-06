@@ -26,12 +26,13 @@ import android.view.MenuItem;
 
 import com.android.gallery3d.anim.StateTransitionAnimation;
 import com.android.gallery3d.common.Utils;
+import com.android.gallery3d.util.Log;
 
 import java.util.Stack;
 
 public class StateManager {
     @SuppressWarnings("unused")
-    private static final String TAG = "Gallery2:StateManager";
+    private static final String TAG = "StateManager";
     private static final boolean DEBUG = false;
     private boolean mIsResumed = false;
 

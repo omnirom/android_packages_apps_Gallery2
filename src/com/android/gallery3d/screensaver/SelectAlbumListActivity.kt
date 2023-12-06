@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -21,11 +20,12 @@ import androidx.preference.PreferenceManager
 
 import com.android.gallery3d.R
 import com.android.gallery3d.app.AlbumPicker
+import com.android.gallery3d.util.Log
 
 import java.util.Collections
 
 class SelectAlbumListActivity : AppCompatActivity() {
-    private val TAG = "Gallery2:SelectAlbumListActivity"
+    private val TAG = "SelectAlbumListActivity"
     private val REQUEST_CHOOSE_ALBUM = 1
 
     private val mAlbumList = ArrayList<String>()

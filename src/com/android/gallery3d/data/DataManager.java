@@ -75,7 +75,7 @@ public class DataManager implements StitchingChangeListener {
     // This is the path for the media set seen by the user at top level.
     private static final String TOP_SET_PATH = "/combo/{/local/all}";
 
-    private static final String TOP_IMAGE_SET_PATH = "/combo/{/local/image}";
+    public static final String TOP_IMAGE_SET_PATH = "/combo/{/local/image}";
 
     private static final String TOP_VIDEO_SET_PATH =
             "/combo/{/local/video}";

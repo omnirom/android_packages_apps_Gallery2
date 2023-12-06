@@ -48,12 +48,13 @@ import com.android.gallery3d.ui.SlideshowImageView;
 import com.android.gallery3d.util.Future;
 import com.android.gallery3d.util.FutureListener;
 import com.android.gallery3d.util.GalleryUtils;
+import com.android.gallery3d.util.Log;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class SlideshowActivity extends AppCompatActivity {
-    private static final String TAG = "Gallery2:SlideshowActivity";
+    private static final String TAG = "SlideshowActivity";
 
     public static final String KEY_SET_PATH = "media-set-path";
     public static final String KEY_ITEM_PATH = "media-item-path";
