@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.HapticFeedbackConstants;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,8 +35,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import androidx.core.view.MenuItemCompat;
+import androidx.appcompat.widget.SearchView;
 
 import com.android.gallery3d.R;
 import com.android.gallery3d.app.GallerySettings;
@@ -87,6 +92,7 @@ public class AlbumSetPage extends ActivityState implements
     private Config.AlbumSetPage mConfig;
 
     private MediaSet mMediaSet;
+    private String mMediaPath;
     private GalleryActionBar mActionBar;
     private int mSelectedAction;
 
@@ -99,6 +105,7 @@ public class AlbumSetPage extends ActivityState implements
     private Handler mHandler;
     private AlbumSetPageBottomControls mBottomControls;
     private float mUserDistance; // in pixel
+    private MenuItem mSearchItem;
 
     @Override
     protected int getBackgroundColorId() {
@@ -317,6 +324,7 @@ public class AlbumSetPage extends ActivityState implements
         if (DEBUG) Log.d(TAG, "onPause " + this);
 
         mIsActive = false;
+        mSearchItem.collapseActionView();
         mAlbumSetDataAdapter.pause();
         mAlbumSetView.pause();
         mActionModeHandler.pause();
@@ -351,17 +359,30 @@ public class AlbumSetPage extends ActivityState implements
    }
 
     private void initializeData(Bundle data) {
-        String mediaPath = data.getString(AlbumSetPage.KEY_MEDIA_PATH);
+        mMediaPath = data.getString(AlbumSetPage.KEY_MEDIA_PATH);
         mSelectedAction = data.getInt(AlbumSetPage.KEY_SELECTED_CLUSTER_TYPE,
                 FilterUtils.CLUSTER_BY_ALBUM);
-        mMediaSet = mActivity.getDataManager().getMediaSet(mediaPath);
-        if (DEBUG)  Log.d(TAG, "initializeData mediaPath = " + mediaPath + " mSelectedAction = " + mSelectedAction+ " " + this);
+        mMediaSet = mActivity.getDataManager().getMediaSet(mMediaPath);
+        if (DEBUG)  Log.d(TAG, "initializeData mMediaPath = " + mMediaPath + " mSelectedAction = " + mSelectedAction+ " " + this);
 
         mSelectionManager.setSourceMediaSet(mMediaSet);
         mAlbumSetDataAdapter = new AlbumSetDataLoader(mMediaSet, DATA_CACHE_SIZE);
         mAlbumSetDataAdapter.setGLMainHandler(mActivity);
         mAlbumSetDataAdapter.setLoadingListener(new MyLoadingListener());
         mAlbumSetView.setModel(mAlbumSetDataAdapter);
+    }
+
+    private void updateSearchQuery(String query) {
+        if (!TextUtils.isEmpty(query)) {
+            String mediaPath = FilterUtils.newFilterPathPath(mMediaPath, query);
+            mMediaSet = mActivity.getDataManager().getMediaSet(mediaPath);
+        } else {
+            mMediaSet = mActivity.getDataManager().getMediaSet(mMediaPath);
+        }
+        mSelectionManager.setSourceMediaSet(mMediaSet);
+        mAlbumSetDataAdapter.pause();
+        mAlbumSetDataAdapter.updateMediaSet(mMediaSet);
+        mAlbumSetDataAdapter.resume();
     }
 
     private void initializeViews() {
@@ -417,6 +438,7 @@ public class AlbumSetPage extends ActivityState implements
         MenuItem cameraItem = menu.findItem(R.id.action_camera);
         cameraItem.setVisible(GalleryUtils.isAnyCameraAvailable(activity) && selectAlbums);
 
+        mSearchItem = menu.findItem(R.id.action_search);
         FilterUtils.setupMenuItems(mActionBar, mMediaSet.getPath(), false);
 
         setActiveActionBarTitle();
@@ -465,6 +487,24 @@ public class AlbumSetPage extends ActivityState implements
                 intent.putExtras(data);
                 mActivity.startActivity(intent);
                 return true;
+            }
+            case R.id.action_search: {
+                SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+
+                EditText searchPlate = (EditText) searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+                searchPlate.setHint(R.string.menu_search);
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+                    @Override
+                    public boolean onQueryTextChange(String query) {
+                        updateSearchQuery(query);
+                        return false;
+                    }
+                });
             }
             default:
                 return false;

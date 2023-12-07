@@ -29,10 +29,12 @@ import com.android.gallery3d.glrenderer.Texture;
 import com.android.gallery3d.glrenderer.TiledTexture;
 import com.android.gallery3d.glrenderer.UploadedTexture;
 import com.android.gallery3d.ui.AlbumSetSlidingWindow.AlbumSetEntry;
+import com.android.gallery3d.util.Log;
 
 public class AlbumSetSlotRenderer extends AbstractSlotRenderer {
     @SuppressWarnings("unused")
-    private static final String TAG = "AlbumSetView";
+    private static final String TAG = "AlbumSetSlotRenderer";
+    private static boolean DEBUG = false;
     private static final int CACHE_SIZE = 96;
     private final int mPlaceholderColor;
 
@@ -222,11 +224,16 @@ public class AlbumSetSlotRenderer extends AbstractSlotRenderer {
 
         @Override
         public void onSizeChanged(int size) {
+            if (DEBUG) Log.d(TAG, "onSizeChanged " + size);
             mSlotView.setSlotCount(size);
+            if (size == 0) {
+                mSlotView.invalidate();
+            }
         }
 
         @Override
         public void onContentChanged() {
+            if (DEBUG) Log.d(TAG, "onContentChanged");
             mSlotView.invalidate();
         }
     }

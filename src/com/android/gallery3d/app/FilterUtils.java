@@ -60,10 +60,7 @@ public class FilterUtils {
     public static final int CLUSTER_BY_ALBUM = 1;
     public static final int CLUSTER_BY_TIME = 2;
     public static final int CLUSTER_BY_LOCATION = 4;
-    public static final int CLUSTER_BY_TAG = 8;
-    public static final int CLUSTER_BY_SIZE = 16;
-    public static final int CLUSTER_BY_FACE = 32;
-    public static final int CLUSTER_BY_TYPE = 64;
+    public static final int CLUSTER_BY_TYPE = 8;
 
     public static final int FILTER_IMAGE_ONLY = 1;
     public static final int FILTER_VIDEO_ONLY = 2;
@@ -91,10 +88,6 @@ public class FilterUtils {
                 (ctype & CLUSTER_BY_TIME) != 0, (ccurrent & CLUSTER_BY_TIME) != 0);
         setMenuItemApplied(actionBar, CLUSTER_BY_LOCATION,
                 (ctype & CLUSTER_BY_LOCATION) != 0, (ccurrent & CLUSTER_BY_LOCATION) != 0);
-        setMenuItemApplied(actionBar, CLUSTER_BY_TAG,
-                (ctype & CLUSTER_BY_TAG) != 0, (ccurrent & CLUSTER_BY_TAG) != 0);
-        setMenuItemApplied(actionBar, CLUSTER_BY_FACE,
-                (ctype & CLUSTER_BY_FACE) != 0, (ccurrent & CLUSTER_BY_FACE) != 0);
         setMenuItemApplied(actionBar, CLUSTER_BY_TYPE,
                 (ctype & CLUSTER_BY_TYPE) != 0, (ccurrent & CLUSTER_BY_TYPE) != 0);
 
@@ -156,12 +149,6 @@ public class FilterUtils {
             return CLUSTER_BY_TIME;
         } else if (s.equals("location")) {
             return CLUSTER_BY_LOCATION;
-        } else if (s.equals("tag")) {
-            return CLUSTER_BY_TAG;
-        } else if (s.equals("size")) {
-            return CLUSTER_BY_SIZE;
-        } else if (s.equals("face")) {
-            return CLUSTER_BY_FACE;
         } else if (s.equals("type")) {
             return CLUSTER_BY_TYPE;
         }
@@ -178,7 +165,7 @@ public class FilterUtils {
     }
 
     // Add a specified filter to the path.
-    public static String newFilterPath(String base, int filterType) {
+    public static String newFilterTypePath(String base, int filterType) {
         int mediaType;
         switch (filterType) {
             case FILTER_IMAGE_ONLY:
@@ -194,6 +181,14 @@ public class FilterUtils {
         return "/filter/mediatype/" + mediaType + "/{" + base + "}";
     }
 
+    public static String newFilterNamePath(String base, String matchPattern) {
+        return "/filter/name/" + matchPattern + "/{" + base + "}";
+    }
+
+    public static String newFilterPathPath(String base, String matchPattern) {
+        return "/filter/path/" + matchPattern + "/{" + base + "}";
+    }
+
     // Add a specified clustering to the path.
     public static String newClusterPath(String base, int clusterType) {
         String kind;
@@ -203,15 +198,6 @@ public class FilterUtils {
                 break;
             case CLUSTER_BY_LOCATION:
                 kind = "location";
-                break;
-            case CLUSTER_BY_TAG:
-                kind = "tag";
-                break;
-            case CLUSTER_BY_SIZE:
-                kind = "size";
-                break;
-            case CLUSTER_BY_FACE:
-                kind = "face";
                 break;
             case CLUSTER_BY_TYPE:
                 kind = "type";

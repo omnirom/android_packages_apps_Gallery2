@@ -35,7 +35,7 @@ import java.util.concurrent.FutureTask;
 
 public class AlbumSetDataLoader {
     @SuppressWarnings("unused")
-    private static final String TAG = "AlbumSetDataAdapter";
+    private static final String TAG = "AlbumSetDataLoader";
 
     private static final int INDEX_NONE = -1;
 

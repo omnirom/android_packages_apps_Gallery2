@@ -43,7 +43,7 @@ import java.lang.Thread
 
 class ScreenSaverService : DreamService() {
     private val TAG = "ScreenSaverService"
-    private val DEBUG = false
+    private val DEBUG = true
 
     val KEY_SET_PATH = "media-set-path"
     val KEY_ITEM_PATH = "media-item-path"
@@ -60,6 +60,7 @@ class ScreenSaverService : DreamService() {
     private var mPendingSlide:SlideshowPage.Slide? = null
     private lateinit var mConfig: ScreenSaverConfig
     private var mMediaSet: MediaSet? = null
+    private val mComboPath = Path.fromString(DataManager.TOP_IMAGE_SET_PATH)
     
 
     override fun onAttachedToWindow() {
@@ -83,8 +84,7 @@ class ScreenSaverService : DreamService() {
         val app:GalleryApp = this.getApplicationContext() as GalleryApp
         mDataManager = app.getDataManager()
         
-        // Exit dream upon user touchimport android.os.HandlerThread;
-
+        // Exit dream upon user touch
         isInteractive = false
         // Hide system UI
         isFullscreen = true
@@ -201,7 +201,7 @@ class ScreenSaverService : DreamService() {
 
         if (config.allAlbums) {
             val topPath = mDataManager.getTopSetPath(DataManager.INCLUDE_ALL)
-            var mediaPath = FilterUtils.newFilterPath(topPath, FilterUtils.FILTER_IMAGE_ONLY);
+            var mediaPath = FilterUtils.newFilterTypePath(topPath, FilterUtils.FILTER_IMAGE_ONLY);
             mMediaSet = mDataManager.getMediaSet(mediaPath)
             mMediaSet?.let { mediaSet ->
                 mAlbumSetDataLoader = AlbumSetDataLoader(mediaSet, DATA_CACHE_SIZE)
@@ -219,13 +219,13 @@ class ScreenSaverService : DreamService() {
                     var mediaSet: MediaSet = mDataManager.getMediaObject(albumPath) as MediaSet
                     if (mediaSet is LocalAlbum) {                    
                         var mediaPath = mediaSet.getPath().toString()
-                        mediaPath = FilterUtils.newFilterPath(mediaPath, FilterUtils.FILTER_IMAGE_ONLY);
+                        mediaPath = FilterUtils.newFilterTypePath(mediaPath, FilterUtils.FILTER_IMAGE_ONLY);
                         mediaSet = mDataManager.getMediaSet(mediaPath)
                         mediaSets.add(mediaSet)
                     }
                 }
                 var mediaSetsArray: Array<MediaSet> = mediaSets.toTypedArray()                
-                mMediaSet = ComboAlbum(Path.fromString(DataManager.TOP_IMAGE_SET_PATH), mediaSetsArray, "Slideshow")
+                mMediaSet = ComboAlbum(mComboPath, mediaSetsArray, "Slideshow")
                 mMediaSet?.let { mediaSet ->
                     mAlbumSetDataLoader = AlbumSetDataLoader(mediaSet, DATA_CACHE_SIZE)
                     mAlbumSetDataLoader!!.setDummyMainHandler()

@@ -23,6 +23,8 @@ public class FilterSource extends MediaSource {
     private static final String TAG = "FilterSource";
     private static final int FILTER_BY_MEDIATYPE = 0;
     private static final int FILTER_BY_DELETE = 1;
+    private static final int FILTER_BY_NAME = 2;
+    private static final int FILTER_BY_PATH = 3;
 
     private GalleryApp mApplication;
     private PathMatcher mMatcher;
@@ -33,11 +35,16 @@ public class FilterSource extends MediaSource {
         mMatcher = new PathMatcher();
         mMatcher.add("/filter/mediatype/*/*", FILTER_BY_MEDIATYPE);
         mMatcher.add("/filter/delete/*", FILTER_BY_DELETE);
+        mMatcher.add("/filter/name/*/*", FILTER_BY_NAME);
+        mMatcher.add("/filter/path/*/*", FILTER_BY_PATH);
     }
 
     // The name we accept are:
     // /filter/mediatype/k/{set}    where k is the media type we want.
     // /filter/delete/{set}
+    // /filter/name/pattern/{set}
+    // /filter/path/pattern/{set}
+
     @Override
     public MediaObject createMediaObject(Path path) {
         int matchType = mMatcher.match(path);
@@ -53,6 +60,18 @@ public class FilterSource extends MediaSource {
                 String setsName = mMatcher.getVar(0);
                 MediaSet[] sets = dataManager.getMediaSetsFromString(setsName);
                 return new FilterDeleteSet(path, sets[0]);
+            }
+            case FILTER_BY_NAME: {
+                String matchPattern = mMatcher.getVar(0);
+                String setsName = mMatcher.getVar(1);
+                MediaSet[] sets = dataManager.getMediaSetsFromString(setsName);
+                return new FilterNameSet(path, dataManager, sets[0], matchPattern);
+            }
+            case FILTER_BY_PATH: {
+                String matchPattern = mMatcher.getVar(0);
+                String setsName = mMatcher.getVar(1);
+                MediaSet[] sets = dataManager.getMediaSetsFromString(setsName);
+                return new FilterPathSet(path, dataManager, sets[0], matchPattern);
             }
             default:
                 throw new RuntimeException("bad path: " + path);

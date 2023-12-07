@@ -83,7 +83,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
 
     private boolean mIsActive = false;
     private AlbumSlotRenderer mAlbumView;
-    private Path mMediaSetPath;
     private String mParentMediaSetString;
     private SlotView mSlotView;
     private Config.AlbumPage mConfig;
@@ -98,6 +97,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     private ActionModeHandler mActionModeHandler;
     private int mFocusIndex = 0;
     private MediaSet mMediaSet;
+    private String mMediaPath;
     private float mUserDistance; // in pixel
     private boolean mLaunchedFromPhotoPage;
     private boolean mInCameraApp;
@@ -285,7 +285,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             data.putParcelable(PhotoPage.KEY_OPEN_ANIMATION_RECT,
                     mSlotView.getSlotRect(slotIndex, mRootPane));
             data.putString(PhotoPage.KEY_MEDIA_SET_PATH,
-                    mMediaSetPath.toString());
+                    mMediaSet.getPath().toString());
 
             // Item not ready yet, don't pass the photo path to bundle
             if (!isLayoutRtl && item != null) {
@@ -481,14 +481,11 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     }
 
     private void initializeData(Bundle data) {
-        mMediaSetPath = Path.fromString(data.getString(KEY_MEDIA_PATH));
+        mMediaPath = data.getString(KEY_MEDIA_PATH);
         mParentMediaSetString = data.getString(KEY_PARENT_MEDIA_PATH);
-        if (DEBUG) Log.d(TAG, "initializeData mediaPath = " + mMediaSetPath + " mParentMediaSetString = " + mParentMediaSetString + " " + this);
+        mMediaSet = mActivity.getDataManager().getMediaSet(mMediaPath);
+        if (DEBUG) Log.d(TAG, "initializeData mMediaPath = " + mMediaPath + " mParentMediaSetString = " + mParentMediaSetString + " " + this);
 
-        mMediaSet = mActivity.getDataManager().getMediaSet(mMediaSetPath);
-        if (mMediaSet == null) {
-            Utils.fail("MediaSet is null. Path = %s", mMediaSetPath);
-        }
         mSelectionManager.setSourceMediaSet(mMediaSet);
         mAlbumDataAdapter = new AlbumDataLoader(mMediaSet);
         mAlbumDataAdapter.setGLMainHandler(mActivity);
@@ -507,7 +504,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             actionBar.setTitle(GalleryUtils.getSelectionModePrompt(typeBits));
         } else {
             inflator.inflate(R.menu.album, menu);
-            FilterUtils.setupMenuItems(actionBar, mMediaSetPath, true);
+            FilterUtils.setupMenuItems(actionBar, mMediaSet.getPath(), true);
             menu.findItem(R.id.action_group_by).setVisible(true);
         }
         actionBar.setSubtitle(null);
@@ -565,7 +562,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             }
             case R.id.action_slideshow: {
                 Bundle data = new Bundle();
-                data.putString(SlideshowPage.KEY_SET_PATH, mMediaSetPath.toString());
+                data.putString(SlideshowPage.KEY_SET_PATH, mMediaSet.getPath().toString());
                 Intent intent = new Intent(mActivity, SlideshowActivity.class);
                 intent.putExtras(data);
                 mActivity.startActivity(intent);

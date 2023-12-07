@@ -39,7 +39,7 @@ import java.util.Locale;
 
 public class AlbumDataLoader {
     @SuppressWarnings("unused")
-    private static final String TAG = "AlbumDataAdapter";
+    private static final String TAG = "AlbumDataLoader";
     private static final int DATA_CACHE_SIZE = 1000;
 
     private static final int MSG_LOAD_START = 1;

@@ -39,6 +39,8 @@ import com.android.gallery3d.util.ThreadPool;
 
 public class AlbumSetSlidingWindow implements AlbumSetDataLoader.DataListener {
     private static final String TAG = "AlbumSetSlidingWindow";
+    private static boolean DEBUG = false;
+
     private static final int MSG_UPDATE_ALBUM_ENTRY = 1;
 
     public static interface Listener {
@@ -358,6 +360,7 @@ public class AlbumSetSlidingWindow implements AlbumSetDataLoader.DataListener {
 
     @Override
     public void onSizeChanged(int size) {
+        if (DEBUG) Log.d(TAG, "onSizeChanged " + size);
         if (mIsActive && mSize != size) {
             mSize = size;
             if (mListener != null) mListener.onSizeChanged(mSize);
@@ -368,6 +371,7 @@ public class AlbumSetSlidingWindow implements AlbumSetDataLoader.DataListener {
 
     @Override
     public void onContentChanged(int index) {
+        if (DEBUG) Log.d(TAG, "onContentChanged " + index);
         if (!mIsActive) {
             // paused, ignore slot changed event
             return;

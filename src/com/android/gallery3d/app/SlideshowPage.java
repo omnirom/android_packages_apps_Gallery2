@@ -199,7 +199,7 @@ public class SlideshowPage extends ActivityState {
         boolean random = data.getBoolean(KEY_RANDOM_ORDER, false);
 
         String mediaPath = data.getString(KEY_SET_PATH);
-        mediaPath = FilterUtils.newFilterPath(mediaPath, FilterUtils.FILTER_IMAGE_ONLY);
+        mediaPath = FilterUtils.newFilterTypePath(mediaPath, FilterUtils.FILTER_IMAGE_ONLY);
         MediaSet mediaSet = mActivity.getDataManager().getMediaSet(mediaPath);
         if (random) {
             boolean repeat = data.getBoolean(KEY_REPEAT);

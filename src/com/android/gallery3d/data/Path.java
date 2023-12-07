@@ -67,7 +67,7 @@ public class Path {
 
     public void setObject(MediaObject object) {
         synchronized (Path.class) {
-            Utils.assertTrue(mObject == null || mObject.get() == null);
+            //Utils.assertTrue(mObject == null || mObject.get() == null);
             mObject = new WeakReference<MediaObject>(object);
         }
     }

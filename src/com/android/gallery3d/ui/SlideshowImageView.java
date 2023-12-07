@@ -39,7 +39,7 @@ public class SlideshowImageView extends FrameLayout {
     @SuppressWarnings("unused")
     private static final String TAG = "SlideshowImageView";
 
-    private static final int DEFAULT_TRANSITION_DURATION = 1000;
+    private static final int DEFAULT_TRANSITION_DURATION = 2000;
 
     private ImageView mBackImage;
     private ImageView mFrontImage;

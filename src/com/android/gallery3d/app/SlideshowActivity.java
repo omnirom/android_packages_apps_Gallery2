@@ -251,7 +251,7 @@ public class SlideshowActivity extends AppCompatActivity {
         boolean repeat = GalleryUtils.isRepeatSlideshow(this);
 
         String mediaPath = data.getString(KEY_SET_PATH);
-        mediaPath = FilterUtils.newFilterPath(mediaPath, FilterUtils.FILTER_IMAGE_ONLY);
+        mediaPath = FilterUtils.newFilterTypePath(mediaPath, FilterUtils.FILTER_IMAGE_ONLY);
         MediaSet mediaSet = mDataManager.getMediaSet(mediaPath);
         mediaSet.reload();
         if (mediaSet.getTotalMediaItemCount() == 0) {
