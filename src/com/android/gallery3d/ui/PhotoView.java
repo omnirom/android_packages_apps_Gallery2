@@ -199,7 +199,7 @@ public class PhotoView extends GLView {
     private Model mModel;
     private StringTexture mNoThumbnailText;
     private TileImageView mTileView;
-    private EdgeView mEdgeView;
+    private GLView mEdgeView;
     private UndoBarView mUndoBar;
     private Texture mVideoPlayIcon;
 
@@ -250,7 +250,7 @@ public class PhotoView extends GLView {
         mContext = activity.getAndroidContext();
         mPlaceholderColor = mContext.getResources().getColor(
                 R.color.photo_placeholder);
-        mEdgeView = new EdgeView(mContext);
+        mEdgeView = new GLView();
         addComponent(mEdgeView);
         mUndoBar = new UndoBarView(mContext);
         addComponent(mUndoBar);
@@ -291,17 +291,17 @@ public class PhotoView extends GLView {
 
             @Override
             public void onPull(int offset, int direction) {
-                mEdgeView.onPull(offset, direction);
+                //mEdgeView.onPull(offset, direction);
             }
 
             @Override
             public void onRelease() {
-                mEdgeView.onRelease();
+                //mEdgeView.onRelease();
             }
 
             @Override
             public void onAbsorb(int velocity, int direction) {
-                mEdgeView.onAbsorb(velocity, direction);
+                //mEdgeView.onAbsorb(velocity, direction);
             }
         });
         mVideoPlayIcon = new ResourceTexture(mContext, R.drawable.ic_control_play);
@@ -1265,7 +1265,7 @@ public class PhotoView extends GLView {
             if (mIgnoreSwipingGesture) return;
 
             mHolding &= ~HOLD_TOUCH_DOWN;
-            mEdgeView.onRelease();
+            //mEdgeView.onRelease();
 
             // If we scrolled in Y direction far enough, treat it as a delete
             // gesture.

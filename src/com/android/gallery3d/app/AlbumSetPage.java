@@ -65,7 +65,6 @@ import java.util.ArrayList;
 
 public class AlbumSetPage extends ActivityState implements
         SelectionManager.SelectionListener, GalleryActionBar.ClusterRunner,
-        EyePosition.EyePositionListener,
         AlbumSetPageBottomControls.Delegate {
     @SuppressWarnings("unused")
     private static final String TAG = "AlbumSetPage";
@@ -80,6 +79,7 @@ public class AlbumSetPage extends ActivityState implements
     private static final int REQUEST_SETTINGS = 2;
     private static final int REQUEST_CHOOSE_ALBUM = 3;
     private static final int REQUEST_GET_PHOTO = 4;
+    private static final float USER_DISTANCE_METER = 0.3f;
 
     private boolean mIsActive = false;
     private SlotView mSlotView;
@@ -96,16 +96,9 @@ public class AlbumSetPage extends ActivityState implements
     private boolean mGetContent;
     private boolean mGetAlbum;
     private ActionModeHandler mActionModeHandler;
-    private EyePosition mEyePosition;
     private Handler mHandler;
-
-    // The eyes' position of the user, the origin is at the center of the
-    // device and the unit is in pixels.
-    private float mX;
-    private float mY;
-    private float mZ;
-
     private AlbumSetPageBottomControls mBottomControls;
+    private float mUserDistance; // in pixel
 
     @Override
     protected int getBackgroundColorId() {
@@ -118,7 +111,6 @@ public class AlbumSetPage extends ActivityState implements
         @Override
         protected void onLayout(
                 boolean changed, int left, int top, int right, int bottom) {
-            mEyePosition.resetPosition();
 
             int slotViewTop = mTopMargin + mConfig.paddingTop;
             int slotViewBottom = bottom - top - mBottomMargin - mConfig.paddingBottom;
@@ -127,28 +119,18 @@ public class AlbumSetPage extends ActivityState implements
             mAlbumSetView.setHighlightItemPath(null);
 
             mSlotView.layout(mConfig.paddingLeft, slotViewTop, slotViewRight, slotViewBottom);
+            GalleryUtils.setViewPointMatrix(mMatrix,
+                    (right - left) / 2, (bottom - top) / 2, -mUserDistance);
         }
 
         @Override
         protected void render(GLCanvas canvas) {
             canvas.save(GLCanvas.SAVE_FLAG_MATRIX);
-            GalleryUtils.setViewPointMatrix(mMatrix,
-                    getWidth() / 2 + mX, getHeight() / 2 + mY, mZ);
             canvas.multiplyMatrix(mMatrix, 0);
             super.render(canvas);
             canvas.restore();
         }
     };
-
-    @Override
-    public void onEyePositionChanged(float x, float y, float z) {
-        mRootPane.lockRendering();
-        mX = x;
-        mY = y;
-        mZ = z;
-        mRootPane.unlockRendering();
-        mRootPane.invalidate();
-    }
 
     @Override
     public void onBackPressed() {
@@ -304,8 +286,8 @@ public class AlbumSetPage extends ActivityState implements
         Context context = mActivity.getAndroidContext();
         mGetContent = data.getBoolean(GalleryActivity.KEY_GET_CONTENT, false);
         mGetAlbum = data.getBoolean(GalleryActivity.KEY_GET_ALBUM, false);
-        mEyePosition = new EyePosition(context, this);
         mActionBar = mActivity.getGalleryActionBar();
+        mUserDistance = GalleryUtils.meterToPixel(USER_DISTANCE_METER);
 
         mHandler = new SynchronizedHandler(mActivity.getGLRoot()) {
             @Override
@@ -338,7 +320,6 @@ public class AlbumSetPage extends ActivityState implements
         mAlbumSetDataAdapter.pause();
         mAlbumSetView.pause();
         mActionModeHandler.pause();
-        mEyePosition.pause();
         GalleryUtils.setAlbumsetZoomLevel(mActivity, mSlotView.getZoomLevel());
         mBottomControls.hide(false);
     }
@@ -360,7 +341,6 @@ public class AlbumSetPage extends ActivityState implements
         mAlbumSetDataAdapter.resume();
 
         mAlbumSetView.resume();
-        mEyePosition.resume();
         mActionModeHandler.resume();
         
         RelativeLayout galleryRoot = (RelativeLayout) mActivity.findViewById(R.id.gallery_root);
@@ -390,6 +370,7 @@ public class AlbumSetPage extends ActivityState implements
 
         mConfig = new Config.AlbumSetPage(mActivity);
         mSlotView = new SlotView(mActivity, mConfig.slotViewSpec);
+        mSlotView.setOverscrollEffect(SlotView.OVERSCROLL_SYSTEM);
         mAlbumSetView = new AlbumSetSlotRenderer(
                 mActivity, mSelectionManager, mSlotView, mConfig.labelSpec,
                 mConfig.placeholderColor);

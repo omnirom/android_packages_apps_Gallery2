@@ -102,12 +102,9 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     private boolean mLaunchedFromPhotoPage;
     private boolean mInCameraApp;
 
-    private RelativePosition mOpenCenter = new RelativePosition();
-
     private Handler mHandler;
     private static final int MSG_PICK_PHOTO = 0;
 
-    private PhotoFallbackEffect mResumeEffect;
     private PhotoFallbackEffect.PositionProvider mPositionProvider =
             new PhotoFallbackEffect.PositionProvider() {
         @Override
@@ -149,8 +146,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
 
             mAlbumView.setHighlightItemPath(null);
 
-            // Set the mSlotView as a reference point to the open animation
-            mOpenCenter.setReferencePosition(mConfig.paddingLeft, slotViewTop);
             mSlotView.layout(mConfig.paddingLeft, slotViewTop, slotViewRight, slotViewBottom);
             GalleryUtils.setViewPointMatrix(mMatrix,
                     (right - left) / 2, (bottom - top) / 2, -mUserDistance);
@@ -161,18 +156,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             canvas.save(GLCanvas.SAVE_FLAG_MATRIX);
             canvas.multiplyMatrix(mMatrix, 0);
             super.render(canvas);
-
-            if (mResumeEffect != null) {
-                boolean more = mResumeEffect.draw(canvas);
-                if (!more) {
-                    mResumeEffect = null;
-                    mAlbumView.setSlotFilter(null);
-                }
-                // We want to render one more time even when no more effect
-                // required. So that the animated thumbnails could be draw
-                // with declarations in super.render().
-                invalidate();
-            }
             canvas.restore();
         }
     };
@@ -417,13 +400,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         mActivity.setSystemBarsTranlucent(false);
         mActivity.showSystemBars(false);
 
-        mResumeEffect = mActivity.getTransitionStore().get(KEY_RESUME_ANIMATION);
-        if (mResumeEffect != null) {
-            mAlbumView.setSlotFilter(mResumeEffect);
-            mResumeEffect.setPositionProvider(mPositionProvider);
-            mResumeEffect.start();
-        }
-
         setContentPane(mRootPane);
         mActivity.getGLRootView().applySystemInsets();
         mActivity.setBottomControlMargin(false);
@@ -475,6 +451,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
         mSelectionManager.setSelectionListener(this);
         mConfig = new Config.AlbumPage(mActivity);
         mSlotView = new SlotView(mActivity, mConfig.slotViewSpec);
+        mSlotView.setOverscrollEffect(SlotView.OVERSCROLL_SYSTEM);
         mAlbumView = new AlbumSlotRenderer(mActivity, mSlotView,
                 mSelectionManager, mConfig.placeholderColor);
         mSlotView.setSlotRenderer(mAlbumView);
