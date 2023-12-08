@@ -82,8 +82,6 @@ public class AlbumSetPage extends ActivityState implements
 
     private static final int DATA_CACHE_SIZE = 256;
     private static final int REQUEST_SETTINGS = 2;
-    private static final int REQUEST_CHOOSE_ALBUM = 3;
-    private static final int REQUEST_GET_PHOTO = 4;
     private static final float USER_DISTANCE_METER = 0.3f;
 
     private boolean mIsActive = false;
@@ -461,16 +459,6 @@ public class AlbumSetPage extends ActivityState implements
                 mSelectionManager.setAutoLeaveSelectionMode(false);
                 mSelectionManager.enterSelectionMode();
                 return true;
-            case R.id.action_pick_album:
-                Intent requestAlbum = new Intent(mActivity, AlbumPicker.class);
-                mActivity.startActivityForResult(requestAlbum, REQUEST_CHOOSE_ALBUM);
-                return true;
-            /*case R.id.action_pick_item:
-                Intent requestItem = new Intent(mActivity, GetContentPicker.class)
-                    .setAction(Intent.ACTION_GET_CONTENT)
-                    .setType("image/*");
-                mActivity.startActivityForResult(requestItem, REQUEST_GET_PHOTO);
-                return true;*/
             case R.id.action_camera: {
                 GalleryUtils.startCameraActivity(mActivity);
                 return true;
@@ -518,17 +506,6 @@ public class AlbumSetPage extends ActivityState implements
                 mMediaSet.reloadClustering();
                 doCluster(mSelectedAction);
                 break;
-            case REQUEST_CHOOSE_ALBUM:
-                if (resultCode == Activity.RESULT_OK) {
-                    String albumPath = data.getStringExtra(AlbumPicker.KEY_ALBUM_PATH);
-                    Log.d(TAG, "REQUEST_CHOOSE_ALBUM albumPath = " + albumPath);
-                }
-                break;
-            /*case REQUEST_GET_PHOTO:
-                if (resultCode == Activity.RESULT_OK) {
-                    Log.d(TAG, "REQUEST_GET_PHOTO pickedItem = " + data.getData());
-                }
-                break;*/
         }
     }
 

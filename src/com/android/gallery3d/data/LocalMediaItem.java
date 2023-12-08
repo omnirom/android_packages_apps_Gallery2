@@ -49,6 +49,7 @@ public abstract class LocalMediaItem extends MediaItem {
     public int width;
     public int height;
     private boolean mLocationResolved;
+    public String relFilePath;
 
     private static final SimpleDateFormat mDateFormatFilter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
@@ -118,5 +119,14 @@ public abstract class LocalMediaItem extends MediaItem {
     @Override
     public long getSize() {
         return fileSize;
+    }
+
+    protected void calcRelFilePath() {
+        File f = new File(filePath);
+        if (f.getParent() != null) {
+            relFilePath = new File(f.getParentFile().getName(), f.getName()).getPath();
+        } else {
+            relFilePath = filePath;
+        }
     }
 }

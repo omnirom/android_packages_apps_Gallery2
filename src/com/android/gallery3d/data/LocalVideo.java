@@ -111,6 +111,7 @@ public class LocalVideo extends LocalMediaItem {
         durationInSec = cursor.getInt(INDEX_DURATION) / 1000;
         bucketId = cursor.getInt(INDEX_BUCKET_ID);
         fileSize = cursor.getLong(INDEX_SIZE);
+        calcRelFilePath();
         parseResolution(cursor.getString(INDEX_RESOLUTION));
     }
 
@@ -145,6 +146,7 @@ public class LocalVideo extends LocalMediaItem {
                 durationInSec, cursor.getInt(INDEX_DURATION) / 1000);
         bucketId = uh.update(bucketId, cursor.getInt(INDEX_BUCKET_ID));
         fileSize = uh.update(fileSize, cursor.getLong(INDEX_SIZE));
+        calcRelFilePath();
         return uh.isUpdated();
     }
 
@@ -241,6 +243,11 @@ public class LocalVideo extends LocalMediaItem {
     @Override
     public String getFilePath() {
         return filePath;
+    }
+
+    @Override
+    public String getRelFilePath() {
+        return relFilePath;
     }
 
     @Override

@@ -16,9 +16,12 @@
 
 package com.android.gallery3d.data;
 
+import com.android.gallery3d.util.Log;
+
 import java.util.ArrayList;
 
-// FilterStringSet filters a base MediaSet according to a matching path.
+// FilterStringSet filters a base MediaSet according to a matching file path
+// of the last two segments - getParentName / getName
 public class FilterPathSet extends MediaSet implements ContentListener {
     @SuppressWarnings("unused")
     private static final String TAG = "FilterPathSet";
@@ -102,7 +105,7 @@ public class FilterPathSet extends MediaSet implements ContentListener {
         mBaseSet.enumerateMediaItems(new MediaSet.ItemConsumer() {
             @Override
             public void consume(int index, MediaItem item) {
-                if (item.getFilePath().contains(mMatchPattern)) {
+                if (item.getRelFilePath().toUpperCase().contains(mMatchPattern.toUpperCase())) {
                     if (index < 0 || index >= total) return;
                     Path path = item.getPath();
                     buf[index] = path;

@@ -143,6 +143,7 @@ public class LocalImage extends LocalMediaItem {
         fileSize = cursor.getLong(INDEX_SIZE);
         width = cursor.getInt(INDEX_WIDTH);
         height = cursor.getInt(INDEX_HEIGHT);
+        calcRelFilePath();
     }
 
     @Override
@@ -163,6 +164,7 @@ public class LocalImage extends LocalMediaItem {
         fileSize = uh.update(fileSize, cursor.getLong(INDEX_SIZE));
         width = uh.update(width, cursor.getInt(INDEX_WIDTH));
         height = uh.update(height, cursor.getInt(INDEX_HEIGHT));
+        calcRelFilePath();
         return uh.isUpdated();
     }
 
@@ -341,6 +343,11 @@ public class LocalImage extends LocalMediaItem {
     @Override
     public String getFilePath() {
         return filePath;
+    }
+
+    @Override
+    public String getRelFilePath() {
+        return relFilePath;
     }
 
     @Override

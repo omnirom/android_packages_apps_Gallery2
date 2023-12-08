@@ -102,7 +102,7 @@ public class FilterNameSet extends MediaSet implements ContentListener {
         mBaseSet.enumerateMediaItems(new MediaSet.ItemConsumer() {
             @Override
             public void consume(int index, MediaItem item) {
-                if (item.getName().contains(mMatchPattern)) {
+                if (item.getName().toUpperCase().contains(mMatchPattern.toUpperCase())) {
                     if (index < 0 || index >= total) return;
                     Path path = item.getPath();
                     buf[index] = path;
