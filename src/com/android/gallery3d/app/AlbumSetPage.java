@@ -470,7 +470,7 @@ public class AlbumSetPage extends ActivityState implements
             }
             case R.id.action_slideshow: {
                 Bundle data = new Bundle();
-                data.putString(SlideshowPage.KEY_SET_PATH, mMediaSet.getPath().toString());
+                data.putString(SlideshowActivity.KEY_SET_PATH, mMediaSet.getPath().toString());
                 Intent intent = new Intent(mActivity, SlideshowActivity.class);
                 intent.putExtras(data);
                 mActivity.startActivity(intent);

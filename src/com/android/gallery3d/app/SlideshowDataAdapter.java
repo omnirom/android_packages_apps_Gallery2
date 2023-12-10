@@ -19,7 +19,6 @@ package com.android.gallery3d.app;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.android.gallery3d.app.SlideshowPage.Slide;
 import com.android.gallery3d.data.ContentListener;
 import com.android.gallery3d.data.MediaItem;
 import com.android.gallery3d.data.MediaObject;
@@ -27,6 +26,7 @@ import com.android.gallery3d.data.MediaSet;
 import com.android.gallery3d.data.Path;
 import com.android.gallery3d.util.Future;
 import com.android.gallery3d.util.FutureListener;
+import com.android.gallery3d.util.Log;
 import com.android.gallery3d.util.ThreadPool;
 import com.android.gallery3d.util.ThreadPool.Job;
 import com.android.gallery3d.util.ThreadPool.JobContext;
@@ -34,11 +34,23 @@ import com.android.gallery3d.util.ThreadPool.JobContext;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SlideshowDataAdapter implements SlideshowPage.Model {
+public class SlideshowDataAdapter {
     @SuppressWarnings("unused")
     private static final String TAG = "SlideshowDataAdapter";
 
-    private static final int IMAGE_QUEUE_CAPACITY = 3;
+    private static final int IMAGE_QUEUE_CAPACITY = 5;
+
+    public static class Slide {
+        public Bitmap bitmap;
+        public MediaItem item;
+        public int index;
+
+        public Slide(MediaItem item, int index, Bitmap bitmap) {
+            this.bitmap = bitmap;
+            this.item = item;
+            this.index = index;
+        }
+    }
 
     public interface SlideshowSource {
         public void addContentListener(ContentListener listener);
@@ -114,7 +126,7 @@ public class SlideshowDataAdapter implements SlideshowPage.Model {
                 }
                 if (!mIsActive) return null;
                 mNeedReset = false;
-
+                Log.d(TAG, "loadItem mImageQueue.size() = " + mImageQueue.size());
                 MediaItem item = loadItem();
 
                 if (mNeedReset) {
@@ -165,6 +177,7 @@ public class SlideshowDataAdapter implements SlideshowPage.Model {
     private synchronized Slide innerNextBitmap() {
         while (mIsActive && mDataReady && mImageQueue.isEmpty()) {
             try {
+                Log.d(TAG, "innerNextBitmap wait");
                 wait();
             } catch (InterruptedException t) {
                 throw new AssertionError();
@@ -172,22 +185,16 @@ public class SlideshowDataAdapter implements SlideshowPage.Model {
         }
         if (mImageQueue.isEmpty()) return null;
         mNextOutput++;
-        this.notifyAll();
+        if (mImageQueue.size() == 1) {
+            this.notifyAll();
+        }
         return mImageQueue.removeFirst();
     }
 
-    @Override
-    public Future<Slide> nextSlide(FutureListener<Slide> listener) {
-        return mThreadPool.submit(new Job<Slide>() {
-            @Override
-            public Slide run(JobContext jc) {
-                jc.setMode(ThreadPool.MODE_NONE);
-                return innerNextBitmap();
-            }
-        }, listener);
+    public Slide nextSlide() {
+        return innerNextBitmap();
     }
 
-    @Override
     public void pause() {
         synchronized (this) {
             mIsActive = false;
@@ -198,7 +205,6 @@ public class SlideshowDataAdapter implements SlideshowPage.Model {
         mReloadTask = null;
     }
 
-    @Override
     public synchronized void resume() {
         mIsActive = true;
         mSource.addContentListener(mSourceListener);

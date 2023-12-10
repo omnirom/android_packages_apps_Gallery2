@@ -19,7 +19,6 @@ import com.android.gallery3d.app.FilterUtils
 import com.android.gallery3d.app.GalleryApp
 import com.android.gallery3d.app.LoadingListener
 import com.android.gallery3d.app.SlideshowDataAdapter
-import com.android.gallery3d.app.SlideshowPage
 import com.android.gallery3d.app.SlideshowSources.ShuffleSource
 import com.android.gallery3d.app.SlideshowSources.SequentialSourceRecursive
 import com.android.gallery3d.common.Utils
@@ -43,7 +42,7 @@ import java.lang.Thread
 
 class ScreenSaverService : DreamService() {
     private val TAG = "ScreenSaverService"
-    private val DEBUG = true
+    private val DEBUG = false
 
     val KEY_SET_PATH = "media-set-path"
     val KEY_ITEM_PATH = "media-item-path"
@@ -53,11 +52,11 @@ class ScreenSaverService : DreamService() {
     private val DATA_CACHE_SIZE = 256
 
     private lateinit var mHandler: Handler
-    private var mModel:SlideshowPage.Model? = null
+    private var mModel:SlideshowDataAdapter? = null
     private lateinit var mSlideshowImageView:SlideshowImageView
     private lateinit var mDataManager:DataManager
     private var mAlbumSetDataLoader: AlbumSetDataLoader? = null
-    private var mPendingSlide:SlideshowPage.Slide? = null
+    private var mPendingSlide:SlideshowDataAdapter.Slide? = null
     private lateinit var mConfig: ScreenSaverConfig
     private var mMediaSet: MediaSet? = null
     private val mComboPath = Path.fromString(DataManager.TOP_IMAGE_SET_PATH)
@@ -144,23 +143,25 @@ class ScreenSaverService : DreamService() {
     }
     
     private fun loadNextBitmap() {
-        mModel?.nextSlide(object : FutureListener<SlideshowPage.Slide?> {
-            override fun onFutureDone(future: Future<SlideshowPage.Slide?>) {
-                mPendingSlide = future.get()
-                mHandler.sendEmptyMessage(MSG_SHOW_PENDING_BITMAP)
-            }
-        })
+        mPendingSlide = mModel?.nextSlide()
+        if (DEBUG) Log.d(TAG, "loadNextBitmap mPendingSlide = " + mPendingSlide)
+        if (mPendingSlide != null) {
+            mHandler.sendEmptyMessage(MSG_SHOW_PENDING_BITMAP)
+        } else {
+            mHandler.sendEmptyMessageDelayed(MSG_LOAD_NEXT_BITMAP, getDuration().toLong())
+        }
     }
 
     private fun showPendingBitmap() {
-        val slide: SlideshowPage.Slide? = mPendingSlide
-        if (slide != null) {
-            mSlideshowImageView.next(slide.bitmap)
+        if (DEBUG) Log.d(TAG, "showPendingBitmap")
+        if (mPendingSlide != null) {
+            mSlideshowImageView.next(mPendingSlide!!.bitmap)
             mHandler.sendEmptyMessageDelayed(MSG_LOAD_NEXT_BITMAP, getDuration().toLong())
         }
     }
 
     private fun pauseSlideShow() {
+        if (DEBUG) Log.d(TAG, "pauseSlideShow")
         mModel?.pause()
         mHandler.removeMessages(MSG_LOAD_NEXT_BITMAP)
         mHandler.removeMessages(MSG_SHOW_PENDING_BITMAP)

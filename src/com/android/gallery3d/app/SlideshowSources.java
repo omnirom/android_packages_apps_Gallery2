@@ -46,6 +46,7 @@ import com.android.gallery3d.ui.SlideshowImageView;
 import com.android.gallery3d.util.Future;
 import com.android.gallery3d.util.FutureListener;
 import com.android.gallery3d.util.GalleryUtils;
+import com.android.gallery3d.util.Log;
 
 import java.util.ArrayList;
 import java.util.Random;

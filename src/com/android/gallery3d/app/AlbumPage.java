@@ -73,7 +73,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     public static final String KEY_AUTO_SELECT_ALL = "auto-select-all";
     public static final String KEY_RESUME_ANIMATION = "resume_animation";
 
-    private static final int REQUEST_SLIDESHOW = 1;
     public static final int REQUEST_PHOTO = 2;
 
     private static final float USER_DISTANCE_METER = 0.3f;
@@ -562,7 +561,7 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
             }
             case R.id.action_slideshow: {
                 Bundle data = new Bundle();
-                data.putString(SlideshowPage.KEY_SET_PATH, mMediaSet.getPath().toString());
+                data.putString(SlideshowActivity.KEY_SET_PATH, mMediaSet.getPath().toString());
                 Intent intent = new Intent(mActivity, SlideshowActivity.class);
                 intent.putExtras(data);
                 mActivity.startActivity(intent);
@@ -584,13 +583,6 @@ public class AlbumPage extends ActivityState implements GalleryActionBar.Cluster
     @Override
     protected void onStateResult(int request, int result, Intent data) {
         switch (request) {
-            case REQUEST_SLIDESHOW: {
-                // data could be null, if there is no images in the album
-                if (data == null) return;
-                mFocusIndex = data.getIntExtra(SlideshowPage.KEY_PHOTO_INDEX, 0);
-                mSlotView.setCenterIndex(mFocusIndex);
-                break;
-            }
             case REQUEST_PHOTO: {
                 if (data == null) return;
                 mFocusIndex = data.getIntExtra(PhotoPage.KEY_RETURN_INDEX_HINT, 0);

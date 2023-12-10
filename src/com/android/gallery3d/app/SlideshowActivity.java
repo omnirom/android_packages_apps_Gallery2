@@ -63,11 +63,11 @@ public class SlideshowActivity extends AppCompatActivity {
     private static final int MSG_SHOW_PENDING_BITMAP = 2;
 
     private Handler mHandler;
-    private SlideshowPage.Model mModel;
+    private SlideshowDataAdapter mModel;
     private SlideshowImageView mSlideshowImageView;
     private DataManager mDataManager;
 
-    private SlideshowPage.Slide mPendingSlide = null;
+    private SlideshowDataAdapter.Slide mPendingSlide = null;
     private boolean mIsActive = false;
 
     @Override
@@ -194,17 +194,12 @@ public class SlideshowActivity extends AppCompatActivity {
     }
 
     private void loadNextBitmap() {
-        mModel.nextSlide(new FutureListener<SlideshowPage.Slide>() {
-            @Override
-            public void onFutureDone(Future<SlideshowPage.Slide> future) {
-                mPendingSlide = future.get();
-                mHandler.sendEmptyMessage(MSG_SHOW_PENDING_BITMAP);
-            }
-        });
+        mPendingSlide = mModel.nextSlide();
+        mHandler.sendEmptyMessage(MSG_SHOW_PENDING_BITMAP);
     }
 
     private void showPendingBitmap() {
-        SlideshowPage.Slide slide = mPendingSlide;
+        SlideshowDataAdapter.Slide slide = mPendingSlide;
         if (slide != null) {
             mSlideshowImageView.next(slide.bitmap);
             mHandler.sendEmptyMessageDelayed(MSG_LOAD_NEXT_BITMAP, getDuration());
