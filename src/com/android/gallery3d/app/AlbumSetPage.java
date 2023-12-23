@@ -322,7 +322,9 @@ public class AlbumSetPage extends ActivityState implements
         if (DEBUG) Log.d(TAG, "onPause " + this);
 
         mIsActive = false;
-        mSearchItem.collapseActionView();
+        if (mSearchItem != null) {
+            mSearchItem.collapseActionView();
+        }
         mAlbumSetDataAdapter.pause();
         mAlbumSetView.pause();
         mActionModeHandler.pause();
