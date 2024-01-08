@@ -20,13 +20,16 @@
     <PreferenceCategory android:title="@string/slideshow_settings" >
         <SwitchPreference
             android:key="slideshow_random"
+            android:summary="@string/slideshow_random_summary"
             android:title="@string/slideshow_random_title" />
         <SwitchPreference
             android:key="slideshow_repeat"
             android:title="@string/slideshow_repeat_title"
+            android:summary="@string/slideshow_repeat_summary"
             android:defaultValue="true" />
         <SwitchPreference
             android:key="slideshow_fill_screen"
+            android:summary="@string/slideshow_fill_screen_summary"
             android:title="@string/slideshow_fill_screen_title"
             android:defaultValue="false" />
         <com.android.gallery3d.settings.SeekBarPreference
@@ -41,6 +44,7 @@
     <PreferenceCategory android:title="@string/cluster_settings" >
         <SwitchPreference
             android:key="time_cluster_weeks"
+            android:summary="@string/time_cluster_weeks_summary"
             android:title="@string/time_cluster_weeks_title" />
     </PreferenceCategory>
 </PreferenceScreen>

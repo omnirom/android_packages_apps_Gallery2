@@ -5,9 +5,11 @@
 
         <SwitchPreference
             android:key="screensaver_slideshow_random"
+            android:summary="@string/slideshow_random_summary"
             android:title="@string/slideshow_random_title" />
         <SwitchPreference
             android:key="screensaver_slideshow_fill_screen"
+            android:summary="@string/slideshow_fill_screen_summary"
             android:title="@string/slideshow_fill_screen_title"
             android:defaultValue="false" />
         <com.android.gallery3d.settings.SeekBarPreference
@@ -20,6 +22,7 @@
             settings:unitsRight="@string/unit_sec"/>
         <SwitchPreference
             android:key="screensaver_slideshow_all_albums"
+            android:summary="@string/slideshow_all_albums_summary"
             android:title="@string/slideshow_all_albums_title"
             android:defaultValue="false"
             android:disableDependentsState="true" />

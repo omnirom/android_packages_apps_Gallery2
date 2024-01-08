@@ -19,7 +19,7 @@
     <string name="layout_grid">Grid view</string>
     <string name="layout_filmstrip">Filmstrip view</string>
     <string name="slideshow_settings">Slideshow</string>
-    <string name="slideshow_random_title">Show in random order</string>
+    <string name="slideshow_random_title">Random</string>
     <string name="slideshow_repeat_title">Repeat</string>
     <string name="unit_sec">sec</string>
     <string name="slideshow_duration_title">Delay time</string>
@@ -61,4 +61,9 @@
         <item quantity="one">One album selected</item>
         <item quantity="other">%1$d albums selected</item>
     </plurals>
+    <string name="slideshow_random_summary">Show in random order</string>
+    <string name="slideshow_fill_screen_summary">Scale to screen size</string>
+    <string name="slideshow_all_albums_summary">Use images from all albums</string>
+    <string name="slideshow_repeat_summary">Restart when finished</string>
+    <string name="time_cluster_weeks_summary"></string>
 </resources>
