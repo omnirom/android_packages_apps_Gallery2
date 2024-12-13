@@ -80,7 +80,7 @@ public class TimeClustering extends Clustering {
         boolean clusterByWeeks = GalleryUtils.isTimeClusterByWeeks(mContext);
 
         for (SmallItem item : items) {
-            String key = clusterByWeeks ? item.year + ":" + item.month + ":" + item.week : item.year + ":" + item.month;
+            String key = clusterByWeeks ? item.year + ":" + String.format("%02d", item.month) + ":" + item.week : item.year + ":" + String.format("%02d", item.month);
             Cluster c = mClusterMap.get(key);
             if (c != null) {
                 c.addItem(item);
