@@ -21,6 +21,8 @@ import android.content.Context;
 import com.android.gallery3d.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 
 public class TypeClustering extends Clustering {
     @SuppressWarnings("unused")
@@ -32,6 +34,8 @@ public class TypeClustering extends Clustering {
 
     private class TypeCluster {
         ArrayList<Path> mPaths = new ArrayList<Path>();
+        ArrayList<MediaItem> mItems = new ArrayList<MediaItem>();
+
         String mName;
         MediaItem mCoverItem;
 
@@ -40,15 +44,11 @@ public class TypeClustering extends Clustering {
         }
 
         public void add(MediaItem item) {
-            Path path = item.getPath();
-            mPaths.add(path);
-            if (mCoverItem == null) {
-                mCoverItem = item;
-            }
+            mItems.add(item);
         }
 
         public int size() {
-            return mPaths.size();
+            return mItems.size();
         }
 
         public MediaItem getCover() {
@@ -56,6 +56,16 @@ public class TypeClustering extends Clustering {
                 return mCoverItem;
             }
             return null;
+        }
+
+        public void sort() {
+            mPaths.clear();
+            Collections.sort(mItems, DataManager.sDateTakenComparator);
+            mCoverItem = mItems.size() != 0 ? mItems.get(0) : null;
+            Iterator<MediaItem> iter = mItems.iterator();
+            while (iter.hasNext()) {
+                mPaths.add(iter.next().getPath());
+            }
         }
     }
 
@@ -83,6 +93,12 @@ public class TypeClustering extends Clustering {
                 }
             }
         });
+
+        // sort over all now
+        images.sort();
+        videos.sort();
+        unknown.sort();
+
         if (unknown.size() != 0) {
             mClusters = new TypeCluster[] { images, videos, unknown };
         } else {
