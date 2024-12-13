@@ -41,7 +41,7 @@ class ScreenSaverSettingsFragment : PreferenceFragmentCompat(),
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

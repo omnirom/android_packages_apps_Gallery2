@@ -18,6 +18,16 @@
   <init>(...);
 }
 
+# ctors of subclasses of ActivityState are called with Java reflection.
+-keep class * extends com.android.gallery3d.app.ActivityState {
+  <init>(...);
+}
+
+# ctors of subclasses of ImageFilter are called with Java reflection.
+-keep class * extends com.android.gallery3d.filtershow.filters.ImageFilter {
+  <init>(...);
+}
+
 -keep class com.android.camera.CameraActivity {
   public boolean isRecording();
   public long getAutoFocusTime();
